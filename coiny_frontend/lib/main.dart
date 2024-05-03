@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'pages/home.dart';
-import 'pages/plan.dart';
+import 'pages/plan1.dart';
+import 'pages/plan2.dart';
 import 'pages/stat.dart';
 import 'pages/goal.dart';
+import 'auth/login.dart';
+import 'auth/signup.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,8 +17,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: stat(),
+      // home: HomePage(),
+      home: Plan1Page(),
     );
   }
 }
