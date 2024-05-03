@@ -8,21 +8,22 @@ datasource db {
 }
 
 model users {
-  userId       Int            @id @default(autoincrement())
-  username     String         @unique
-  password     String
-  image        String?
-  created      DateTime       @default(now())
-  transactions transactions[]
-  goals        goals[]
-  plans        plans[]
-  Bonus        Bonus[]
+  userId         Int              @id @default(autoincrement())
+  username       String           @unique
+  password       String
+  image          String?
+  created        DateTime         @default(now())
+  transactions   transactions[]
+  goals          goals[]
+  plans          plans[]
+  Bonus          Bonus[]
+  userCategories userCategories[]
 }
 
 model transactions {
   transactionId Int              @id @default(autoincrement())
   userId        Int
-  categoryId    Int              
+  categoryId    Int
   type          transactionsType
   amount        Float
   created       DateTime         @default(now())
@@ -36,10 +37,27 @@ enum transactionsType {
 }
 
 model categories {
-  categoryId   Int            @id @default(autoincrement())
-  name         String
-  icon         Int
-  transactions transactions[]
+  categoryId     Int              @id @default(autoincrement())
+  name           String
+  iconId         Int
+  icon           categoriesIcon   @relation(fields: [iconId], references: [iconId])
+  transactions   transactions[]
+  userCategories userCategories[]
+}
+
+model categoriesIcon {
+  iconId     Int          @id @default(autoincrement())
+  iconName   String
+  categories categories[]
+}
+
+model userCategories {
+  userId     Int
+  categoryId Int
+  users      users      @relation(fields: [userId], references: [userId])
+  categories categories @relation(fields: [categoryId], references: [categoryId])
+
+  @@id([userId, categoryId])
 }
 
 model goals {
@@ -55,7 +73,7 @@ model goals {
 model plans {
   planId  Int      @id @default(autoincrement())
   userId  Int
-  balance Float
+  monthly Float
   save    Float
   created DateTime @default(now())
   users   users    @relation(fields: [userId], references: [userId])
