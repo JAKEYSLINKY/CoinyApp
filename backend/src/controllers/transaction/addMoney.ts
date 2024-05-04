@@ -2,9 +2,8 @@ import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 
 const prisma = new PrismaClient();
-const login = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        
+const addMoney = async (req: Request, res: Response, next: NextFunction) => {
+	try {
 	} catch (error: any) {
 		console.error("Error:", error);
 		return res.status(500).json({
@@ -14,4 +13,4 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 		});
 	}
 };
-export default login;
+export default addMoney;
