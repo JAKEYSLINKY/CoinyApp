@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 
 const prisma = new PrismaClient();
+//declare the type of data that will be received in body
 interface planningRequest {
 	userId: number;
 	monthly: number;
@@ -9,8 +10,18 @@ interface planningRequest {
 }
 const createPlan = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		console.log(req.body);
+		//get the data from the request body
 		const reqBody: planningRequest = req.body;
+		//check if he save more than monthly
+		//#TODO recheck if this case work
+		if (reqBody.save > reqBody.monthly) {
+			return res.status(400).json({
+				success: false,
+				data: null,
+				error: "You can't save more than you earn",
+			});
+		}
+		//create new row in plans table
 		await prisma.plans.create({
 			data: {
 				userId: reqBody.userId,
