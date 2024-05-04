@@ -1,10 +1,6 @@
-import 'dart:ffi';
-
+// ignore_for_file: non_constant_identifier_names, prefer_interpolation_to_compose_strings, camel_case_types
 import 'package:coiny_frontend/barGraph/bar_Graph.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 
 class stat extends StatefulWidget {
   const stat({super.key});
@@ -26,8 +22,8 @@ class _statState extends State<stat> {
         body: Center(
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 220, top: 60),
+              const Padding(
+                padding: EdgeInsets.only(right: 220, top: 60),
                 child: Text(
                   'Stat',
                   style: TextStyle(
@@ -37,11 +33,11 @@ class _statState extends State<stat> {
                 ),
               ),
               SizedBox(
-                height: 300,
+                height: 240,
                 width: 300,
                 child: MyBarGraph(financial: financial),
               ),
-              SizedBox(height: 80),
+              const SizedBox(height: 80),
               StatInfo(
                 Saved: financial[0].toInt(),
                 UsableMoney: financial[1].toInt(),
@@ -53,6 +49,7 @@ class _statState extends State<stat> {
   }
 }
 
+// ignore: must_be_immutable
 class StatInfo extends StatelessWidget {
   int Saved;
   int UsableMoney;
@@ -75,17 +72,17 @@ class StatInfo extends StatelessWidget {
       ),
       child: Column(
         children: [
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Padding(
             padding:
                 const EdgeInsets.only(bottom: 14.0, left: 16.0, right: 16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Saved", style: TextStyle(fontSize: 20)),
+                const Text("Saved", style: TextStyle(fontSize: 20)),
                 Text(Saved.toString() + "฿",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 20)),
               ],
             ),
           ),
@@ -95,10 +92,10 @@ class StatInfo extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Usable Money", style: TextStyle(fontSize: 20)),
+                const Text("Usable Money", style: TextStyle(fontSize: 20)),
                 Text(UsableMoney.toString() + "฿",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 20)),
               ],
             ),
           ),
@@ -108,15 +105,15 @@ class StatInfo extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Used", style: TextStyle(fontSize: 20)),
+                const Text("Used", style: TextStyle(fontSize: 20)),
                 Text(Used.toString() + "฿",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 20)),
               ],
             ),
           ),
-          Divider(
-            color: const Color(0xFFEDB59E),
+          const Divider(
+            color: Color(0xFFEDB59E),
             height: 20,
             thickness: 4,
             indent: 16,
@@ -128,12 +125,12 @@ class StatInfo extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Total",
+                const Text("Total",
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
                 Text((Saved + UsableMoney).toString() + "฿",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 20)),
               ],
             ),
           )

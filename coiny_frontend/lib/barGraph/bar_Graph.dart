@@ -18,16 +18,16 @@ class MyBarGraph extends StatelessWidget {
     return BarChart(BarChartData(
       maxY: financial[0] + financial[1] - financial[2],
       minY: 0,
-      gridData: FlGridData(show: false),
+      gridData: const FlGridData(show: false),
       borderData: FlBorderData(
         show: true,
-        border: Border(
+        border: const Border(
             bottom: BorderSide(
           color: Color(0xFFEDB59E),
           width: 5,
         )),
       ),
-      titlesData: FlTitlesData(
+      titlesData: const FlTitlesData(
           show: true,
           topTitles: AxisTitles(
             sideTitles: SideTitles(showTitles: false),
