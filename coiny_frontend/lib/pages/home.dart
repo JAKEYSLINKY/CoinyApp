@@ -28,7 +28,7 @@ class HomePage extends StatelessWidget {
             ),
           ),
         ),
-        bottomNavigationBar: MyBottomNavigationBar(),
+        //bottomNavigationBar: MyBottomNavigationBar(),
       ),
     );
   }
@@ -381,46 +381,46 @@ class ShowMoney extends StatelessWidget {
   }
 }
 
-class MyBottomNavigationBar extends StatelessWidget {
-  const MyBottomNavigationBar({super.key});
+// class MyBottomNavigationBar extends StatelessWidget {
+//   const MyBottomNavigationBar({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return BottomAppBar(
-      child: Container(
-        height: 60,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        color: const Color(0xFFEDB59E),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.home),
-              onPressed: () {
-                // Navigate to home screen
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.leaderboard),
-              onPressed: () {
-                // Navigate to search screen
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.library_books),
-              onPressed: () {
-                // Navigate to notifications screen
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.emoji_events),
-              onPressed: () {
-                // Navigate to profile screen
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return BottomAppBar(
+//       child: Container(
+//         height: 60,
+//         padding: const EdgeInsets.symmetric(horizontal: 20),
+//         color: const Color(0xFFEDB59E),
+//         child: Row(
+//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//           children: <Widget>[
+//             IconButton(
+//               icon: const Icon(Icons.home),
+//               onPressed: () {
+//                 // Navigate to home screen
+//               },
+//             ),
+//             IconButton(
+//               icon: const Icon(Icons.leaderboard),
+//               onPressed: () {
+//                 // Navigate to search screen
+//               },
+//             ),
+//             IconButton(
+//               icon: const Icon(Icons.library_books),
+//               onPressed: () {
+//                 // Navigate to notifications screen
+//               },
+//             ),
+//             IconButton(
+//               icon: const Icon(Icons.emoji_events),
+//               onPressed: () {
+//                 // Navigate to profile screen
+//               },
+//             ),
+//           ],
+//         ),
+//        ),
+//      );
+//   }
+// }
