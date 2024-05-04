@@ -11,6 +11,7 @@ model users {
   userId         Int              @id @default(autoincrement())
   username       String           @unique
   password       String
+  name           String           @default("Anonymous")
   image          String?
   created        DateTime         @default(now())
   transactions   transactions[]
