@@ -1,6 +1,9 @@
-const express = require("express");
-const readRouter = express.Router();
+import express from "express";
+import editPic from "../controllers/user/editPic";
+import editName from "../controllers/user/editName";
+const usersRouter = express.Router();
 
-readRouter.get("/balance");
+usersRouter.patch("/edit/name", editName);
+usersRouter.patch("/edit/profile", editPic);
 
-module.exports = readRouter;
+export default usersRouter;

@@ -27,7 +27,7 @@ model transactions {
   type          transactionsType
   amount        Float
   created       DateTime         @default(now())
-  users         users            @relation(fields: [userId], references: [userId])
+  users         users            @relation(onDelete: Cascade, fields: [userId], references: [userId])
   categories    categories?      @relation(fields: [categoryId], references: [categoryId])
 }
 
@@ -54,7 +54,7 @@ model categoriesIcon {
 model userCategories {
   userId     Int
   categoryId Int
-  users      users      @relation(fields: [userId], references: [userId])
+  users      users      @relation(fields: [userId], references: [userId], onDelete: Cascade)
   categories categories @relation(fields: [categoryId], references: [categoryId])
 
   @@id([userId, categoryId])
@@ -65,9 +65,9 @@ model goals {
   userId        Int
   name          String?
   goalAmount    Int
-  currentAmount Int?
+  currentAmount Int?     @default(0)
   created       DateTime @default(now())
-  users         users    @relation(fields: [userId], references: [userId])
+  users         users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }
 
 model plans {
@@ -76,7 +76,7 @@ model plans {
   monthly Float
   save    Float
   created DateTime @default(now())
-  users   users    @relation(fields: [userId], references: [userId])
+  users   users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }
 
 model Bonus {
@@ -86,7 +86,7 @@ model Bonus {
   amount  Int
   source  String
   created DateTime   @default(now())
-  users   users      @relation(fields: [userId], references: [userId])
+  users   users      @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }
 
 enum bonusUsage {
