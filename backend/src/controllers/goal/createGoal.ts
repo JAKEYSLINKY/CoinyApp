@@ -29,6 +29,8 @@ const createGoal = async (req: Request, res: Response, next: NextFunction) => {
 			data: null,
 			error: error.message,
 		});
+	} finally {
+		await prisma.$disconnect();
 	}
 };
 export default createGoal;

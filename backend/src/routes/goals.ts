@@ -6,7 +6,7 @@ import updateGoal from '../controllers/goal/updateGoal';
 const goalsRouter = express.Router();
 
 goalsRouter.post('/create', createGoal);
-goalsRouter.patch('/add/money', addGoalMoney);
+goalsRouter.patch('/add', addGoalMoney);
 goalsRouter.get('/get', getGoal);
 goalsRouter.patch('/update', updateGoal);
 
