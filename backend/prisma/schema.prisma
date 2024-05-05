@@ -66,7 +66,7 @@ model goals {
   userId        Int
   name          String?
   goalAmount    Int
-  currentAmount Int?     @default(0)
+  currentAmount Int     @default(0)
   created       DateTime @default(now())
   users         users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }

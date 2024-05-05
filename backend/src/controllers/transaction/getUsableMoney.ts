@@ -50,6 +50,8 @@ const getUsableMoney = async (
 			data: null,
 			error: error.message,
 		});
+	} finally {
+		await prisma.$disconnect();
 	}
 };
 export default getUsableMoney;

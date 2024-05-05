@@ -8,7 +8,7 @@ interface loginRequest {
 }
 const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const reqBody: loginRequest = req.body;
+		const reqBody: loginRequest = req.body;
 		const user = await prisma.users.findFirst({
 			where: {
 				username: reqBody.username,
@@ -34,6 +34,8 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 			data: null,
 			error: error.message,
 		});
+	} finally {
+		await prisma.$disconnect();
 	}
 };
 export default login;
