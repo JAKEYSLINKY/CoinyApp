@@ -32,6 +32,22 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
+          appBar: AppBar(
+            backgroundColor: const Color(0xFFFFE2D2),
+            actions: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 8, right: 38),
+                child: ClipOval(
+                  child: Image.asset(
+                    'assets/profile.jpg',
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ],
+          ),
           body: _pageOptions[_selectedPage],
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: _selectedPage,
