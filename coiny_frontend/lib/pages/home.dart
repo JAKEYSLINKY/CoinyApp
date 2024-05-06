@@ -18,7 +18,6 @@ class HomePage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Profile(),
                   Mascot(),
                   ShowMoney(),
                   CategoriesList(),
@@ -127,24 +126,46 @@ class CategoriesList extends StatelessWidget {
     Category('Coffee', 'coffee'),
     Category('Bus', 'bus'),
     Category('Food', 'restaurant'),
-    Category('Shoppingggggggg', 'shopping'),
-    Category('Shoppingggggggg', 'shopping'),
+    Category('Shoppingggggggg', 'cart'),
+    Category('Other', 'other'),
     // Add more categories with their associated icon names as needed
   ];
 
   final Map<String, IconData> iconDataMap = {
-    'entertain': Icons.sports_esports,
-    'coffee': Icons.coffee,
+    'music': Icons.music_note,
+    'baby': Icons.child_friendly,
+    'bag': Icons.business_center,
+    'home': Icons.gite,
+    'sun': Icons.brightness_5,
     'bus': Icons.directions_bus,
+    'rabbit': Icons.cruelty_free,
+    'fastfood': Icons.fastfood,
     'restaurant': Icons.restaurant,
-    'shopping': Icons.shopping_bag,
+    'heart': Icons.favorite,
+    'flower': Icons.local_florist,
+    'gasstation': Icons.local_gas_station,
+    'cart': Icons.shopping_cart,
+    'localmall': Icons.local_mall,
+    'cameraroll': Icons.camera_roll,
+    'tag': Icons.loyalty,
+    'entertain': Icons.sports_esports,
+    'flag': Icons.flag,
+    'fitness': Icons.fitness_center,
+    'alert': Icons.crisis_alert,
+    'coffee': Icons.coffee,
+    'location': Icons.fmd_good,
+    'chair': Icons.chair,
+    'category': Icons.category,
+    'other': Icons.more_horiz,
     // Add more mappings as needed
   };
 
   @override
   Widget build(BuildContext context) {
     List<Widget> categoryWidgets = categories.map((category) {
-      IconData iconData = iconDataMap[category.iconName] ?? Icons.category;
+      IconData iconData = iconDataMap[category.iconName] ??
+          Icons
+              .category; //if iconDataMap[category.iconName] is null, use Icons.category
 
       return Container(
         width: 100,
@@ -176,34 +197,34 @@ class CategoriesList extends StatelessWidget {
       );
     }).toList();
 
-    // Add "Other" category widget
-    categoryWidgets.add(
-      Container(
-        width: 100,
-        height: 100,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: const Color(0xFFF98A4C),
-        ),
-        child: const Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.more_horiz,
-              color: Colors.white,
-              size: 40,
-            ),
-            Text(
-              'Other',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+    // // Add "Other" category widget
+    // categoryWidgets.add(
+    //   Container(
+    //     width: 100,
+    //     height: 100,
+    //     decoration: BoxDecoration(
+    //       borderRadius: BorderRadius.circular(10),
+    //       color: const Color(0xFFF98A4C),
+    //     ),
+    //     child: const Column(
+    //       mainAxisAlignment: MainAxisAlignment.center,
+    //       children: [
+    //         Icon(
+    //           Icons.more_horiz,
+    //           color: Colors.white,
+    //           size: 40,
+    //         ),
+    //         Text(
+    //           'Other',
+    //           style: TextStyle(
+    //             color: Colors.white,
+    //             fontSize: 14,
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // );
 
     return ListView(
       shrinkWrap: true,
@@ -225,73 +246,70 @@ class History extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          // Your profile content here
-          Container(
-            margin: const EdgeInsets.only(
-                bottom: 10.0), // Add margin only at the bottom
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  "History",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        // Your profile content here
+        Container(
+          margin: const EdgeInsets.only(
+              bottom: 10.0), // Add margin only at the bottom
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                "History",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              Icon(Icons.history),
+            ],
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black, width: 1),
+            color: const Color(0xFFFFF3EC),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text("30 April 2024", style: TextStyle(fontSize: 10)),
+                  ],
                 ),
-                Icon(Icons.history),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Coffee",
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text("100B"),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Shopping",
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text("1000B"),
+                  ],
+                ),
+                // Add more Text widgets as needed
               ],
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black, width: 1),
-              color: const Color(0xFFFFF3EC),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text("30 April 2024", style: TextStyle(fontSize: 10)),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Coffee",
-                        style: TextStyle(
-                          fontSize: 16,
-                        ),
-                      ),
-                      Text("100B"),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Shopping",
-                        style: TextStyle(
-                          fontSize: 16,
-                        ),
-                      ),
-                      Text("1000B"),
-                    ],
-                  ),
-                  // Add more Text widgets as needed
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -322,37 +340,40 @@ class Mascot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          ClipOval(
-            child: Image.asset(
-              'assets/rabbit.jpg',
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
-            ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        ClipOval(
+          child: Image.asset(
+            'assets/rabbit.jpg',
+            width: 100,
+            height: 100,
+            fit: BoxFit.cover,
           ),
-
-          const SizedBox(width: 5),
-          // Box of text
-          Expanded(
+        ),
+        const SizedBox(width: 5),
+        // Box of text
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 13.0),
             child: Container(
               padding: const EdgeInsets.all(10),
+              height: 74,
+              width: 225,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
               ),
-              child: const Text(
-                'Howdy, I am Coiny. And I will help you manage your money!',
-                style: TextStyle(fontSize: 12),
+              child: const Center(
+                child: Text(
+                  'Howdy, I am Coiny. And I will help you manage your money!',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -363,18 +384,18 @@ class ShowMoney extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 10.0),
+      padding: EdgeInsets.only(top: 32.0, bottom: 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           // Your profile content here
           Text(
             "Usable Money :",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           Text(
             "Daily Expenses :",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
         ],
       ),

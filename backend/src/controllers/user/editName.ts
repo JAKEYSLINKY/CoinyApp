@@ -2,8 +2,27 @@ import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 
 const prisma = new PrismaClient();
+interface userRequest {
+	userId: number;
+	name: string;
+}
 const editName = async (req: Request, res: Response, next: NextFunction) => {
-	try {
+	try { //ก่อนupdate find unique ของ user  prisma.user.findUnique if เป็นเนา
+		const reqBody: userRequest = req.body;
+		await prisma.users.update({
+			where: {
+				userId: reqBody.userId,
+			},
+			data: {
+				name: reqBody.name,
+			},
+		});
+
+		return res.status(200).json({
+			success: true,
+			data: "Name updated",
+			error: null,
+		});
 	} catch (error: any) {
 		console.error("Error:", error);
 		return res.status(500).json({
