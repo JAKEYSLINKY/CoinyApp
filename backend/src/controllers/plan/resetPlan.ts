@@ -2,6 +2,10 @@ import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 
 const prisma = new PrismaClient();
+interface planRequest {
+	userId: number;
+	planId: number;
+}
 const resetPlan = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 	} catch (error: any) {

@@ -5,25 +5,22 @@ const prisma = new PrismaClient();
 interface goalRequest {
 	userId: number;
 	goalId: number;
-	name: string;
-	goalAmount: number;
 }
-const editGoal = async (req: Request, res: Response, next: NextFunction) => {
+const deleteGoal = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const reqBody: goalRequest = req.body;
-		await prisma.goals.update({
+		const reqBody: goalRequest = {
+			userId: Number(req.query.userId),
+			goalId: Number(req.query.goalId),
+		};
+		await prisma.goals.delete({
 			where: {
 				goalId: reqBody.goalId,
 				userId: reqBody.userId,
 			},
-			data: {
-				name: reqBody.name,
-				goalAmount: reqBody.goalAmount,
-			},
 		});
 		return res.status(200).json({
 			success: true,
-			data: "Goal updated",
+			data: "Goal deleted",
 			error: null,
 		});
 	} catch (error: any) {
@@ -37,4 +34,4 @@ const editGoal = async (req: Request, res: Response, next: NextFunction) => {
 		await prisma.$disconnect();
 	}
 };
-export default editGoal;
+export default deleteGoal;
