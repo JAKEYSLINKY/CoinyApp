@@ -2,9 +2,31 @@ import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 
 const prisma = new PrismaClient();
+interface loginRequest {
+	username: string;
+	password: string;
+}
 const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        
+		const reqBody: loginRequest = req.body;
+		const user = await prisma.users.findFirst({
+			where: {
+				username: reqBody.username,
+				password: reqBody.password,
+			},
+		});
+		if (!user) {
+			return res.status(400).json({
+				success: false,
+				data: null,
+				error: "Invalid username or password",
+			});
+		}
+		return res.status(200).json({
+			success: true,
+			data: "Login success",
+			error: null,
+		});
 	} catch (error: any) {
 		console.error("Error:", error);
 		return res.status(500).json({
@@ -12,6 +34,8 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
 			data: null,
 			error: error.message,
 		});
+	} finally {
+		await prisma.$disconnect();
 	}
 };
 export default login;

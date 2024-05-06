@@ -2,29 +2,25 @@ import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 
 const prisma = new PrismaClient();
-interface goalMoneyRequest {
+interface goalRequest {
 	userId: number;
+	goalId: number;
 }
-const getGoal = async (req: Request, res: Response, next: NextFunction) => {
+const deleteGoal = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const reqQuery: goalMoneyRequest = {
+		const reqBody: goalRequest = {
 			userId: Number(req.query.userId),
+			goalId: Number(req.query.goalId),
 		};
-		const goals = await prisma.goals.findMany({
+		await prisma.goals.delete({
 			where: {
-				userId: reqQuery.userId,
+				goalId: reqBody.goalId,
+				userId: reqBody.userId,
 			},
 		});
-		if (!goals) {
-			return res.status(400).json({
-				success: false,
-				data: null,
-				error: "This user hasnt set any goals yet",
-			});
-		}
 		return res.status(200).json({
 			success: true,
-			data: goals,
+			data: "Goal deleted",
 			error: null,
 		});
 	} catch (error: any) {
@@ -38,4 +34,4 @@ const getGoal = async (req: Request, res: Response, next: NextFunction) => {
 		await prisma.$disconnect();
 	}
 };
-export default getGoal;
+export default deleteGoal;
