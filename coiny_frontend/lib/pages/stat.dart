@@ -23,7 +23,7 @@ class _statState extends State<stat> {
           child: Column(
             children: [
               const Padding(
-                padding: EdgeInsets.only(right: 220, top: 60),
+                padding: EdgeInsets.only(right: 220),
                 child: Text(
                   'Stat',
                   style: TextStyle(
