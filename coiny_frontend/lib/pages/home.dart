@@ -352,25 +352,45 @@ class Mascot extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 5),
-        // Box of text
+        // Box of text with positioned carrot image
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 13.0),
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              height: 74,
-              width: 225,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: const Center(
-                child: Text(
-                  'Howdy, I am Coiny. And I will help you manage your money!',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 13.0),
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  height: 74,
+                  width: 225,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Howdy, I am Coiny. And I will help you manage your money!',
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
+              // Positioned carrot image at bottom right
+              const Positioned(
+                bottom: -14.0, // Adjust position as needed
+                right: -14.0, // Adjust position as needed
+                child: Image(
+                  image: AssetImage('assets/carrot.png'),
+                  height: 60,
+                  width: 60,
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -389,13 +409,29 @@ class ShowMoney extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           // Your profile content here
-          Text(
-            "Usable Money :",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          Row(
+            children: [
+              Text(
+                "Usable Money :",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              Text(
+                " 1050฿",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+            ],
           ),
-          Text(
-            "Daily Expenses :",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          Row(
+            children: [
+              Text(
+                "Daily Expenses :",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              Text(
+                " 50฿",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+            ],
           ),
         ],
       ),
