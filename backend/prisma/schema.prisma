@@ -76,6 +76,8 @@ model plans {
   userId  Int
   monthly Float
   save    Float
+  usableMoney Float
+  dailyExpense Float
   created DateTime @default(now())
   users   users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }
