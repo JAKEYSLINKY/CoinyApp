@@ -35,7 +35,7 @@ class _statState extends State<stat> {
                 ),
                 SizedBox(
                   height: 240,
-                  width: 300,
+                  width: 280,
                   child: MyBarGraph(financial: financial),
                 ),
                 const SizedBox(height: 75),
