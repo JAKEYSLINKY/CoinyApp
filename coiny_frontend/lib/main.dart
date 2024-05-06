@@ -36,7 +36,7 @@ class _MyAppState extends State<MyApp> {
             backgroundColor: const Color(0xFFFFE2D2),
             actions: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(top: 8, right: 38),
+                padding: const EdgeInsets.only(top: 8, right: 30),
                 child: ClipOval(
                   child: Image.asset(
                     'assets/profile.jpg',

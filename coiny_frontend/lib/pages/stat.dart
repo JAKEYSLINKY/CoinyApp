@@ -23,7 +23,7 @@ class _statState extends State<stat> {
           child: Column(
             children: [
               const Padding(
-                padding: EdgeInsets.only(right: 220),
+                padding: EdgeInsets.only(top: 15, right: 220),
                 child: Text(
                   'Stat',
                   style: TextStyle(
@@ -37,7 +37,7 @@ class _statState extends State<stat> {
                 width: 300,
                 child: MyBarGraph(financial: financial),
               ),
-              const SizedBox(height: 80),
+              const SizedBox(height: 75),
               StatInfo(
                 Saved: financial[0].toInt(),
                 UsableMoney: financial[1].toInt(),
@@ -74,44 +74,11 @@ class StatInfo extends StatelessWidget {
         children: [
           const SizedBox(height: 10),
           Padding(
-            padding:
-                const EdgeInsets.only(bottom: 14.0, left: 16.0, right: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Saved", style: TextStyle(fontSize: 20)),
-                Text(Saved.toString() + "฿",
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 20)),
-              ],
-            ),
+            padding: const EdgeInsets.only(top: 10),
+            child: statdata(name: "Saved", value: Saved),
           ),
-          Padding(
-            padding:
-                const EdgeInsets.only(bottom: 14.0, left: 16.0, right: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Usable Money", style: TextStyle(fontSize: 20)),
-                Text(UsableMoney.toString() + "฿",
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 20)),
-              ],
-            ),
-          ),
-          Padding(
-            padding:
-                const EdgeInsets.only(bottom: 14.0, left: 16.0, right: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text("Used", style: TextStyle(fontSize: 20)),
-                Text(Used.toString() + "฿",
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 20)),
-              ],
-            ),
-          ),
+          statdata(name: "Usable Money", value: UsableMoney),
+          statdata(name: "Used", value: Used),
           const Divider(
             color: Color(0xFFEDB59E),
             height: 20,
@@ -121,7 +88,7 @@ class StatInfo extends StatelessWidget {
           ),
           Padding(
             padding:
-                const EdgeInsets.only(bottom: 14.0, left: 16.0, right: 16.0),
+                const EdgeInsets.only(bottom: 10.0, left: 16.0, right: 16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -134,6 +101,29 @@ class StatInfo extends StatelessWidget {
               ],
             ),
           )
+        ],
+      ),
+    );
+  }
+}
+
+class statdata extends StatelessWidget {
+  const statdata({super.key, required this.name, required this.value});
+
+  final String name;
+  final int value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10.0, left: 16.0, right: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(name, style: const TextStyle(fontSize: 20)),
+          Text(value.toString() + "฿",
+              style:
+                  const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
         ],
       ),
     );

@@ -8,24 +8,11 @@ class Plan1Page extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFFFE2D2),
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 70.0, horizontal: 50.0),
+        padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 50.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ClipOval(
-                  child: Image.asset(
-                    'assets/rabbit.jpg',
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ],
-            ),
             const Text(
               "Planning",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),

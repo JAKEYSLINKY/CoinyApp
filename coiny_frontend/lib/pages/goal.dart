@@ -8,24 +8,11 @@ class GoalPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFFFE2D2),
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 70.0, horizontal: 25.0),
+        padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 25.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ClipOval(
-                  child: Image.asset(
-                    'assets/rabbit.jpg',
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ],
-            ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 15.0),
               child: Text(
