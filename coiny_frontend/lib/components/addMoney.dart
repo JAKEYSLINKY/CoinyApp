@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class NumberInputDialog extends StatefulWidget {
-  final Function(int) onSave;
+class addMoney extends StatefulWidget {
+  // final Function(int) onSave;
 
-  NumberInputDialog({required this.onSave});
+  addMoney({super.key});
 
   @override
   _NumberInputDialogState createState() => _NumberInputDialogState();
 }
 
-class _NumberInputDialogState extends State<NumberInputDialog> {
+class _NumberInputDialogState extends State<addMoney> {
   late TextEditingController _controller;
 
   @override
@@ -79,7 +79,7 @@ class _NumberInputDialogState extends State<NumberInputDialog> {
                   ),
                   onPressed: () {
                     int number = int.tryParse(_controller.text) ?? 0;
-                    widget.onSave(number);
+                    // widget.onSave(number);
                     Navigator.of(context).pop();
                   },
                   child: Text(
@@ -99,7 +99,7 @@ class _NumberInputDialogState extends State<NumberInputDialog> {
                   onPressed: () {
                     // Add your onSave logic for the second button here
                     int number = int.tryParse(_controller.text) ?? 0;
-                    widget.onSave(number);
+                    // widget.onSave(number);
                     Navigator.of(context).pop();
                     // This is just a placeholder
                     print('Second button pressed');
@@ -136,11 +136,11 @@ class NumberInputButton extends StatelessWidget {
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            return NumberInputDialog(onSave: onSave);
+            return addMoney();
           },
         );
       },
-      child: Text('Buffet Teenoi'),
+      child: Text('Add Money'),
     );
   }
 }

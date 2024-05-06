@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class NumberInputButton extends StatelessWidget {
+class addGoalButton extends StatelessWidget {
   final Function(int) onSave;
 
-  NumberInputButton({required this.onSave});
+  addGoalButton({required this.onSave});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +12,7 @@ class NumberInputButton extends StatelessWidget {
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            return AnotherPopup(); // Show AnotherPopup when NumberInputButton is clicked
+            return addGoalPopUp(); // Show AnotherPopup when NumberInputButton is clicked
           },
         );
       },
@@ -21,7 +21,7 @@ class NumberInputButton extends StatelessWidget {
   }
 }
 
-class AnotherPopup extends StatelessWidget {
+class addGoalPopUp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -129,7 +129,7 @@ class MyApp extends StatelessWidget {
           title: Text('Goal'),
         ),
         body: Center(
-          child: NumberInputButton(
+          child: addGoalButton(
             onSave: (int number) {
               print('Number saved: $number');
             },

@@ -1,3 +1,4 @@
+import 'package:coiny_frontend/components/addMoney.dart';
 import 'package:flutter/material.dart';
 
 class Plan2Page extends StatelessWidget {
@@ -109,8 +110,13 @@ class Plan2Page extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      // Add onPressed logic
-                    },
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return addMoney(); // Show AnotherPopup when NumberInputButton is clicked
+          },
+        );
+      },
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
                           const Color(0xFFF5CCB4), // Background color

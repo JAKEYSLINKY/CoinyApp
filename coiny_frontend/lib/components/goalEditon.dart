@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class NumberInputDialog extends StatefulWidget {
-  final Function(int) onSave;
-
-  NumberInputDialog({required this.onSave});
-
+  // final Function(int) onSave;
+  // NumberInputDialog({required this.onSave});
+  NumberInputDialog({super.key});
+  
   @override
   _NumberInputDialogState createState() => _NumberInputDialogState();
 }
@@ -94,7 +94,7 @@ class _NumberInputDialogState extends State<NumberInputDialog> {
               ),
               onPressed: () {
                 int number = int.tryParse(_controller.text) ?? 0;
-                widget.onSave(number);
+                // widget.onSave(number);
                 Navigator.of(context).pop();
               },
               child: Text(
@@ -116,9 +116,9 @@ class _NumberInputDialogState extends State<NumberInputDialog> {
 }
 
 class NumberInputButton extends StatelessWidget {
-  final Function(int) onSave;
+  // final Function(int) onSave;
 
-  NumberInputButton({required this.onSave});
+  NumberInputButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +127,7 @@ class NumberInputButton extends StatelessWidget {
         showDialog(
           context: context,
           builder: (BuildContext context) {
-            return NumberInputDialog(onSave: onSave);
+            return NumberInputDialog();
           },
         );
       },
@@ -322,10 +322,10 @@ class MyApp extends StatelessWidget {
         ),
         body: Center(
           child: NumberInputButton(
-            onSave: (int number) {
-              print('Number saved: $number');
-              // Do something with the saved number
-            },
+            // onSave: (int number) {
+            //   print('Number saved: $number');
+            //   // Do something with the saved number
+            // },
           ),
         ),
       ),
