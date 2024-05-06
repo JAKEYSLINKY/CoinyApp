@@ -19,11 +19,11 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  int _selectedPage = 1;
+  int _selectedPage = 2;
   final _pageOptions = [
     const HomePage(),
-    const Plan1Page(),
     const stat(),
+    const Plan1Page(),
     const GoalPage(),
   ];
 
@@ -54,9 +54,9 @@ class _MyAppState extends State<MyApp> {
                   ),
                   label: 'Home'),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.leaderboard), label: 'Plan'),
+                  icon: Icon(Icons.leaderboard), label: 'Stat'),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.library_books), label: 'Stat'),
+                  icon: Icon(Icons.library_books), label: 'Plan'),
               BottomNavigationBarItem(
                   icon: Icon(Icons.emoji_events), label: 'Goal'),
             ],
