@@ -1,7 +1,11 @@
+import 'package:coiny_frontend/components/addGoal.dart';
+import 'package:coiny_frontend/components/goalEditon.dart';
 import 'package:flutter/material.dart';
 
 class GoalPage extends StatelessWidget {
   const GoalPage({Key? key}) : super(key: key);
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +55,22 @@ class GoalPage extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 15.0),
+              child: GestureDetector(
+    onTap: () {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return NumberInputDialog(); // Show AnotherPopup when NumberInputButton is clicked
+        },
+      );
+    },
+              
+      
               child: Row(
                 children: [
                   Expanded(
                       child: Container(
+                        
                     decoration: BoxDecoration(
                       color: const Color(0xFF95491E),
                       borderRadius: BorderRadius.circular(10),
@@ -118,12 +134,18 @@ class GoalPage extends StatelessWidget {
                   )),
                 ],
               ),
+              ),
             ),
             Center(
               child: ElevatedButton(
                   onPressed: () {
-                    // Add onPressed logic
-                  },
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return addGoalPopUp(); // Show AnotherPopup when NumberInputButton is clicked
+          },
+        );
+      },
                   style: ButtonStyle(
                     backgroundColor:
                         MaterialStateProperty.all(const Color(0xFF95491E)),

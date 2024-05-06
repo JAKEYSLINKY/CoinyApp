@@ -126,23 +126,46 @@ class CategoriesList extends StatelessWidget {
     Category('Coffee', 'coffee'),
     Category('Bus', 'bus'),
     Category('Food', 'restaurant'),
-    Category('Shoppingggggggg', 'shopping'),
+    Category('Shoppingggggggg', 'cart'),
+    Category('Other', 'other'),
     // Add more categories with their associated icon names as needed
   ];
 
   final Map<String, IconData> iconDataMap = {
-    'entertain': Icons.sports_esports,
-    'coffee': Icons.coffee,
+    'music': Icons.music_note,
+    'baby': Icons.child_friendly,
+    'bag': Icons.business_center,
+    'home': Icons.gite,
+    'sun': Icons.brightness_5,
     'bus': Icons.directions_bus,
+    'rabbit': Icons.cruelty_free,
+    'fastfood': Icons.fastfood,
     'restaurant': Icons.restaurant,
-    'shopping': Icons.shopping_bag,
+    'heart': Icons.favorite,
+    'flower': Icons.local_florist,
+    'gasstation': Icons.local_gas_station,
+    'cart': Icons.shopping_cart,
+    'localmall': Icons.local_mall,
+    'cameraroll': Icons.camera_roll,
+    'tag': Icons.loyalty,
+    'entertain': Icons.sports_esports,
+    'flag': Icons.flag,
+    'fitness': Icons.fitness_center,
+    'alert': Icons.crisis_alert,
+    'coffee': Icons.coffee,
+    'location': Icons.fmd_good,
+    'chair': Icons.chair,
+    'category': Icons.category,
+    'other': Icons.more_horiz,
     // Add more mappings as needed
   };
 
   @override
   Widget build(BuildContext context) {
     List<Widget> categoryWidgets = categories.map((category) {
-      IconData iconData = iconDataMap[category.iconName] ?? Icons.category;
+      IconData iconData = iconDataMap[category.iconName] ??
+          Icons
+              .category; //if iconDataMap[category.iconName] is null, use Icons.category
 
       return Container(
         width: 100,
@@ -174,34 +197,34 @@ class CategoriesList extends StatelessWidget {
       );
     }).toList();
 
-    // Add "Other" category widget
-    categoryWidgets.add(
-      Container(
-        width: 100,
-        height: 100,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          color: const Color(0xFFF98A4C),
-        ),
-        child: const Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.more_horiz,
-              color: Colors.white,
-              size: 40,
-            ),
-            Text(
-              'Other',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+    // // Add "Other" category widget
+    // categoryWidgets.add(
+    //   Container(
+    //     width: 100,
+    //     height: 100,
+    //     decoration: BoxDecoration(
+    //       borderRadius: BorderRadius.circular(10),
+    //       color: const Color(0xFFF98A4C),
+    //     ),
+    //     child: const Column(
+    //       mainAxisAlignment: MainAxisAlignment.center,
+    //       children: [
+    //         Icon(
+    //           Icons.more_horiz,
+    //           color: Colors.white,
+    //           size: 40,
+    //         ),
+    //         Text(
+    //           'Other',
+    //           style: TextStyle(
+    //             color: Colors.white,
+    //             fontSize: 14,
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //   ),
+    // );
 
     return ListView(
       shrinkWrap: true,
