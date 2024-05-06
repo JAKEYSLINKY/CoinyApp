@@ -31,16 +31,11 @@ const getUsableMoney = async (
 				error: "User not found",
 			});
 		}
-		const timestamp = new Date(user.created);
-		// Adding 1 because getMonth() returns a zero-based index (0 for January)
-		const m = timestamp.getMonth() + 1;
-		const y = timestamp.getDate();
-		const numDays = (y: number, m: number) => new Date(y, m, 0).getDate();
-		var usableMoney = user.monthly - user.save;
-		var dailyExpense = usableMoney / numDays(y, m);
+
+		
 		return res.status(200).json({
 			success: true,
-			data: { usableMoney, dailyExpense },
+			data: user,
 			error: null,
 		});
 	} catch (error: any) {

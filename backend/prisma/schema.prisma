@@ -66,20 +66,21 @@ model goals {
   userId        Int
   name          String?
   goalAmount    Int
-  currentAmount Int     @default(0)
+  currentAmount Int      @default(0)
   created       DateTime @default(now())
   users         users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }
 
 model plans {
-  planId  Int      @id @default(autoincrement())
-  userId  Int
-  monthly Float
-  save    Float
-  usableMoney Float
+  planId       Int      @id @default(autoincrement())
+  userId       Int
+  monthly      Float
+  save         Float
+  currentSave  Float
+  usableMoney  Float
   dailyExpense Float
-  created DateTime @default(now())
-  users   users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  created      DateTime @default(now())
+  users        users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }
 
 model Bonus {
