@@ -19,31 +19,33 @@ class _statState extends State<stat> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color(0xFFFFE2D2),
-        body: Center(
-          child: Column(
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 15, right: 220),
-                child: Text(
-                  'Stat',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
+        body: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 15, right: 220),
+                  child: Text(
+                    'Stat',
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 240,
-                width: 300,
-                child: MyBarGraph(financial: financial),
-              ),
-              const SizedBox(height: 75),
-              StatInfo(
-                Saved: financial[0].toInt(),
-                UsableMoney: financial[1].toInt(),
-                Used: financial[2].toInt(),
-              )
-            ],
+                SizedBox(
+                  height: 240,
+                  width: 280,
+                  child: MyBarGraph(financial: financial),
+                ),
+                const SizedBox(height: 75),
+                StatInfo(
+                  Saved: financial[0].toInt(),
+                  UsableMoney: financial[1].toInt(),
+                  Used: financial[2].toInt(),
+                )
+              ],
+            ),
           ),
         ));
   }

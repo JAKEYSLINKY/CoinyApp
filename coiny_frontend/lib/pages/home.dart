@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../components/addCategory.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -36,78 +37,27 @@ class HomePage extends StatelessWidget {
 
 class AddCategory extends StatelessWidget {
   const AddCategory({super.key});
-
-  static const List<String> iconNames = [
-    'home',
-    'work',
-    'school',
-    'restaurant',
-    'shopping',
-    'health',
-    'fitness',
-    'sports',
-    'music',
-    'movie',
-    'book',
-    'game',
-    'art',
-    'travel',
-    'nature',
-    'car',
-    'bicycle',
-    'plane',
-    'train',
-    'bus',
-    'ship',
-    'rocket',
-    'star',
-    'sun',
-    'moon',
-  ];
-
   @override
   Widget build(BuildContext context) {
-    // List<Widget> iconWidgets = iconNames.map((iconName) {
-    //   return GestureDetector(
-    //     onTap: () => showDialog<String>(
-    //       context: context,
-    //       builder: (BuildContext context) => AlertDialog(
-    //         title: const Text('New Category'),
-    //         content: const Column(
-    //           children: [],
-    //         ),
-    //         actions: <Widget>[
-    //           TextButton(
-    //             onPressed: () => Navigator.pop(context, 'Cancel'),
-    //             child: const Text('Cancel'),
-    //           ),
-    //           TextButton(
-    //             onPressed: () => Navigator.pop(context, 'OK'),
-    //             child: const Text('OK'),
-    //           ),
-    //         ],
-    //       ),
-    //     ),
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 20),
-      height: 40,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: const Color(0xFFEDB59E),
-      ),
-      child: const Center(
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      child: ElevatedButton(
+        onPressed: () {
+          showDialog<String>(
+              context: context,
+              builder: (BuildContext context) => AddCategoryDialog());
+        },
+        style: ElevatedButton.styleFrom(
+          primary: Color(0xFFEDB59E),
+        ),
+        child: const Center(
+          child: Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
         ),
       ),
     );
-
-    // .toList();
-    // // Return a widget
-    // return ListView(
-    //   children: iconWidgets,
-    // );
   }
 }
 
@@ -196,35 +146,6 @@ class CategoriesList extends StatelessWidget {
         ),
       );
     }).toList();
-
-    // // Add "Other" category widget
-    // categoryWidgets.add(
-    //   Container(
-    //     width: 100,
-    //     height: 100,
-    //     decoration: BoxDecoration(
-    //       borderRadius: BorderRadius.circular(10),
-    //       color: const Color(0xFFF98A4C),
-    //     ),
-    //     child: const Column(
-    //       mainAxisAlignment: MainAxisAlignment.center,
-    //       children: [
-    //         Icon(
-    //           Icons.more_horiz,
-    //           color: Colors.white,
-    //           size: 40,
-    //         ),
-    //         Text(
-    //           'Other',
-    //           style: TextStyle(
-    //             color: Colors.white,
-    //             fontSize: 14,
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    //   ),
-    // );
 
     return ListView(
       shrinkWrap: true,
@@ -352,25 +273,45 @@ class Mascot extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 5),
-        // Box of text
+        // Box of text with positioned carrot image
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 13.0),
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              height: 74,
-              width: 225,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: const Center(
-                child: Text(
-                  'Howdy, I am Coiny. And I will help you manage your money!',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 13.0),
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  height: 74,
+                  width: 225,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Howdy, I am Coiny. And I will help you manage your money!',
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
+              // Positioned carrot image at bottom right
+              const Positioned(
+                bottom: -14.0, // Adjust position as needed
+                right: -14.0, // Adjust position as needed
+                child: Image(
+                  image: AssetImage('assets/carrot.png'),
+                  height: 60,
+                  width: 60,
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -389,13 +330,29 @@ class ShowMoney extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           // Your profile content here
-          Text(
-            "Usable Money :",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          Row(
+            children: [
+              Text(
+                "Usable Money :",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              Text(
+                " 1050฿",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+            ],
           ),
-          Text(
-            "Daily Expenses :",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          Row(
+            children: [
+              Text(
+                "Daily Expenses :",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              Text(
+                " 50฿",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+            ],
           ),
         ],
       ),
