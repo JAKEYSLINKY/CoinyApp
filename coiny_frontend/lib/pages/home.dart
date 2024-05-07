@@ -36,35 +36,6 @@ class HomePage extends StatelessWidget {
 
 class AddCategory extends StatelessWidget {
   const AddCategory({super.key});
-
-  static const List<String> iconNames = [
-    'home',
-    'work',
-    'school',
-    'restaurant',
-    'shopping',
-    'health',
-    'fitness',
-    'sports',
-    'music',
-    'movie',
-    'book',
-    'game',
-    'art',
-    'travel',
-    'nature',
-    'car',
-    'bicycle',
-    'plane',
-    'train',
-    'bus',
-    'ship',
-    'rocket',
-    'star',
-    'sun',
-    'moon',
-  ];
-
   @override
   Widget build(BuildContext context) {
     // List<Widget> iconWidgets = iconNames.map((iconName) {
