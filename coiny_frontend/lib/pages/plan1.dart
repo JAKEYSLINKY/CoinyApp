@@ -5,6 +5,8 @@ class Plan1Page extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const monthly = 10000;
+    const saved = 8000;
     return Scaffold(
       backgroundColor: const Color(0xFFFFE2D2),
       body: Padding(
@@ -29,16 +31,20 @@ class Plan1Page extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Add onPressed logic
-                      },
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('10000'),
-                          Text('B'),
-                        ],
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        color: const Color(0xFFFFF3EC),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: TextFormField(
+                          textAlign: TextAlign.end,
+                          decoration: const InputDecoration(
+                            hintText: '${monthly}B',
+                            border: InputBorder.none,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -57,16 +63,20 @@ class Plan1Page extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Add onPressed logic
-                      },
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('8000'),
-                          Text('B'),
-                        ],
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        color: const Color(0xFFFFF3EC),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: TextFormField(
+                          textAlign: TextAlign.end,
+                          decoration: const InputDecoration(
+                            hintText: '${saved}B',
+                            border: InputBorder.none,
+                          ),
+                        ),
                       ),
                     ),
                   ),

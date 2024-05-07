@@ -66,7 +66,7 @@ class AddCategoryDialog extends StatelessWidget {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      padding: const EdgeInsets.only(left: 12.0),
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10.0),
@@ -116,7 +116,7 @@ class AddCategoryDialog extends StatelessWidget {
                   backgroundColor:
                       MaterialStateProperty.all<Color>(Color(0xFF95491E)),
                 ),
-                onPressed: () => Navigator.pop(context, 'OK'), 
+                onPressed: () => Navigator.pop(context, 'OK'),
                 child: const Text(
                   'OK',
                   style: TextStyle(color: Color(0xFFEDB59E)),
