@@ -4,39 +4,26 @@ import { NextFunction, Request, Response } from "express";
 const prisma = new PrismaClient();
 interface categoryRequest {
 	userId: number;
-	name: string;
-	iconName: string;
 }
 const getCategory = async (req: Request, res: Response, next: NextFunction) => {
+	const reqQuery: categoryRequest = { userId: Number(req.query.userId) };
 	try {
-		const reqBody: categoryRequest = req.body;
-		const categoryName = await prisma.categoriesIcon.findFirst({
-			where: {
-				iconName: reqBody.iconName,
-			},
-		});
-		if (!categoryName) {
-			return res.status(400).json({
+		const category =
+			await prisma.$queryRaw`SELECT categoriesIcon.iconName,categories.name 
+            FROM categoriesIcon,categories,userCategories
+            WHERE userCategories.userId = ${reqQuery.userId} 
+            AND categories.categoryId = userCategories.categoryId 
+            AND categories.iconId = categoriesIcon.iconId;`;
+		if (!category) {
+			return res.status(404).json({
 				success: false,
 				data: null,
-				error: "Wrong category name",
+				error: "Category not found",
 			});
 		}
-		const create = await prisma.categories.create({
-			data: {
-				name: reqBody.name,
-				iconId: categoryName.iconId,
-			},
-		});
-		await prisma.userCategories.create({
-			data: {
-				userId: reqBody.userId,
-				categoryId: create.categoryId,
-			},
-		});
 		return res.status(200).json({
 			success: true,
-			data: "Category created",
+			data: category,
 			error: null,
 		});
 	} catch (error: any) {
@@ -46,6 +33,8 @@ const getCategory = async (req: Request, res: Response, next: NextFunction) => {
 			data: null,
 			error: error.message,
 		});
+	} finally {
+		await prisma.$disconnect();
 	}
 };
 export default getCategory;

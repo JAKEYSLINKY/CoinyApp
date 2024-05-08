@@ -36,8 +36,6 @@ const createPlan = async (req: Request, res: Response, next: NextFunction) => {
 				userId: reqBody.userId,
 				monthly: reqBody.monthly,
 				save: reqBody.save,
-				usableMoney: usableMoney,
-				dailyExpense: dailyExpense,
 				currentSave: reqBody.save,
 			},
 		});

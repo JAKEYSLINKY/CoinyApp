@@ -17,25 +17,21 @@ model users {
   transactions   transactions[]
   goals          goals[]
   plans          plans[]
-  Bonus          Bonus[]
   userCategories userCategories[]
+  bonus          bonus[]
 }
 
 model transactions {
   transactionId Int              @id @default(autoincrement())
   userId        Int
   categoryId    Int
-  type          transactionsType
   amount        Float
   created       DateTime         @default(now())
   users         users            @relation(onDelete: Cascade, fields: [userId], references: [userId])
   categories    categories?      @relation(fields: [categoryId], references: [categoryId])
 }
 
-enum transactionsType {
-  Deposit
-  Withdraw
-}
+
 
 model categories {
   categoryId     Int              @id @default(autoincrement())
@@ -55,8 +51,8 @@ model categoriesIcon {
 model userCategories {
   userId     Int
   categoryId Int
-  users      users      @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  categories categories @relation(fields: [categoryId], references: [categoryId])
+  users      users      @relation(onDelete: Cascade, fields: [userId], references: [userId])
+  categories categories @relation(onDelete: Cascade, fields: [categoryId], references: [categoryId])
 
   @@id([userId, categoryId])
 }
@@ -78,23 +74,21 @@ enum goalStatus {
 }
 
 model plans {
-  planId       Int      @id @default(autoincrement())
-  userId       Int
-  monthly      Float
-  save         Float
-  currentSave  Float
-  usableMoney  Float
-  dailyExpense Float
-  created      DateTime @default(now())
-  users        users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  planId      Int      @id @default(autoincrement())
+  userId      Int
+  monthly     Float
+  save        Float
+  currentSave Float
+  created     DateTime @default(now())
+  users       users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }
 
-model Bonus {
+model bonus {
   bonusId Int        @id @default(autoincrement())
   userId  Int
-  usuage  bonusUsage
+  usage   bonusUsage
   amount  Int
-  source  String
+  source  String     @default("")
   created DateTime   @default(now())
   users   users      @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }
