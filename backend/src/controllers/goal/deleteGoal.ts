@@ -8,14 +8,56 @@ interface goalRequest {
 }
 const deleteGoal = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const reqBody: goalRequest = {
+		const reqQuery: goalRequest = {
 			userId: Number(req.query.userId),
 			goalId: Number(req.query.goalId),
 		};
+		const today = new Date();
+		const firstDayOfMonth = new Date(
+			today.getFullYear(),
+			today.getMonth(),
+			1
+		);
+		const lastDayOfMonth = new Date(
+			today.getFullYear(),
+			today.getMonth() + 1,
+			0
+		);
+		const plan = await prisma.plans.findFirst({
+			where: {
+				userId: reqQuery.userId,
+				created: {
+					gte: firstDayOfMonth,
+					lte: lastDayOfMonth,
+				},
+			},
+		});
+		const goal = await prisma.goals.findFirst({
+			where: {
+				userId: reqQuery.userId,
+				goalId: reqQuery.goalId,
+			},
+		});
+		if (!plan || !goal) {
+			return res.status(404).json({
+				success: false,
+				data: null,
+				error: "Plan or goal not found",
+			});
+		}
+		await prisma.plans.update({
+			where: {
+				planId: plan.planId,
+				userId: reqQuery.userId,
+			},
+			data: {
+				currentSave: plan.currentSave + goal.currentAmount,
+			},
+		});
 		await prisma.goals.delete({
 			where: {
-				goalId: reqBody.goalId,
-				userId: reqBody.userId,
+				goalId: reqQuery.goalId,
+				userId: reqQuery.userId,
 			},
 		});
 		return res.status(200).json({

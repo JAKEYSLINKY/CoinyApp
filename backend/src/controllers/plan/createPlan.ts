@@ -23,7 +23,6 @@ const createPlan = async (req: Request, res: Response, next: NextFunction) => {
 		var dailyExpense = usableMoney / daysLeft;
 
 		//check if he save more than monthly
-		//#TODO recheck if this case work
 		if (reqBody.save > reqBody.monthly) {
 			return res.status(400).json({
 				success: false,

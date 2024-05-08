@@ -38,6 +38,18 @@ const addGoalMoney = async (
 				error: "The amount is over the goal",
 			});
 		}
+		if (currentAmount === goal.goalAmount) {
+			await prisma.goals.update({
+				where: {
+					goalId: reqBody.goalId,
+					userId: reqBody.userId,
+				},
+				data: {
+					currentAmount: currentAmount,
+					status: "completed",
+				},
+			});			
+		}
 		await prisma.goals.update({
 			where: {
 				goalId: reqBody.goalId,

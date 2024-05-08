@@ -11,8 +11,6 @@ const getUsableMoney = async (
 	next: NextFunction
 ) => {
 	try {
-		//get userId from query
-		//const reqQuery: getUsableMoneyRequest = req.query;
 		const reqQuery: getUsableMoneyRequest = {
 			userId: Number(req.query.userId),
 		};
