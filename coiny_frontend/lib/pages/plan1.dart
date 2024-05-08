@@ -41,7 +41,7 @@ class Plan1Page extends StatelessWidget {
                         child: TextFormField(
                           textAlign: TextAlign.end,
                           decoration: const InputDecoration(
-                            hintText: '${monthly}B',
+                            hintText: '${monthly}฿',
                             border: InputBorder.none,
                           ),
                         ),
@@ -73,7 +73,7 @@ class Plan1Page extends StatelessWidget {
                         child: TextFormField(
                           textAlign: TextAlign.end,
                           decoration: const InputDecoration(
-                            hintText: '${saved}B',
+                            hintText: '${saved}฿',
                             border: InputBorder.none,
                           ),
                         ),

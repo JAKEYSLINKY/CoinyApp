@@ -1,11 +1,25 @@
 import 'package:coiny_frontend/components/addGoal.dart';
 import 'package:coiny_frontend/components/goalEditon.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+
+class Mygoal {
+  final String name;
+  final int goal;
+  final int currentAmount;
+  Mygoal({required this.name, required this.goal, required this.currentAmount});
+}
 
 class GoalPage extends StatelessWidget {
-  const GoalPage({Key? key}) : super(key: key);
-
-
+  GoalPage({super.key});
+  // ignore: non_constant_identifier_names
+  final int Saved = 8000;
+  final int userId = 1;
+  List<Mygoal> goals = [
+    Mygoal(name: 'Macbook Pro', goal: 50000, currentAmount: 5000),
+    Mygoal(name: 'iPhone 13', goal: 30000, currentAmount: 15000),
+    Mygoal(name: 'AirPods Pro', goal: 5000, currentAmount: 2500),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -41,14 +55,14 @@ class GoalPage extends StatelessWidget {
                         color: const Color(0xFF95491E),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: Center(
-                            child: Text(
-                          '10000B',
-                          style:
-                              TextStyle(color: Color(0xFFFFF3EC), fontSize: 20),
-                        )),
+                            child: Text('$Saved฿',
+                                style: const TextStyle(
+                                    color: Color(0xFFFFF3EC),
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold))),
                       ),
                     ))
                   ]),
@@ -56,112 +70,147 @@ class GoalPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 15.0),
               child: GestureDetector(
-    onTap: () {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return NumberInputDialog(); // Show AnotherPopup when NumberInputButton is clicked
-        },
-      );
-    },
-              
-      
-              child: Row(
-                children: [
-                  Expanded(
-                      child: Container(
-                        
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF95491E),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Column(children: [
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Buffet Teenoi',
-                              style: TextStyle(
-                                  color: Color(0xFFFFF3EC), fontSize: 20),
-                            ),
-                            Text(
-                              '250/1000',
-                              style: TextStyle(
-                                  color: Color(0xFFFFF3EC), fontSize: 16),
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5.0),
-                          child: Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: const SizedBox(
-                                  height: 35,
-                                  child: LinearProgressIndicator(
-                                    value:
-                                        0.55, //value of percentage. 0.55 = 55%
-                                    backgroundColor: Color(0xFFFFF3EC),
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Color(0xFFF98A4C)),
-                                  ),
-                                ),
-                              ),
-                              const Positioned.fill(
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 5.0),
-                                    child: Text(
-                                      '55%',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ]),
-                    ),
-                  )),
-                ],
-              ),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return NumberInputDialog(); // Show AnotherPopup when NumberInputButton is clicked
+                    },
+                  );
+                },
+                child: Column(
+                  children: goals.map((goal) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 15.0),
+                      child: goalTem(
+                        name: goal.name,
+                        goal: goal.goal,
+                        currentAmount: goal.currentAmount,
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
             ),
             Center(
-              child: ElevatedButton(
-                  onPressed: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return addGoalPopUp(); // Show AnotherPopup when NumberInputButton is clicked
-          },
-        );
-      },
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all(const Color(0xFF95491E)),
-                  ),
-                  child: const Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 40.0),
-                    child: Icon(
-                      Icons.add,
-                      color: Color(0xFFFFF3EC),
-                    ),
-                  )),
+              child: AddNewGoal(),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class AddNewGoal extends StatelessWidget {
+  const AddNewGoal({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return addGoalPopUp(); // Show AnotherPopup when NumberInputButton is clicked
+            },
+          );
+        },
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(const Color(0xFF95491E)),
+        ),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 40.0),
+          child: Icon(
+            Icons.add,
+            color: Color(0xFFFFF3EC),
+          ),
+        ));
+  }
+}
+
+// ignore: must_be_immutable, camel_case_types
+class goalTem extends StatelessWidget {
+  goalTem({
+    super.key,
+    required this.name,
+    required this.goal,
+    required this.currentAmount,
+  });
+  String name;
+  int goal;
+  int currentAmount;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+            child: Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFF95491E),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    name,
+                    style:
+                        const TextStyle(color: Color(0xFFFFF3EC), fontSize: 20),
+                  ),
+                  Text(
+                    // ignore: prefer_interpolation_to_compose_strings
+                    currentAmount.toString() + "/" + goal.toString() + '฿',
+                    style:
+                        const TextStyle(color: Color(0xFFFFF3EC), fontSize: 16),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                child: Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: SizedBox(
+                        height: 35,
+                        child: LinearProgressIndicator(
+                          value: (currentAmount / goal)
+                              .toDouble(), //value of percentage. 0.55 = 55%
+                          backgroundColor: Color(0xFFFFF3EC),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Color(0xFFF98A4C)),
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                          child: Text(
+                            '${(currentAmount / goal * 100).toStringAsFixed(0)}%',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ]),
+          ),
+        )),
+      ],
     );
   }
 }
