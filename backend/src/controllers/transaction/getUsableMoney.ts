@@ -29,8 +29,6 @@ const getUsableMoney = async (
 				error: "User not found",
 			});
 		}
-
-		
 		return res.status(200).json({
 			success: true,
 			data: user,
