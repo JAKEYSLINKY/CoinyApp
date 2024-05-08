@@ -24,7 +24,7 @@ class _MyAppState extends State<MyApp> {
     const HomePage(),
     const stat(),
     const Plan1Page(),
-    const GoalPage(),
+    GoalPage(),
   ];
 
   @override
