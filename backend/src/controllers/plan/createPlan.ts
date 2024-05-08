@@ -12,16 +12,6 @@ const createPlan = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		//get the data from the request body
 		const reqBody: planningRequest = req.body;
-		const today = new Date();
-		const lastDayOfMonth = new Date(
-			today.getFullYear(),
-			today.getMonth() + 1,
-			0
-		);
-		const daysLeft = lastDayOfMonth.getDate() - today.getDate();
-		var usableMoney = reqBody.monthly - reqBody.save;
-		var dailyExpense = usableMoney / daysLeft;
-
 		//check if he save more than monthly
 		if (reqBody.save > reqBody.monthly) {
 			return res.status(400).json({
