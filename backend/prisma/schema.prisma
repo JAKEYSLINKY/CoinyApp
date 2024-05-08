@@ -62,13 +62,19 @@ model userCategories {
 }
 
 model goals {
-  goalId        Int      @id @default(autoincrement())
+  goalId        Int        @id @default(autoincrement())
   userId        Int
   name          String?
   goalAmount    Int
-  currentAmount Int      @default(0)
-  created       DateTime @default(now())
-  users         users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  currentAmount Int        @default(0)
+  status        goalStatus @default(ongoing)
+  created       DateTime   @default(now())
+  users         users      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+}
+
+enum goalStatus {
+  ongoing
+  completed
 }
 
 model plans {

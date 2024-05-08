@@ -53,6 +53,8 @@ const getTransaction = async (
 			data: null,
 			error: error.message,
 		});
+	} finally {
+		await prisma.$disconnect();
 	}
 };
 export default getTransaction;
