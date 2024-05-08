@@ -3,9 +3,8 @@ import 'package:coiny_frontend/components/goalEditon.dart';
 import 'package:flutter/material.dart';
 
 class GoalPage extends StatelessWidget {
-  const GoalPage({Key? key}) : super(key: key);
-
-
+  GoalPage({super.key});
+  int saved = 8000;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +44,7 @@ class GoalPage extends StatelessWidget {
                         padding: EdgeInsets.all(8.0),
                         child: Center(
                             child: Text(
-                          '10000B',
+                          '',
                           style:
                               TextStyle(color: Color(0xFFFFF3EC), fontSize: 20),
                         )),
@@ -56,96 +55,93 @@ class GoalPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 15.0),
               child: GestureDetector(
-    onTap: () {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return NumberInputDialog(); // Show AnotherPopup when NumberInputButton is clicked
-        },
-      );
-    },
-              
-      
-              child: Row(
-                children: [
-                  Expanded(
-                      child: Container(
-                        
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF95491E),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Column(children: [
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Buffet Teenoi',
-                              style: TextStyle(
-                                  color: Color(0xFFFFF3EC), fontSize: 20),
-                            ),
-                            Text(
-                              '250/1000',
-                              style: TextStyle(
-                                  color: Color(0xFFFFF3EC), fontSize: 16),
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5.0),
-                          child: Stack(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return NumberInputDialog(); // Show AnotherPopup when NumberInputButton is clicked
+                    },
+                  );
+                },
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF95491E),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Column(children: [
+                          const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: const SizedBox(
-                                  height: 35,
-                                  child: LinearProgressIndicator(
-                                    value:
-                                        0.55, //value of percentage. 0.55 = 55%
-                                    backgroundColor: Color(0xFFFFF3EC),
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Color(0xFFF98A4C)),
+                              Text(
+                                'Buffet Teenoi',
+                                style: TextStyle(
+                                    color: Color(0xFFFFF3EC), fontSize: 20),
+                              ),
+                              Text(
+                                '250/1000',
+                                style: TextStyle(
+                                    color: Color(0xFFFFF3EC), fontSize: 16),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5.0),
+                            child: Stack(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: const SizedBox(
+                                    height: 35,
+                                    child: LinearProgressIndicator(
+                                      value:
+                                          0.55, //value of percentage. 0.55 = 55%
+                                      backgroundColor: Color(0xFFFFF3EC),
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Color(0xFFF98A4C)),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const Positioned.fill(
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 5.0),
-                                    child: Text(
-                                      '55%',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 20,
+                                const Positioned.fill(
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 5.0),
+                                      child: Text(
+                                        '55%',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 20,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        )
-                      ]),
-                    ),
-                  )),
-                ],
-              ),
+                              ],
+                            ),
+                          )
+                        ]),
+                      ),
+                    )),
+                  ],
+                ),
               ),
             ),
             Center(
               child: ElevatedButton(
                   onPressed: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return addGoalPopUp(); // Show AnotherPopup when NumberInputButton is clicked
-          },
-        );
-      },
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return addGoalPopUp(); // Show AnotherPopup when NumberInputButton is clicked
+                      },
+                    );
+                  },
                   style: ButtonStyle(
                     backgroundColor:
                         MaterialStateProperty.all(const Color(0xFF95491E)),
