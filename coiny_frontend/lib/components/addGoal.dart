@@ -22,7 +22,7 @@ class _addGoalPopUpstate extends State<addGoalPopUp> {
             body: jsonEncode(<String, dynamic>{
               "userId": 1,
               "name": goalNameController.text,
-              "goalAmount": 1200,
+              "goalAmount": goalAmountController.text,
             }));
 
         if (response.statusCode == 200) {
@@ -33,29 +33,6 @@ class _addGoalPopUpstate extends State<addGoalPopUp> {
     } catch (e) {
       print('ERROR: $e');
     }
-    //   if(goalNameController.text.isNotEmpty && goalAmountController.text.isNotEmpty) {
-    //   var reqBody = {
-    //     "name": goalNameController.text,
-    //     "goalAmount": goalAmountController.text,
-    //   };
-
-    //   var response = await http.post(
-    //     Uri.parse('http://localhost:4000/goals/create'),
-    //     headers: {'Content-Type': 'application/json'},
-    //     body: jsonEncode(reqBody));
-
-    //   var jsonResponse = jsonDecode(response.body);
-
-    //   if(jsonResponse['status'] == 'success') {
-    //     // Handle success
-    //   } else {
-    //     setState(() {
-    //       _isNotvalid = true;
-    //     });
-    //   }
-    // } else {
-    //   // Handle empty fields
-    // }
   }
 
   @override
