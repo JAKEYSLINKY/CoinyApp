@@ -1,36 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class AddCategoryDialog extends StatelessWidget {
+class AddCategoryDialog extends StatefulWidget {
   AddCategoryDialog({Key? key}) : super(key: key);
 
-  final Map<String, IconData> iconDataMap = {
-    'music': Icons.music_note,
-    'baby': Icons.child_friendly,
-    'bag': Icons.business_center,
-    'home': Icons.gite,
-    'sun': Icons.brightness_5,
-    'bus': Icons.directions_bus,
-    'rabbit': Icons.cruelty_free,
-    'fastfood': Icons.fastfood,
-    'restaurant': Icons.restaurant,
-    'heart': Icons.favorite,
-    'flower': Icons.local_florist,
-    'gasstation': Icons.local_gas_station,
-    'cart': Icons.shopping_cart,
-    'localmall': Icons.local_mall,
-    'cameraroll': Icons.camera_roll,
-    'tag': Icons.loyalty,
-    'entertain': Icons.sports_esports,
-    'flag': Icons.flag,
-    'fitness': Icons.fitness_center,
-    'alert': Icons.crisis_alert,
-    'coffee': Icons.coffee,
-    'location': Icons.fmd_good,
-    'chair': Icons.chair,
-    'category': Icons.category,
-    'other': Icons.more_horiz,
-    // Add more mappings as needed
-  };
+  @override
+  _AddCategoryDialogState createState() => _AddCategoryDialogState();
+}
+
+class _AddCategoryDialogState extends State<AddCategoryDialog> {
+  final TextEditingController _nameController = TextEditingController();
+  String _selectedIconName = '';
+
+  void _postCategory() async {
+    try {
+      final apiUrl = 'http://localhost:4000/categories/create';
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          //'userId': 1, 
+          'name': _nameController.text,
+          'iconName': _selectedIconName,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        print('Category created successfully');
+        Navigator.pop(context, 'OK');
+      } else {
+        throw Exception('Failed to create category');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,13 +52,22 @@ class AddCategoryDialog extends StatelessWidget {
               shrinkWrap: true,
               childAspectRatio: 1.0,
               children: iconDataMap.entries.map((entry) {
-                return Column(
-                  children: [
-                    Icon(
-                      entry.value,
-                      color: Colors.white,
-                    ),
-                  ],
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedIconName = entry.key;
+                    });
+                  },
+                  child: Column(
+                    children: [
+                      Icon(
+                        entry.value,
+                        color: _selectedIconName == entry.key
+                            ? Colors.blue // Change the color when selected
+                            : Colors.white,
+                      ),
+                    ],
+                  ),
                 );
               }).toList(),
             ),
@@ -73,8 +89,9 @@ class AddCategoryDialog extends StatelessWidget {
                           color: Color(0xFFFFF3EC),
                         ),
                         child: TextFormField(
-                          decoration: const InputDecoration(
-                            hintText: 'Ex.Movies',
+                          controller: _nameController,
+                          decoration: InputDecoration(
+                            hintText: 'Ex. Movies',
                             border: InputBorder.none,
                             contentPadding: EdgeInsets.symmetric(
                               vertical: 12.0,
@@ -116,7 +133,12 @@ class AddCategoryDialog extends StatelessWidget {
                   backgroundColor:
                       MaterialStateProperty.all<Color>(Color(0xFF95491E)),
                 ),
-                onPressed: () => Navigator.pop(context, 'OK'),
+                onPressed: () {
+                  // _postCategory();
+                  Navigator.pop(context, 'OK');
+                  print('Category Name: ${_nameController.text}');
+                  print('Selected Icon Name: $_selectedIconName');
+                },
                 child: const Text(
                   'OK',
                   style: TextStyle(color: Color(0xFFEDB59E)),
@@ -129,3 +151,32 @@ class AddCategoryDialog extends StatelessWidget {
     );
   }
 }
+
+final Map<String, IconData> iconDataMap = {
+  'music': Icons.music_note,
+  'baby': Icons.child_friendly,
+  'bag': Icons.business_center,
+  'home': Icons.home,
+  'sun': Icons.brightness_5,
+  'bus': Icons.directions_bus,
+  'rabbit': Icons.cruelty_free,
+  'fastfood': Icons.fastfood,
+  'restaurant': Icons.restaurant,
+  'heart': Icons.favorite,
+  'flower': Icons.local_florist,
+  'gasstation': Icons.local_gas_station,
+  'cart': Icons.shopping_cart,
+  'localmall': Icons.local_mall,
+  'cameraroll': Icons.camera_roll,
+  'tag': Icons.loyalty,
+  'entertain': Icons.sports_esports,
+  'flag': Icons.flag,
+  'fitness': Icons.fitness_center,
+  'alert': Icons.crisis_alert,
+  'coffee': Icons.coffee,
+  'location': Icons.location_on,
+  'chair': Icons.chair,
+  'category': Icons.category,
+  'other': Icons.more_horiz,
+  // Add more mappings as needed
+};

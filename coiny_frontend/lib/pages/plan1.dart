@@ -142,8 +142,7 @@ class _Plan1PageState extends State<Plan1Page> {
                     int saved = int.tryParse(savedController.text) ?? 0;
                     print('Monthly: $monthly');
                     print('Saved: $saved');
-                    // Now you have the values in the monthly and saved variables
-                    // Add logic to save the data to the backend
+                    _postData();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFF5CCB4),
