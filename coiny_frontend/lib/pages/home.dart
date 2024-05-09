@@ -48,7 +48,7 @@ class AddCategory extends StatelessWidget {
               builder: (BuildContext context) => AddCategoryDialog());
         },
         style: ElevatedButton.styleFrom(
-          primary: Color(0xFFEDB59E),
+          backgroundColor: Color(0xFFEDB59E),
         ),
         child: const Center(
           child: Icon(

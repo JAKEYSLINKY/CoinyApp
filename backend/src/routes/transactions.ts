@@ -7,7 +7,7 @@ import getUsableMoney from "../controllers/transaction/getUsableMoney";
 const transactionsRouter = express.Router();
 
 transactionsRouter.get("/get", getTransaction);
-transactionsRouter.patch("/add", addMoney);
+transactionsRouter.post("/add", addMoney);
 transactionsRouter.post("/withdraw", withdraw);
 transactionsRouter.get("/balance", getUsableMoney);
 export default transactionsRouter;

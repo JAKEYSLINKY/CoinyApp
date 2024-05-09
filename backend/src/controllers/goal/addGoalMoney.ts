@@ -14,20 +14,41 @@ const addGoalMoney = async (
 ) => {
 	try {
 		const reqBody: goalMoneyRequest = req.body;
+		const today = new Date();
+		const firstDayOfMonth = new Date(
+			today.getFullYear(),
+			today.getMonth(),
+			1
+		);
+		const lastDayOfMonth = new Date(
+			today.getFullYear(),
+			today.getMonth() + 1,
+			0
+		);
+		const plan = await prisma.plans.findFirst({
+			where: {
+				userId: reqBody.userId,
+				created: {
+					gte: firstDayOfMonth,
+					lte: lastDayOfMonth,
+				},
+			},
+		});
 		const goal = await prisma.goals.findFirst({
 			where: {
 				goalId: reqBody.goalId,
 				userId: reqBody.userId,
 			},
 		});
-		if (!goal) {
+		if (!goal || !plan) {
 			return res.status(400).json({
 				success: false,
 				data: null,
-				error: "This goal does not exist",
+				error: "This goal does not exist or user has no plan",
 			});
 		}
 		const currentAmount = reqBody.amount + goal.currentAmount;
+
 		if (
 			currentAmount > goal.goalAmount ||
 			reqBody.amount > goal.goalAmount
@@ -38,13 +59,36 @@ const addGoalMoney = async (
 				error: "The amount is over the goal",
 			});
 		}
+
+		if (currentAmount === goal.goalAmount) {
+			await prisma.goals.update({
+				where: {
+					goalId: reqBody.goalId,
+					userId: reqBody.userId,
+				},
+				data: {
+					currentAmount: currentAmount,
+					status: "completed",
+				},
+			});
+		}
+
 		await prisma.goals.update({
 			where: {
-				goalId: reqBody.goalId,
+				goalId: goal.goalId,
 				userId: reqBody.userId,
 			},
 			data: {
 				currentAmount: currentAmount,
+			},
+		});
+		await prisma.plans.update({
+			where: {
+				planId: plan.planId,
+				userId: reqBody.userId,
+			},
+			data: {
+				currentSave: plan.currentSave - reqBody.amount,
 			},
 		});
 		return res.status(200).json({

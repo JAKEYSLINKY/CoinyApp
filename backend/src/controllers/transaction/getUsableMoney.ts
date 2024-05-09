@@ -11,31 +11,84 @@ const getUsableMoney = async (
 	next: NextFunction
 ) => {
 	try {
-		//get userId from query
-		//const reqQuery: getUsableMoneyRequest = req.query;
+		const today = new Date();
+		const firstDayOfMonth = new Date(
+			today.getFullYear(),
+			today.getMonth(),
+			1
+		);
+		const lastDayOfMonth = new Date(
+			today.getFullYear(),
+			today.getMonth() + 1,
+			0
+		);
+		const daysLeft = lastDayOfMonth.getDate() - today.getDate();
 		const reqQuery: getUsableMoneyRequest = {
 			userId: Number(req.query.userId),
 		};
-		const user = await prisma.plans.findFirst({
+		const transactionsMonthly = await prisma.transactions.aggregate({
 			where: {
 				userId: reqQuery.userId,
+				created: {
+					gte: firstDayOfMonth,
+					lte: lastDayOfMonth,
+				},
 			},
-			orderBy: {
-				created: "desc",
+			_sum: {
+				amount: true,
 			},
 		});
-		if (!user) {
+		const transactionsDaily = await prisma.transactions.aggregate({
+			where: {
+				userId: reqQuery.userId,
+				created: today,
+			},
+			_sum: {
+				amount: true,
+			},
+		});
+		const plan = await prisma.plans.findFirst({
+			where: {
+				userId: reqQuery.userId,
+				created: {
+					gte: firstDayOfMonth,
+					lte: lastDayOfMonth,
+				},
+			},
+		});
+		if (!plan) {
 			return res.status(404).json({
 				success: false,
 				data: null,
-				error: "User not found",
+				error: "plan not found",
 			});
 		}
-
-		
+		const bonus = await prisma.bonus.aggregate({
+			where: {
+				userId: reqQuery.userId,
+				usage: "use",
+				created: {
+					gte: firstDayOfMonth,
+					lte: lastDayOfMonth,
+				},
+			},
+			_sum: {
+				amount: true,
+			},
+		});
+		console.log(today);
+		const dailyExpense =
+			(plan.monthly - plan.save + bonus._sum.amount!) / daysLeft;
+		const currentDailyExpense =
+			dailyExpense + transactionsDaily._sum.amount!;
+		const usableMoney =
+			plan.monthly -
+			plan.save +
+			transactionsMonthly._sum.amount! +
+			bonus._sum.amount!;
 		return res.status(200).json({
 			success: true,
-			data: user,
+			data: { usableMoney, currentDailyExpense },
 			error: null,
 		});
 	} catch (error: any) {
