@@ -1,27 +1,67 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
-class addGoalButton extends StatelessWidget {
-  final Function(int) onSave;
-
-  addGoalButton({required this.onSave});
-
+class addGoalPopUp extends StatefulWidget {
+  const addGoalPopUp({super.key});
   @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return addGoalPopUp(); // Show AnotherPopup when NumberInputButton is clicked
-          },
-        );
-      },
-      child: Text('+'),
-    );
-  }
+  State<addGoalPopUp> createState() => _addGoalPopUpstate();
 }
 
-class addGoalPopUp extends StatelessWidget {
+class _addGoalPopUpstate extends State<addGoalPopUp> {
+  TextEditingController goalNameController = TextEditingController();
+  TextEditingController goalAmountController = TextEditingController();
+  bool _isNotvalid = false;
+
+  void createGoal() async {
+    try {
+      if (goalNameController.text.isNotEmpty &&
+          goalAmountController.text.isNotEmpty) {
+        var reqBody = {
+          "name": goalNameController.text,
+          "goalAmount": goalAmountController.text,
+          "userId": "1",
+        };
+
+        var response = await http.post(
+            Uri.parse('http://localhost:4000/goals/create'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(reqBody));
+
+        var jsonResponse = jsonDecode(response.body);
+
+        if (jsonResponse['status'] == 'success') {
+          Navigator.pop(context);
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+    //   if(goalNameController.text.isNotEmpty && goalAmountController.text.isNotEmpty) {
+    //   var reqBody = {
+    //     "name": goalNameController.text,
+    //     "goalAmount": goalAmountController.text,
+    //   };
+
+    //   var response = await http.post(
+    //     Uri.parse('http://localhost:4000/goals/create'),
+    //     headers: {'Content-Type': 'application/json'},
+    //     body: jsonEncode(reqBody));
+
+    //   var jsonResponse = jsonDecode(response.body);
+
+    //   if(jsonResponse['status'] == 'success') {
+    //     // Handle success
+    //   } else {
+    //     setState(() {
+    //       _isNotvalid = true;
+    //     });
+    //   }
+    // } else {
+    //   // Handle empty fields
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -52,6 +92,7 @@ class addGoalPopUp extends StatelessWidget {
           Container(
             height: 37,
             child: TextField(
+              controller: goalNameController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Ex. Dream house',
@@ -63,7 +104,8 @@ class addGoalPopUp extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 0, horizontal: 12),
               ),
             ),
           ),
@@ -78,6 +120,7 @@ class addGoalPopUp extends StatelessWidget {
           Container(
             height: 37,
             child: TextField(
+              controller: goalAmountController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Ex. 1200000',
@@ -89,7 +132,8 @@ class addGoalPopUp extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 0, horizontal: 12),
               ),
             ),
           ),
@@ -100,10 +144,11 @@ class addGoalPopUp extends StatelessWidget {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: Color(0xFFF5CCB4),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
             ),
             onPressed: () {
-              Navigator.of(context).pop();
+              createGoal();
             },
             child: Text(
               'Save',
@@ -112,30 +157,6 @@ class addGoalPopUp extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Goal'),
-        ),
-        body: Center(
-          child: addGoalButton(
-            onSave: (int number) {
-              print('Number saved: $number');
-            },
-          ),
-        ),
-      ),
     );
   }
 }
