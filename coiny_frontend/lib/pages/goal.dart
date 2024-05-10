@@ -230,7 +230,7 @@ class goalTem extends StatelessWidget {
                 child: Stack(
                   children: [
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(20),
                       child: SizedBox(
                         height: 35,
                         child: LinearProgressIndicator(

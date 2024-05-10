@@ -70,7 +70,6 @@ class _addGoalPopUpstate extends State<addGoalPopUp> {
             height: 37,
             child: TextField(
               controller: goalNameController,
-              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Ex. Dream house',
                 labelStyle: TextStyle(color: Color(0xFFEDB59E)),
@@ -126,8 +125,8 @@ class _addGoalPopUpstate extends State<addGoalPopUp> {
             ),
             onPressed: () {
               createGoal();
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => GoalPage()));
+              // Navigator.push(
+              //     context, MaterialPageRoute(builder: (context) => GoalPage()));
             },
             child: Text(
               'Save',
