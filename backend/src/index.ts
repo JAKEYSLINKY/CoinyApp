@@ -6,18 +6,11 @@ import goalsRouter from "./routes/goals";
 import categoriesRouter from "./routes/categories";
 import transactionsRouter from "./routes/transactions";
 import authRouter from "./routes/auth";
-import cors from "cors";
 const app: Express = express();
 
 const port = process.env.PORT;
 dotenv.config();
 
-const allowedOrigins = ["http://localhost:3000"];
-const options: cors.CorsOptions = {
-	origin: allowedOrigins,
-	credentials: true,
-};
-app.use(cors(options));
 app.use(express.json());
 app.use("/plans", plansRouter);
 app.use("/users", usersRouter);
