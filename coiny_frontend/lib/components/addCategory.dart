@@ -15,20 +15,25 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
 
   void _postCategory() async {
     try {
-      final apiUrl = 'http://localhost:4000/categories/create';
-      final response = await http.post(
+      final apiUrl = 'http://10.0.2.2:4000/categories/create';
+      final response = await http
+          .post(
         Uri.parse(apiUrl),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, dynamic>{
-          //'userId': 1, 
+          'userId': 1,
           'name': _nameController.text,
           'iconName': _selectedIconName,
         }),
-      );
+      )
+          .catchError((e) {
+        // Handle error here
+        print('Error occurred during HTTP POST request: $e');
+      });
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         print('Category created successfully');
         Navigator.pop(context, 'OK');
       } else {
@@ -134,7 +139,8 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
                       MaterialStateProperty.all<Color>(Color(0xFF95491E)),
                 ),
                 onPressed: () {
-                  // _postCategory();
+                  _postCategory();
+
                   Navigator.pop(context, 'OK');
                   print('Category Name: ${_nameController.text}');
                   print('Selected Icon Name: $_selectedIconName');
