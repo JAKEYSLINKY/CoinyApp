@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:coiny_frontend/components/addGoal.dart';
 import 'package:coiny_frontend/components/goalEditon.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,24 @@ class GoalPage extends StatelessWidget {
     Mygoal(name: 'iPhone 13', goal: 30000, currentAmount: 15000),
     Mygoal(name: 'AirPods Pro', goal: 5000, currentAmount: 2500),
   ];
+
+  void initialize() async {
+    getGoal();
+  }
+  
+  void getGoal() async {
+    try {
+      final apiURL = 'http://localhost:4000/goals/get';
+        final response = await http.get(Uri.parse(apiURL),
+            headers: <String, String>{'Content-Type': 'application/json'},);
+
+        if (response.statusCode == 200) {
+          print('getGoal');
+      }
+    } catch (e) {
+      print('ERROR: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
