@@ -12,29 +12,41 @@ class Mygoal {
   Mygoal({required this.name, required this.goal, required this.currentAmount});
 }
 
-class GoalPage extends StatelessWidget {
-  GoalPage({super.key});
-  // ignore: non_constant_identifier_names
+class GoalPage extends StatefulWidget {
+  GoalPage({Key? key}) : super(key: key);
+
+  @override
+  _GoalPageState createState() => _GoalPageState();
+}
+
+class _GoalPageState extends State<GoalPage> {
   final int Saved = 8000;
   final int userId = 1;
-  List<Mygoal> goals = [
-    Mygoal(name: 'Macbook Pro', goal: 50000, currentAmount: 5000),
-    Mygoal(name: 'iPhone 13', goal: 30000, currentAmount: 15000),
-    Mygoal(name: 'AirPods Pro', goal: 5000, currentAmount: 2500),
-  ];
+  List<Mygoal> goals = [];
+
+  @override
+  void initState() {
+    super.initState();
+    initialize();
+  }
 
   void initialize() async {
     getGoal();
   }
-  
+
   void getGoal() async {
     try {
-      final apiURL = 'http://localhost:4000/goals/get';
-        final response = await http.get(Uri.parse(apiURL),
-            headers: <String, String>{'Content-Type': 'application/json'},);
+      final apiURL = 'http://10.0.2.2:4000/goals/get?userId=$userId';
+      final response = await http.get(
+        Uri.parse(apiURL),
+        headers: <String, String>{'Content-Type': 'application/json'},
+      );
 
-        if (response.statusCode == 200) {
-          print('getGoal');
+      if (response.statusCode == 200) {
+        print('getGoal');
+        setState(() {
+          goals = parseGoals(response.body); // Implement parseGoals method
+        });
       }
     } catch (e) {
       print('ERROR: $e');
@@ -233,4 +245,27 @@ class goalTem extends StatelessWidget {
       ],
     );
   }
+}
+
+List<Mygoal> parseGoals(String responseBody) {
+  // Parse the JSON string into a List<dynamic> using jsonDecode
+  List<dynamic> jsonList = jsonDecode(responseBody);
+
+  // Create an empty list to store the parsed goals
+  List<Mygoal> parsedGoals = [];
+
+  // Iterate over each item in the JSON list
+  for (var item in jsonList) {
+    // Create a new Mygoal object from the JSON data
+    Mygoal goal = Mygoal(
+      name: item['name'],
+      goal: item['goal'],
+      currentAmount: item['currentAmount'],
+    );
+    // Add the created Mygoal object to the parsedGoals list
+    parsedGoals.add(goal);
+  }
+
+  // Return the list of parsed goals
+  return parsedGoals;
 }
