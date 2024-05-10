@@ -1,12 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class Plan1Page extends StatelessWidget {
+class Plan1Page extends StatefulWidget {
   const Plan1Page({Key? key}) : super(key: key);
 
   @override
+  _Plan1PageState createState() => _Plan1PageState();
+}
+
+class _Plan1PageState extends State<Plan1Page> {
+  final url = 'http://localhost:4000/plans/create';
+  TextEditingController monthlyController = TextEditingController();
+  TextEditingController savedController = TextEditingController();
+  String result = '';
+
+  @override
+  void dispose() {
+    monthlyController.dispose();
+    savedController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _postData() async {
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          //'user'
+          'name': monthlyController.text,
+          'email': savedController.text,
+          //'currentSave'
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        // Successful POST request, handle the response here
+        final responseData = jsonDecode(response.body);
+        setState(() {
+          //result =
+              //'ID: ${responseData['id']}\nName: ${responseData['name']}\nEmail: ${responseData['email']}';
+        });
+      } else {
+        // If the server returns an error response, throw an exception
+        throw Exception('Failed to post data');
+      }
+    } catch (e) {
+      setState(() {
+        result = 'Error: $e';
+      });
+    } 
+  }
+
+  @override
   Widget build(BuildContext context) {
-    const monthly = 10000;
-    const saved = 8000;
     return Scaffold(
       backgroundColor: const Color(0xFFFFE2D2),
       body: Padding(
@@ -39,9 +89,9 @@ class Plan1Page extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
                         child: TextFormField(
+                          controller: monthlyController,
                           textAlign: TextAlign.end,
                           decoration: const InputDecoration(
-                            hintText: '${monthly}฿',
                             border: InputBorder.none,
                           ),
                         ),
@@ -71,9 +121,9 @@ class Plan1Page extends StatelessWidget {
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
                         child: TextFormField(
+                          controller: savedController,
                           textAlign: TextAlign.end,
                           decoration: const InputDecoration(
-                            hintText: '${saved}฿',
                             border: InputBorder.none,
                           ),
                         ),
@@ -88,11 +138,14 @@ class Plan1Page extends StatelessWidget {
               child: Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    // Add onPressed logic
+                    int monthly = int.tryParse(monthlyController.text) ?? 0;
+                    int saved = int.tryParse(savedController.text) ?? 0;
+                    print('Monthly: $monthly');
+                    print('Saved: $saved');
+                    _postData();
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        const Color(0xFFF5CCB4), // Background color
+                    backgroundColor: const Color(0xFFF5CCB4),
                   ),
                   child: const Text(
                     'Confirm',
