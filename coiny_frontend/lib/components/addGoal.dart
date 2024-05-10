@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
+import '../pages/goal.dart';
+
 class addGoalPopUp extends StatefulWidget {
   const addGoalPopUp({super.key});
   @override
@@ -124,6 +126,8 @@ class _addGoalPopUpstate extends State<addGoalPopUp> {
             ),
             onPressed: () {
               createGoal();
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => GoalPage()));
             },
             child: Text(
               'Save',

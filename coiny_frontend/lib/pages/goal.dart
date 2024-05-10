@@ -47,6 +47,7 @@ class _GoalPageState extends State<GoalPage> {
         setState(() {
           goals = parseGoals(response.body); // Implement parseGoals method
         });
+        print(response.body);
       }
     } catch (e) {
       print('ERROR: $e');
@@ -57,77 +58,96 @@ class _GoalPageState extends State<GoalPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFFE2D2),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 25.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15.0),
-              child: Text(
-                "Goal",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Expanded(
-                        child: Text(
-                      'Your save :',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    )),
-                    Expanded(
-                        child: Container(
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF95491E),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Center(
-                            child: Text('$Saved฿',
-                                style: const TextStyle(
-                                    color: Color(0xFFFFF3EC),
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold))),
-                      ),
-                    ))
-                  ]),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15.0),
-              child: GestureDetector(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return NumberInputDialog(); // Show AnotherPopup when NumberInputButton is clicked
-                    },
-                  );
-                },
-                child: Column(
-                  children: goals.map((goal) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 15.0),
-                      child: goalTem(
-                        name: goal.name,
-                        goal: goal.goal,
-                        currentAmount: goal.currentAmount,
-                      ),
-                    );
-                  }).toList(),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 25.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15.0),
+                child: Text(
+                  "Goal",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
                 ),
               ),
-            ),
-            Center(
-              child: AddNewGoal(),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Expanded(
+                          child: Text(
+                        'Your save :',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      )),
+                      Expanded(
+                          child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF95491E),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Center(
+                              child: Text('$Saved฿',
+                                  style: const TextStyle(
+                                      color: Color(0xFFFFF3EC),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold))),
+                        ),
+                      ))
+                    ]),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15.0),
+                child: GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return NumberInputDialog(); // Show AnotherPopup when NumberInputButton is clicked
+                      },
+                    );
+                  },
+                  // child: Column(
+                  //   children: goals.map((goal) {
+                  //     return Padding(
+                  //       padding: const EdgeInsets.only(bottom: 15.0),
+                  //       child: goalTem(
+                  //         name: goal.name,
+                  //         goal: goal.goal,
+                  //         currentAmount: goal.currentAmount,
+                  //       ),
+                  //     );
+                  //   }).toList(),
+                  // ),
+                  child: Container(
+                    child: ListView.builder(
+                      itemCount: goals.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 15.0),
+                          child: goalTem(
+                            name: goals[index].name,
+                            goal: goals[index].goal,
+                            currentAmount: goals[index].currentAmount,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+              Center(
+                child: AddNewGoal(),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -146,7 +166,8 @@ class AddNewGoal extends StatelessWidget {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return addGoalPopUp(); // Show AnotherPopup when NumberInputButton is clicked
+              return addGoalPopUp();
+              // Show AnotherPopup when NumberInputButton is clicked
             },
           );
         },
@@ -248,24 +269,42 @@ class goalTem extends StatelessWidget {
 }
 
 List<Mygoal> parseGoals(String responseBody) {
-  // Parse the JSON string into a List<dynamic> using jsonDecode
-  List<dynamic> jsonList = jsonDecode(responseBody);
+  try {
+    // Parse the JSON string into a Map<String, dynamic> using jsonDecode
+    Map<String, dynamic> jsonResponse = jsonDecode(responseBody);
 
-  // Create an empty list to store the parsed goals
-  List<Mygoal> parsedGoals = [];
+    // Extract the 'data' field from the JSON response
+    List<dynamic> jsonData = jsonResponse['data'];
 
-  // Iterate over each item in the JSON list
-  for (var item in jsonList) {
-    // Create a new Mygoal object from the JSON data
-    Mygoal goal = Mygoal(
-      name: item['name'],
-      goal: item['goal'],
-      currentAmount: item['currentAmount'],
-    );
-    // Add the created Mygoal object to the parsedGoals list
-    parsedGoals.add(goal);
+    // Create an empty list to store the parsed goals
+    List<Mygoal> parsedGoals = [];
+
+    // Iterate over each item in the JSON data
+    for (var item in jsonData) {
+      // Check if the item is a Map<String, dynamic>
+      if (item is Map<String, dynamic>) {
+        // Extract individual fields from the map
+        String name = item['name'];
+        int goal = item['goalAmount'];
+        int currentAmount = item['currentAmount'];
+
+        // Create a new Mygoal object from the extracted data
+        Mygoal goalObject = Mygoal(
+          name: name ?? '',
+          goal: goal ?? 0,
+          currentAmount: currentAmount ?? 0,
+        );
+
+        // Add the created Mygoal object to the parsedGoals list
+        parsedGoals.add(goalObject);
+      }
+    }
+
+    // Return the list of parsed goals
+    return parsedGoals;
+  } catch (e) {
+    // Handle JSON parsing errors
+    print('Error parsing JSON: $e');
+    return []; // Return an empty list in case of errors
   }
-
-  // Return the list of parsed goals
-  return parsedGoals;
 }
