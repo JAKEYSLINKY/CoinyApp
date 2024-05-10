@@ -22,7 +22,7 @@ class _addGoalPopUpstate extends State<addGoalPopUp> {
             body: jsonEncode(<String, dynamic>{
               "userId": 1,
               "name": goalNameController.text,
-              "goalAmount": goalAmountController.text,
+              "goalAmount": int.parse(goalAmountController.text),
             }));
 
         if (response.statusCode == 200) {
