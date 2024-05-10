@@ -10,7 +10,7 @@ class Plan1Page extends StatefulWidget {
 }
 
 class _Plan1PageState extends State<Plan1Page> {
-  final url = 'http://localhost:4000/plans/create';
+  final url = 'http://10.0.2.2:4000/plans/create';
   TextEditingController monthlyController = TextEditingController();
   TextEditingController savedController = TextEditingController();
   String result = '';
@@ -24,25 +24,37 @@ class _Plan1PageState extends State<Plan1Page> {
 
   Future<void> _postData() async {
     try {
-      final response = await http.post(
+      print('helloooooo');
+      final double monthly = double.parse(monthlyController.text);
+      final double save = double.parse(savedController.text);
+      final double currentSave = double.parse(savedController.text);
+      final response = await http
+          .post(
         Uri.parse(url),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, dynamic>{
-          //'user'
-          'name': monthlyController.text,
-          'email': savedController.text,
-          //'currentSave'
+          'userId': 1,
+          'monthly': monthly,
+          'save': save,
+          'currentSave': currentSave,
         }),
-      );
+      )
+          .catchError((e) {
+        print('Error occurred during POST request: $e');
+        throw Exception('Failed to post data: $e');
+      });
 
-      if (response.statusCode == 201) {
+      print('Response status code: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        print('success200');
         // Successful POST request, handle the response here
         final responseData = jsonDecode(response.body);
         setState(() {
-          //result =
-              //'ID: ${responseData['id']}\nName: ${responseData['name']}\nEmail: ${responseData['email']}';
+          result =
+              'userId: ${responseData['userId']}\nmonthly: ${responseData['monthly']}\nsave: ${responseData['save']}\ncurrentSave: ${responseData['currentSave']}';
         });
       } else {
         // If the server returns an error response, throw an exception
@@ -52,7 +64,7 @@ class _Plan1PageState extends State<Plan1Page> {
       setState(() {
         result = 'Error: $e';
       });
-    } 
+    }
   }
 
   @override
@@ -137,12 +149,17 @@ class _Plan1PageState extends State<Plan1Page> {
               padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: Center(
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     int monthly = int.tryParse(monthlyController.text) ?? 0;
                     int saved = int.tryParse(savedController.text) ?? 0;
                     print('Monthly: $monthly');
                     print('Saved: $saved');
-                    _postData();
+                    try {
+                      await _postData();
+                      print('Success');
+                    } catch (e) {
+                      print('Error: $e');
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFF5CCB4),
