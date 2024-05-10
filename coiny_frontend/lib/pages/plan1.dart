@@ -30,10 +30,10 @@ class _Plan1PageState extends State<Plan1Page> {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, dynamic>{
-          //'user'
-          'name': monthlyController.text,
-          'email': savedController.text,
-          //'currentSave'
+          'user': 1,
+          'monthly': monthlyController.text,
+          'save': savedController.text,
+          'currentSave': savedController.text,
         }),
       );
 
