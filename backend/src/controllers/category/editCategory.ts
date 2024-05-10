@@ -4,30 +4,54 @@ import { NextFunction, Request, Response } from "express";
 const prisma = new PrismaClient();
 interface categoryRequest {
 	userId: number;
+	categoryId: number;
+	iconName: string;
+	categoryName: string;
 }
 const editCategory = async (
 	req: Request,
-	res: Response,
+	res: Response,	
 	next: NextFunction
 ) => {
-	const reqQuery: categoryRequest = { userId: Number(req.query.userId) };
+	const reqBody: categoryRequest = req.body;
 	try {
-		const category =
-			await prisma.$queryRaw`SELECT categoriesIcon.iconName,categories.name 
-            FROM categoriesIcon,categories,userCategories
-            WHERE userCategories.userId = ${reqQuery.userId} 
-            AND categories.categoryId = userCategories.categoryId 
-            AND categories.iconId = categoriesIcon.iconId;`;
+		const category = await prisma.userCategories.findFirst({
+			where: {
+				categoryId: reqBody.categoryId,
+				userId: reqBody.userId,
+			},
+		});
 		if (!category) {
-			return res.status(404).json({
+			return res.status(400).json({
 				success: false,
 				data: null,
 				error: "Category not found",
 			});
 		}
+		const icon = await prisma.categoriesIcon.findFirst({
+			where: {
+				iconName: reqBody.iconName,
+			},
+		});
+		if (!icon) {
+			return res.status(400).json({
+				success: false,
+				data: null,
+				error: "Icon not found",
+			});
+		}
+		await prisma.categories.update({
+			where: {
+				categoryId: reqBody.categoryId,
+			},
+			data: {
+				iconId: icon.iconId,
+				name: reqBody.categoryName,
+			},
+		});
 		return res.status(200).json({
 			success: true,
-			data: category,
+			data: "Edited success",
 			error: null,
 		});
 	} catch (error: any) {
