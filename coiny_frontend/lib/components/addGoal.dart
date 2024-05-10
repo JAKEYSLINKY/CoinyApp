@@ -14,7 +14,7 @@ class _addGoalPopUpstate extends State<addGoalPopUp> {
 
   void createGoal() async {
     try {
-      final apiURL = 'http://localhost:4000/goals/create';
+      final apiURL = 'http://10.0.2.2:4000/goals/create';
       if (goalNameController.text.isNotEmpty &&
           goalAmountController.text.isNotEmpty) {
         final response = await http.post(Uri.parse(apiURL),
@@ -32,6 +32,8 @@ class _addGoalPopUpstate extends State<addGoalPopUp> {
       }
     } catch (e) {
       print('ERROR: $e');
+      print(goalNameController.text);
+      print(goalAmountController.text);
     }
   }
 
