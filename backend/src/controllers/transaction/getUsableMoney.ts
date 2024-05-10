@@ -76,7 +76,6 @@ const getUsableMoney = async (
 				amount: true,
 			},
 		});
-		console.log(today);
 		const dailyExpense =
 			(plan.monthly - plan.save + bonus._sum.amount!) / daysLeft;
 		const currentDailyExpense =

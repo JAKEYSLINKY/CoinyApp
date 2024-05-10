@@ -25,7 +25,7 @@ const getTransaction = async (
 		const reqQuery: transactionRequest = {
 			userId: Number(req.query.userId),
 		};
-		const transactions = await prisma.transactions.findMany({
+		const userTransactions = await prisma.transactions.findMany({
 			where: {
 				userId: reqQuery.userId,
 				created: {
@@ -33,17 +33,21 @@ const getTransaction = async (
 					lte: lastDayOfMonth,
 				},
 			},
+			include: {
+				categories: true,
+			},
 		});
-		if (!transactions) {
+		if (!userTransactions) {
 			return res.status(400).json({
 				success: false,
 				data: null,
 				error: "This user hasnt made any transactions yet",
 			});
 		}
+		
 		return res.status(200).json({
 			success: true,
-			data: transactions,
+			data: userTransactions,
 			error: null,
 		});
 	} catch (error: any) {

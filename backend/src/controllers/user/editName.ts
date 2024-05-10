@@ -7,7 +7,8 @@ interface userRequest {
 	name: string;
 }
 const editName = async (req: Request, res: Response, next: NextFunction) => {
-	try { //ก่อนupdate find unique ของ user  prisma.user.findUnique if เป็นเนา
+	try {
+		//ก่อนupdate find unique ของ user  prisma.user.findUnique if เป็นเนา
 		const reqBody: userRequest = req.body;
 		await prisma.users.update({
 			where: {
