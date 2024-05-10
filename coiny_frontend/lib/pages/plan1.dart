@@ -10,7 +10,7 @@ class Plan1Page extends StatefulWidget {
 }
 
 class _Plan1PageState extends State<Plan1Page> {
-  final url = 'http://localhost:4000/plans/create';
+  final url = 'http://10.0.2.2:4000/plans/create';
   TextEditingController monthlyController = TextEditingController();
   TextEditingController savedController = TextEditingController();
   String result = '';
@@ -48,8 +48,8 @@ class _Plan1PageState extends State<Plan1Page> {
 
       print('Response status code: ${response.statusCode}');
 
-      if (response.statusCode == 201) {
-        print('success201');
+      if (response.statusCode == 200) {
+        print('success200');
         // Successful POST request, handle the response here
         final responseData = jsonDecode(response.body);
         setState(() {
