@@ -6,6 +6,8 @@ import 'pages/stat.dart';
 import 'pages/goal.dart';
 import 'auth/login.dart';
 import 'auth/signup.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   runApp(const MyApp());
@@ -19,16 +21,74 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final urlget = 'http://10.0.2.2:4000/plans/get';
+  int userId = 2;
+  late int _selectedPlanPage;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedPlanPage = 1; // Assuming Plan1Page is the default page
+    _checkDataAndNavigate();
+  }
+
+  Future<void> _checkDataAndNavigate() async {
+    try {
+      final data = await _getData();
+      if (data != null) {
+        // Data is available, navigate to Plan2Page
+        setState(() {
+          _selectedPlanPage = 2;
+        });
+      } else {
+        // No data available, navigate to Plan1Page
+        setState(() {
+          _selectedPlanPage = 1;
+        });
+      }
+    } catch (e) {
+      // Error occurred, navigate to Plan1Page
+      setState(() {
+        _selectedPlanPage = 1;
+      });
+    }
+  }
+
+  Future<Map<String, dynamic>> _getData() async {
+    try {
+      final response = await http.get(Uri.parse('$urlget?userId=$userId'));
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonData = jsonDecode(response.body);
+        print('Received data: $jsonData');
+        return jsonData;
+      } else {
+        throw Exception('Failed to fetch data: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error occurred during HTTP request: $e');
+    }
+  }
+
   int _selectedPage = 3;
-  final _pageOptions = [
-    const HomePage(),
-    const stat(),
-    const Plan1Page(),
-    GoalPage(),
-  ];
+  void navigateToPlan2() {
+    setState(() {
+      _selectedPlanPage = 2;
+    });
+  }
+  void navigateToPlan1() {
+    setState(() {
+      _selectedPlanPage = 1;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final _pageOptions = [
+      const HomePage(),
+      const stat(),
+      if (_selectedPlanPage == 2) Plan2Page(navigateToPlan1) else Plan1Page(navigateToPlan2),
+      GoalPage(),
+    ];
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
