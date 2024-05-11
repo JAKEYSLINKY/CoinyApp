@@ -284,7 +284,10 @@ class goalTem extends StatelessWidget {
                                 .toDouble(), //value of percentage. 0.55 = 55%
                             backgroundColor: Color(0xFFFFF3EC),
                             valueColor: AlwaysStoppedAnimation<Color>(
-                                Color(0xFFF98A4C)),
+                              currentAmount / goal == 1
+                                  ? Colors.lightGreen
+                                  : Color(0xFFF98A4C),
+                            ),
                           ),
                         ),
                       ),
