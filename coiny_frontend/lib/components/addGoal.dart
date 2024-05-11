@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import '../pages/goal.dart';
 
 class addGoalPopUp extends StatefulWidget {
-  const addGoalPopUp({super.key});
+  const addGoalPopUp({super.key, required this.reloadGoals});
+  final Function reloadGoals;
   @override
   State<addGoalPopUp> createState() => _addGoalPopUpstate();
 }
@@ -26,9 +27,9 @@ class _addGoalPopUpstate extends State<addGoalPopUp> {
               "name": goalNameController.text,
               "goalAmount": int.parse(goalAmountController.text),
             }));
-
         if (response.statusCode == 200) {
           print('Goal created');
+          widget.reloadGoals();
           Navigator.pop(context);
         }
       }
@@ -125,8 +126,6 @@ class _addGoalPopUpstate extends State<addGoalPopUp> {
             ),
             onPressed: () {
               createGoal();
-              // Navigator.push(
-              //     context, MaterialPageRoute(builder: (context) => GoalPage()));
             },
             child: Text(
               'Save',

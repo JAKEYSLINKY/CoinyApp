@@ -4,12 +4,18 @@ import 'package:coiny_frontend/components/addGoal.dart';
 import 'package:coiny_frontend/components/goalEditon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Mygoal {
   final String name;
   final int goal;
   final int currentAmount;
-  Mygoal({required this.name, required this.goal, required this.currentAmount});
+  final int goalId;
+  Mygoal(
+      {required this.name,
+      required this.goal,
+      required this.currentAmount,
+      required this.goalId});
 }
 
 class GoalPage extends StatefulWidget {
@@ -20,18 +26,21 @@ class GoalPage extends StatefulWidget {
 }
 
 class _GoalPageState extends State<GoalPage> {
-  final int Saved = 8000;
+  int saved = 0;
   final int userId = 1;
   List<Mygoal> goals = [];
 
   @override
   void initState() {
     super.initState();
-    initialize();
+    getSave();
+    getGoal();
   }
 
-  void initialize() async {
-    getGoal();
+  void updateSavedAmount(int newAmount) {
+    setState(() {
+      saved = newAmount;
+    });
   }
 
   void getGoal() async {
@@ -46,6 +55,26 @@ class _GoalPageState extends State<GoalPage> {
         print('getGoal');
         setState(() {
           goals = parseGoals(response.body); // Implement parseGoals method
+        });
+        // print(response.body);
+      }
+    } catch (e) {
+      print('ERROR: $e');
+    }
+  }
+
+  void getSave() async {
+    try {
+      final apiURL = 'http://10.0.2.2:4000/plans/get?userId=$userId';
+      final response = await http.get(
+        Uri.parse(apiURL),
+        headers: <String, String>{'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        print('getSave');
+        setState(() {
+          saved = parseSaved(response.body); // Implement parseGoals method
         });
         print(response.body);
       }
@@ -92,7 +121,7 @@ class _GoalPageState extends State<GoalPage> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Center(
-                              child: Text('$Saved฿',
+                              child: Text('$saved฿',
                                   style: const TextStyle(
                                       color: Color(0xFFFFF3EC),
                                       fontSize: 20,
@@ -103,48 +132,31 @@ class _GoalPageState extends State<GoalPage> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 15.0),
-                child: GestureDetector(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return NumberInputDialog(); // Show AnotherPopup when NumberInputButton is clicked
-                      },
-                    );
-                  },
-                  // child: Column(
-                  //   children: goals.map((goal) {
-                  //     return Padding(
-                  //       padding: const EdgeInsets.only(bottom: 15.0),
-                  //       child: goalTem(
-                  //         name: goal.name,
-                  //         goal: goal.goal,
-                  //         currentAmount: goal.currentAmount,
-                  //       ),
-                  //     );
-                  //   }).toList(),
-                  // ),
-                  child: Container(
-                    child: ListView.builder(
-                      itemCount: goals.length,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 15.0),
-                          child: goalTem(
-                            name: goals[index].name,
-                            goal: goals[index].goal,
-                            currentAmount: goals[index].currentAmount,
-                          ),
-                        );
-                      },
-                    ),
+                child: Container(
+                  child: ListView.builder(
+                    itemCount: goals.length,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 15.0),
+                        child: goalTem(
+                          name: goals[index].name,
+                          goal: goals[index].goal,
+                          currentAmount: goals[index].currentAmount,
+                          saved: saved,
+                          goalId: goals[index].goalId,
+                          userId: userId,
+                          reloadCallback: getGoal,
+                          updateSavedAmount: updateSavedAmount,
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
               Center(
-                child: AddNewGoal(),
+                child: AddNewGoal(reloadCallback: getGoal),
               ),
             ],
           ),
@@ -154,11 +166,15 @@ class _GoalPageState extends State<GoalPage> {
   }
 }
 
-class AddNewGoal extends StatelessWidget {
-  const AddNewGoal({
-    super.key,
-  });
+class AddNewGoal extends StatefulWidget {
+  final Function() reloadCallback;
+  const AddNewGoal({Key? key, required this.reloadCallback}) : super(key: key);
 
+  @override
+  State<AddNewGoal> createState() => _AddNewGoalState();
+}
+
+class _AddNewGoalState extends State<AddNewGoal> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
@@ -166,8 +182,10 @@ class AddNewGoal extends StatelessWidget {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return addGoalPopUp();
-              // Show AnotherPopup when NumberInputButton is clicked
+              return addGoalPopUp(reloadGoals: () {
+                // Call the reload callback after creating a new goal
+                widget.reloadCallback();
+              });
             },
           );
         },
@@ -191,79 +209,108 @@ class goalTem extends StatelessWidget {
     required this.name,
     required this.goal,
     required this.currentAmount,
+    required this.saved,
+    required this.goalId,
+    required this.userId,
+    required this.reloadCallback,
+    required this.updateSavedAmount,
   });
   String name;
   int goal;
   int currentAmount;
+  int saved;
+  int goalId;
+  int userId;
+  final Function() reloadCallback;
+  final Function(int) updateSavedAmount;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-            child: Container(
-          decoration: BoxDecoration(
-            color: const Color(0xFF95491E),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Column(children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    name,
-                    style:
-                        const TextStyle(color: Color(0xFFFFF3EC), fontSize: 20),
-                  ),
-                  Text(
-                    // ignore: prefer_interpolation_to_compose_strings
-                    currentAmount.toString() + "/" + goal.toString() + '฿',
-                    style:
-                        const TextStyle(color: Color(0xFFFFF3EC), fontSize: 16),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5.0),
-                child: Stack(
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return NumberInputDialog(
+              goal: goal,
+              saved: saved,
+              goalId: goalId,
+              name: name,
+              userId: userId,
+              reloadGoals: reloadCallback,
+              updateSavedAmount: updateSavedAmount,
+            ); // Show AnotherPopup when NumberInputButton is clicked
+          },
+        );
+      },
+      child: Row(
+        children: [
+          Expanded(
+              child: Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFF95491E),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Column(children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: SizedBox(
-                        height: 35,
-                        child: LinearProgressIndicator(
-                          value: (currentAmount / goal)
-                              .toDouble(), //value of percentage. 0.55 = 55%
-                          backgroundColor: Color(0xFFFFF3EC),
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Color(0xFFF98A4C)),
+                    Text(
+                      name,
+                      style: const TextStyle(
+                          color: Color(0xFFFFF3EC), fontSize: 20),
+                    ),
+                    Text(
+                      // ignore: prefer_interpolation_to_compose_strings
+                      currentAmount.toString() + "/" + goal.toString(),
+                      style: const TextStyle(
+                          color: Color(0xFFFFF3EC), fontSize: 16),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5.0),
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: SizedBox(
+                          height: 35,
+                          child: LinearProgressIndicator(
+                            value: (currentAmount / goal)
+                                .toDouble(), //value of percentage. 0.55 = 55%
+                            backgroundColor: Color(0xFFFFF3EC),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Color(0xFFF98A4C)),
+                          ),
                         ),
                       ),
-                    ),
-                    Positioned.fill(
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                          child: Text(
-                            '${(currentAmount / goal * 100).toStringAsFixed(0)}%',
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
+                      Positioned.fill(
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 5.0),
+                            child: Text(
+                              '${(currentAmount / goal * 100).toStringAsFixed(0)}%',
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              )
-            ]),
-          ),
-        )),
-      ],
+                    ],
+                  ),
+                )
+              ]),
+            ),
+          )),
+        ],
+      ),
     );
   }
 }
@@ -287,12 +334,14 @@ List<Mygoal> parseGoals(String responseBody) {
         String name = item['name'];
         int goal = item['goalAmount'];
         int currentAmount = item['currentAmount'];
+        int goalId = item['goalId'];
 
         // Create a new Mygoal object from the extracted data
         Mygoal goalObject = Mygoal(
           name: name ?? '',
           goal: goal ?? 0,
           currentAmount: currentAmount ?? 0,
+          goalId: goalId ?? 0,
         );
 
         // Add the created Mygoal object to the parsedGoals list
@@ -306,5 +355,20 @@ List<Mygoal> parseGoals(String responseBody) {
     // Handle JSON parsing errors
     print('Error parsing JSON: $e');
     return []; // Return an empty list in case of errors
+  }
+}
+
+int parseSaved(String responseBody) {
+  try {
+    Map<String, dynamic> jsonResponse = jsonDecode(responseBody);
+    if (jsonResponse.containsKey('data')) {
+      Map<String, dynamic> data = jsonResponse['data'];
+      int currentSave = data['currentSave'] ?? 0;
+      return currentSave;
+    }
+    return 0;
+  } catch (e) {
+    print('Error parsing JSON: $e');
+    return 0;
   }
 }
