@@ -34,7 +34,7 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
       });
 
       if (response.statusCode == 200) {
-        print('Category created successfully');
+        print('Category created successfully(200)');
         Navigator.pop(context, 'OK');
       } else {
         throw Exception('Failed to create category');
