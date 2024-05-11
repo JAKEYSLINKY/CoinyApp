@@ -28,6 +28,7 @@ class _GoalPageState extends State<GoalPage> {
   int saved = 0;
   final int userId = 1;
   List<Mygoal> goals = [];
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -72,7 +73,8 @@ class _GoalPageState extends State<GoalPage> {
       if (response.statusCode == 200) {
         print('getSave');
         setState(() {
-          saved = parseSaved(response.body); // Implement parseGoals method
+          saved = parseSaved(response.body);
+          isLoading = false; // Implement parseGoals method
         });
         print('saved: $saved');
       }
@@ -86,82 +88,86 @@ class _GoalPageState extends State<GoalPage> {
     return Scaffold(
       backgroundColor: const Color(0xFFFFE2D2),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 25.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15.0),
-                child: Text(
-                  "Goal",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Expanded(
-                          child: Text(
-                        'Your save :',
+        child: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 15.0, horizontal: 25.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Text(
+                        "Goal",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
-                      )),
-                      Expanded(
-                          child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF95491E),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(
-                              child: Text('$saved฿',
-                                  style: const TextStyle(
-                                      color: Color(0xFFFFF3EC),
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold))),
-                        ),
-                      ))
-                    ]),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15.0),
-                child: Container(
-                  child: ListView.builder(
-                    itemCount: goals.length,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 15.0),
-                        child: goalTem(
-                          name: goals[index].name,
-                          goal: goals[index].goal,
-                          currentAmount: goals[index].currentAmount,
-                          saved: saved,
-                          goalId: goals[index].goalId,
-                          userId: userId,
-                          reloadCallback: () {
-                            getGoal();
-                            getSave();
+                            fontWeight: FontWeight.bold, fontSize: 30),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Expanded(
+                                child: Text(
+                              'Your save :',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
+                            )),
+                            Expanded(
+                                child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF95491E),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                    child: Text('$saved฿',
+                                        style: const TextStyle(
+                                            color: Color(0xFFFFF3EC),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold))),
+                              ),
+                            ))
+                          ]),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 15.0),
+                      child: Container(
+                        child: ListView.builder(
+                          itemCount: goals.length,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 15.0),
+                              child: goalTem(
+                                name: goals[index].name,
+                                goal: goals[index].goal,
+                                currentAmount: goals[index].currentAmount,
+                                saved: saved,
+                                goalId: goals[index].goalId,
+                                userId: userId,
+                                reloadCallback: () {
+                                  getGoal();
+                                  getSave();
+                                },
+                                // updateSavedAmount: updateSavedAmount,
+                              ),
+                            );
                           },
-                          // updateSavedAmount: updateSavedAmount,
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    ),
+                    Center(
+                      child: AddNewGoal(reloadCallback: getGoal),
+                    ),
+                  ],
                 ),
               ),
-              Center(
-                child: AddNewGoal(reloadCallback: getGoal),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -284,7 +290,10 @@ class goalTem extends StatelessWidget {
                                 .toDouble(), //value of percentage. 0.55 = 55%
                             backgroundColor: Color(0xFFFFF3EC),
                             valueColor: AlwaysStoppedAnimation<Color>(
-                                Color(0xFFF98A4C)),
+                              currentAmount / goal == 1
+                                  ? Colors.lightGreen
+                                  : Color(0xFFF98A4C),
+                            ),
                           ),
                         ),
                       ),
