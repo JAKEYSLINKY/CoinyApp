@@ -4,7 +4,6 @@ import 'package:coiny_frontend/components/addGoal.dart';
 import 'package:coiny_frontend/components/goalEditon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Mygoal {
   final String name;
@@ -33,15 +32,15 @@ class _GoalPageState extends State<GoalPage> {
   @override
   void initState() {
     super.initState();
-    getSave();
     getGoal();
+    getSave();
   }
 
-  void updateSavedAmount(int newAmount) {
-    setState(() {
-      saved = newAmount;
-    });
-  }
+  // void updateSavedAmount(int newAmount) {
+  //   setState(() {
+  //     saved = newAmount;
+  //   });
+  // }
 
   void getGoal() async {
     try {
@@ -54,9 +53,8 @@ class _GoalPageState extends State<GoalPage> {
       if (response.statusCode == 200) {
         print('getGoal');
         setState(() {
-          goals = parseGoals(response.body); // Implement parseGoals method
+          goals = parseGoals(response.body);
         });
-        // print(response.body);
       }
     } catch (e) {
       print('ERROR: $e');
@@ -76,7 +74,7 @@ class _GoalPageState extends State<GoalPage> {
         setState(() {
           saved = parseSaved(response.body); // Implement parseGoals method
         });
-        print(response.body);
+        print('saved: $saved');
       }
     } catch (e) {
       print('ERROR: $e');
@@ -147,8 +145,11 @@ class _GoalPageState extends State<GoalPage> {
                           saved: saved,
                           goalId: goals[index].goalId,
                           userId: userId,
-                          reloadCallback: getGoal,
-                          updateSavedAmount: updateSavedAmount,
+                          reloadCallback: () {
+                            getGoal();
+                            getSave();
+                          },
+                          // updateSavedAmount: updateSavedAmount,
                         ),
                       );
                     },
@@ -213,7 +214,7 @@ class goalTem extends StatelessWidget {
     required this.goalId,
     required this.userId,
     required this.reloadCallback,
-    required this.updateSavedAmount,
+    // required this.updateSavedAmount,
   });
   String name;
   int goal;
@@ -222,7 +223,7 @@ class goalTem extends StatelessWidget {
   int goalId;
   int userId;
   final Function() reloadCallback;
-  final Function(int) updateSavedAmount;
+  // final Function(int) updateSavedAmount;
 
   @override
   Widget build(BuildContext context) {
@@ -238,7 +239,7 @@ class goalTem extends StatelessWidget {
               name: name,
               userId: userId,
               reloadGoals: reloadCallback,
-              updateSavedAmount: updateSavedAmount,
+              // updateSavedAmount: updateSavedAmount,
             ); // Show AnotherPopup when NumberInputButton is clicked
           },
         );
@@ -364,6 +365,7 @@ int parseSaved(String responseBody) {
     if (jsonResponse.containsKey('data')) {
       Map<String, dynamic> data = jsonResponse['data'];
       int currentSave = data['currentSave'] ?? 0;
+      print('currentSave: $currentSave');
       return currentSave;
     }
     return 0;

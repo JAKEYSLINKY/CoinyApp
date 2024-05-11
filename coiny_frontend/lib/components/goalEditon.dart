@@ -10,16 +10,17 @@ class NumberInputDialog extends StatefulWidget {
   final int goalId;
   final int userId;
   final Function reloadGoals;
-  final Function updateSavedAmount;
-  NumberInputDialog(
-      {super.key,
-      required this.goal,
-      required this.saved,
-      required this.name,
-      required this.goalId,
-      required this.reloadGoals,
-      required this.userId,
-      required this.updateSavedAmount});
+  // final Function updateSavedAmount;
+  NumberInputDialog({
+    super.key,
+    required this.goal,
+    required this.saved,
+    required this.name,
+    required this.goalId,
+    required this.reloadGoals,
+    required this.userId,
+    // required this.updateSavedAmount
+  });
   @override
   _NumberInputDialogState createState() => _NumberInputDialogState();
 }
@@ -46,7 +47,7 @@ class _NumberInputDialogState extends State<NumberInputDialog> {
             }));
         if (response.statusCode == 200) {
           print('Added money to goal');
-          widget.updateSavedAmount(tempSave);
+          // widget.updateSavedAmount(tempSave);
           widget.reloadGoals();
           Navigator.pop(context);
         }
