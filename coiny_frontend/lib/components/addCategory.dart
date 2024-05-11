@@ -31,6 +31,7 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
           .catchError((e) {
         // Handle error here
         print('Error occurred during HTTP POST request: $e');
+        throw Exception('Failed to post data: $e');
       });
 
       if (response.statusCode == 200) {
