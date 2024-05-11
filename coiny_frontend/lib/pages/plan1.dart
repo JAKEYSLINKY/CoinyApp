@@ -3,7 +3,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Plan1Page extends StatefulWidget {
-  const Plan1Page({Key? key}) : super(key: key);
+  final Function navigateToPlan2;
+
+  const Plan1Page(this.navigateToPlan2, {Key? key}) : super(key: key);
 
   @override
   _Plan1PageState createState() => _Plan1PageState();
@@ -24,7 +26,6 @@ class _Plan1PageState extends State<Plan1Page> {
 
   Future<void> _postData() async {
     try {
-      print('helloooooo');
       final double monthly = double.parse(monthlyController.text);
       final double save = double.parse(savedController.text);
       final double currentSave = double.parse(savedController.text);
@@ -35,7 +36,7 @@ class _Plan1PageState extends State<Plan1Page> {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, dynamic>{
-          'userId': 1,
+          'userId': 2,
           'monthly': monthly,
           'save': save,
           'currentSave': currentSave,
@@ -49,15 +50,14 @@ class _Plan1PageState extends State<Plan1Page> {
       print('Response status code: ${response.statusCode}');
 
       if (response.statusCode == 200) {
-        print('success200');
-        // Successful POST request, handle the response here
+        print('create plan success(200)');
+        widget.navigateToPlan2();
         final responseData = jsonDecode(response.body);
         setState(() {
           result =
               'userId: ${responseData['userId']}\nmonthly: ${responseData['monthly']}\nsave: ${responseData['save']}\ncurrentSave: ${responseData['currentSave']}';
         });
       } else {
-        // If the server returns an error response, throw an exception
         throw Exception('Failed to post data');
       }
     } catch (e) {
@@ -156,7 +156,6 @@ class _Plan1PageState extends State<Plan1Page> {
                     print('Saved: $saved');
                     try {
                       await _postData();
-                      print('Success');
                     } catch (e) {
                       print('Error: $e');
                     }
