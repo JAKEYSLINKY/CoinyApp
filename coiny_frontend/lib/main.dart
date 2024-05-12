@@ -38,7 +38,7 @@ class _MyAppState extends State<MyApp> {
     // Implement your logic to check if the user is logged in
     // For demonstration purposes, I'm assuming the user is not logged in initially
     setState(() {
-      _loggedIn = false;
+      _loggedIn = true;
     });
   }
 
