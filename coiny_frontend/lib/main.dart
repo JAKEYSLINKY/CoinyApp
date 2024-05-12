@@ -86,6 +86,7 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+
   void navigateToPlan1() {
     setState(() {
       _selectedPlanPage = 1;
@@ -159,5 +160,6 @@ class _MyAppState extends State<MyApp> {
             ),
           ));
     }
+    
   }
 }
