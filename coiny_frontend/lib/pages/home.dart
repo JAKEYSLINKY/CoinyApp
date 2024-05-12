@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../components/addCategory.dart';
-// import 'package:http/http.dart' as http;
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -35,7 +36,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        //bottomNavigationBar: MyBottomNavigationBar(),
       ),
     );
   }

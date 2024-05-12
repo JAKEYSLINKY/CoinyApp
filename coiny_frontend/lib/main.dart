@@ -75,6 +75,7 @@ class _MyAppState extends State<MyApp> {
       _selectedPlanPage = 2;
     });
   }
+
   void navigateToPlan1() {
     setState(() {
       _selectedPlanPage = 1;
@@ -86,7 +87,10 @@ class _MyAppState extends State<MyApp> {
     final _pageOptions = [
       const HomePage(),
       const stat(),
-      if (_selectedPlanPage == 2) Plan2Page(navigateToPlan1) else Plan1Page(navigateToPlan2),
+      if (_selectedPlanPage == 2)
+        Plan2Page(navigateToPlan1)
+      else
+        Plan1Page(navigateToPlan2),
       GoalPage(),
     ];
     return MaterialApp(
