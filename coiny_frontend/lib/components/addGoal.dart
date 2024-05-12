@@ -2,8 +2,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
-import '../pages/goal.dart';
-
 class addGoalPopUp extends StatefulWidget {
   const addGoalPopUp({super.key, required this.reloadGoals});
   final Function reloadGoals;
