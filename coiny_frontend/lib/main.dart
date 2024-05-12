@@ -160,63 +160,6 @@ class _MyAppState extends State<MyApp> {
             ),
           ));
     }
-    final _pageOptions = [
-      const HomePage(),
-      const stat(),
-      if (_selectedPlanPage == 2)
-        Plan2Page(navigateToPlan1)
-      else
-        Plan1Page(navigateToPlan2),
-      GoalPage(),
-    ];
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          appBar: AppBar(
-            backgroundColor: const Color(0xFFFFE2D2),
-            actions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 8, right: 30),
-                child: ClipOval(
-                  child: Image.asset(
-                    'assets/profile.jpg',
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          body: _pageOptions[_selectedPage],
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: _selectedPage,
-            backgroundColor: const Color(0xFFEDB59E),
-            iconSize: 24, // Adjust icon size
-            selectedFontSize: 14, // Adjust selected font size
-            unselectedFontSize: 14, // Adjust unselected font size
-            type: BottomNavigationBarType.fixed,
-            selectedItemColor: const Color(0xFF95491E),
-            unselectedItemColor: Colors.white,
-            onTap: (int index) {
-              setState(() {
-                _selectedPage = index;
-              });
-            },
-            items: const [
-              BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.home,
-                  ),
-                  label: 'Home'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.leaderboard), label: 'Stat'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.library_books), label: 'Plan'),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.emoji_events), label: 'Goal'),
-            ],
-          ),
-        ));
+    
   }
 }
