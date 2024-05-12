@@ -1,7 +1,39 @@
+import 'dart:convert';
+
+import 'package:coiny_frontend/auth/signup.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  LoginPage({Key? key}) : super(key: key);
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  void login() async {
+    try {
+      final apiURL = 'http://10.0.2.2:4000/auth/login';
+      if (usernameController.text.isNotEmpty &&
+          passwordController.text.isNotEmpty) {
+        final response = await http.post(Uri.parse(apiURL),
+            headers: <String, String>{'Content-Type': 'application/json'},
+            body: jsonEncode(<String, dynamic>{
+              "username": usernameController.text,
+              "password": passwordController.text,
+            }));
+        if (response.statusCode == 200) {
+          print('Login successfully');
+          // Navigator.push(
+          //   context as BuildContext,
+          //   MaterialPageRoute(builder: (context) => HomePage()),
+          // );
+        }
+      }
+    } catch (e) {
+      print('ERROR: $e');
+      print(usernameController.text);
+      print(passwordController.text);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +46,7 @@ class LoginPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 100, bottom: 70),
+              padding: const EdgeInsets.only(top: 100, bottom: 40),
               child: Center(
                 child: Stack(
                   alignment: Alignment.center,
@@ -38,8 +70,18 @@ class LoginPage extends StatelessWidget {
               ),
             ),
             Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: Center(
+                child: Text(
+                  'Login',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            Padding(
               padding: const EdgeInsets.only(top: 5.0, bottom: 15.0),
               child: TextFormField(
+                controller: usernameController,
                 decoration: const InputDecoration(
                   filled: true,
                   fillColor: Color(0xFFFFF3EC),
@@ -55,6 +97,7 @@ class LoginPage extends StatelessWidget {
               ),
             ),
             TextFormField(
+              controller: passwordController,
               decoration: const InputDecoration(
                 filled: true,
                 fillColor: Color(0xFFFFF3EC),
@@ -73,19 +116,23 @@ class LoginPage extends StatelessWidget {
               child: Center(
                 child: ElevatedButton(
                     onPressed: () {
-                      // Add onPressed logic
+                      login();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
                           const Color(0xFFF5CCB4), // Background color
                     ),
-                    child: const Text('Login',style: TextStyle(color: Color(0xFF95491E)))),
+                    child: const Text('Login',
+                        style: TextStyle(color: Color(0xFF95491E)))),
               ),
             ),
             Center(
               child: TextButton(
                   onPressed: () {
-                    // Add onPressed logic
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return SignUpPage();
+                    }));
                   },
                   child: const Text('Sign up?')),
             )
