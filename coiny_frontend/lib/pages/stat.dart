@@ -1,6 +1,5 @@
 // ignore_for_file: non_constant_identifier_names, prefer_interpolation_to_compose_strings, camel_case_types
 import 'dart:convert';
-
 import 'package:coiny_frontend/barGraph/bar_Graph.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -72,7 +71,7 @@ class _statState extends State<stat> {
                           child: MyBarGraph(financial: financial),
                         ),
                       ),
-                      const SizedBox(height: 75),
+                      const SizedBox(height: 90),
                       StatInfo(
                         Saved: financial[0].toInt(),
                         UsableMoney: financial[1].toInt(),

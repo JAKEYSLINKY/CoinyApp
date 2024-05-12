@@ -408,6 +408,7 @@ class _CategoriesListState extends State<CategoriesList> {
     }).toList();
 
     return ListView(
+      physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       children: <Widget>[
         Wrap(

@@ -24,12 +24,22 @@ class _MyAppState extends State<MyApp> {
   final urlget = 'http://10.0.2.2:4000/plans/get';
   int userId = 2;
   late int _selectedPlanPage;
+  bool _loggedIn = false;
 
   @override
   void initState() {
     super.initState();
     _selectedPlanPage = 1; // Assuming Plan1Page is the default page
     _checkDataAndNavigate();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    // Implement your logic to check if the user is logged in
+    // For demonstration purposes, I'm assuming the user is not logged in initially
+    setState(() {
+      _loggedIn = true;
+    });
   }
 
   Future<void> _checkDataAndNavigate() async {
@@ -76,6 +86,7 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+
   void navigateToPlan1() {
     setState(() {
       _selectedPlanPage = 1;
@@ -84,6 +95,71 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_loggedIn) {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: LoginPage(), // Show LoginPage
+      );
+    } else {
+      final _pageOptions = [
+        const HomePage(),
+        const stat(),
+        if (_selectedPlanPage == 2)
+          Plan2Page(navigateToPlan1)
+        else
+          Plan1Page(navigateToPlan2),
+        GoalPage(),
+      ];
+      return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: Scaffold(
+            appBar: AppBar(
+              backgroundColor: const Color(0xFFFFE2D2),
+              actions: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 8, right: 30),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/profile.jpg',
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            body: _pageOptions[_selectedPage],
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: _selectedPage,
+              backgroundColor: const Color(0xFFEDB59E),
+              iconSize: 24, // Adjust icon size
+              selectedFontSize: 14, // Adjust selected font size
+              unselectedFontSize: 14, // Adjust unselected font size
+              type: BottomNavigationBarType.fixed,
+              selectedItemColor: const Color(0xFF95491E),
+              unselectedItemColor: Colors.white,
+              onTap: (int index) {
+                setState(() {
+                  _selectedPage = index;
+                });
+              },
+              items: const [
+                BottomNavigationBarItem(
+                    icon: Icon(
+                      Icons.home,
+                    ),
+                    label: 'Home'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.leaderboard), label: 'Stat'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.library_books), label: 'Plan'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.emoji_events), label: 'Goal'),
+              ],
+            ),
+          ));
+    }
     final _pageOptions = [
       const HomePage(),
       const stat(),
