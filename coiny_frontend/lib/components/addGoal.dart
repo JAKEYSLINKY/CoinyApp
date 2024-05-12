@@ -2,8 +2,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
+import '../pages/goal.dart';
+
 class addGoalPopUp extends StatefulWidget {
-  const addGoalPopUp({super.key});
+  const addGoalPopUp({super.key, required this.reloadGoals});
+  final Function reloadGoals;
   @override
   State<addGoalPopUp> createState() => _addGoalPopUpstate();
 }
@@ -11,55 +14,30 @@ class addGoalPopUp extends StatefulWidget {
 class _addGoalPopUpstate extends State<addGoalPopUp> {
   TextEditingController goalNameController = TextEditingController();
   TextEditingController goalAmountController = TextEditingController();
-  bool _isNotvalid = false;
 
   void createGoal() async {
     try {
+      final apiURL = 'http://10.0.2.2:4000/goals/create';
       if (goalNameController.text.isNotEmpty &&
           goalAmountController.text.isNotEmpty) {
-        var reqBody = {
-          "name": goalNameController.text,
-          "goalAmount": goalAmountController.text,
-          "userId": "1",
-        };
-
-        var response = await http.post(
-            Uri.parse('http://localhost:4000/goals/create'),
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode(reqBody));
-
-        var jsonResponse = jsonDecode(response.body);
-
-        if (jsonResponse['status'] == 'success') {
+        final response = await http.post(Uri.parse(apiURL),
+            headers: <String, String>{'Content-Type': 'application/json'},
+            body: jsonEncode(<String, dynamic>{
+              "userId": 1,
+              "name": goalNameController.text,
+              "goalAmount": int.parse(goalAmountController.text),
+            }));
+        if (response.statusCode == 200) {
+          print('Goal created');
+          widget.reloadGoals();
           Navigator.pop(context);
         }
       }
     } catch (e) {
-      print(e);
+      print('ERROR: $e');
+      print(goalNameController.text);
+      print(goalAmountController.text);
     }
-    //   if(goalNameController.text.isNotEmpty && goalAmountController.text.isNotEmpty) {
-    //   var reqBody = {
-    //     "name": goalNameController.text,
-    //     "goalAmount": goalAmountController.text,
-    //   };
-
-    //   var response = await http.post(
-    //     Uri.parse('http://localhost:4000/goals/create'),
-    //     headers: {'Content-Type': 'application/json'},
-    //     body: jsonEncode(reqBody));
-
-    //   var jsonResponse = jsonDecode(response.body);
-
-    //   if(jsonResponse['status'] == 'success') {
-    //     // Handle success
-    //   } else {
-    //     setState(() {
-    //       _isNotvalid = true;
-    //     });
-    //   }
-    // } else {
-    //   // Handle empty fields
-    // }
   }
 
   @override
@@ -93,7 +71,6 @@ class _addGoalPopUpstate extends State<addGoalPopUp> {
             height: 37,
             child: TextField(
               controller: goalNameController,
-              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 labelText: 'Ex. Dream house',
                 labelStyle: TextStyle(color: Color(0xFFEDB59E)),

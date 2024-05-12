@@ -3,14 +3,16 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Plan1Page extends StatefulWidget {
-  const Plan1Page({Key? key}) : super(key: key);
+  final Function navigateToPlan2;
+
+  const Plan1Page(this.navigateToPlan2, {Key? key}) : super(key: key);
 
   @override
   _Plan1PageState createState() => _Plan1PageState();
 }
 
 class _Plan1PageState extends State<Plan1Page> {
-  final url = 'http://localhost:4000/plans/create';
+  final url = 'http://10.0.2.2:4000/plans/create';
   TextEditingController monthlyController = TextEditingController();
   TextEditingController savedController = TextEditingController();
   String result = '';
@@ -24,35 +26,45 @@ class _Plan1PageState extends State<Plan1Page> {
 
   Future<void> _postData() async {
     try {
-      final response = await http.post(
+      final double monthly = double.parse(monthlyController.text);
+      final double save = double.parse(savedController.text);
+      final double currentSave = double.parse(savedController.text);
+      final response = await http
+          .post(
         Uri.parse(url),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, dynamic>{
-          //'user'
-          'name': monthlyController.text,
-          'email': savedController.text,
-          //'currentSave'
+          'userId': 2,
+          'monthly': monthly,
+          'save': save,
+          'currentSave': currentSave,
         }),
-      );
+      )
+          .catchError((e) {
+        print('Error occurred during POST request: $e');
+        throw Exception('Failed to post data: $e');
+      });
 
-      if (response.statusCode == 201) {
-        // Successful POST request, handle the response here
+      print('Response status code: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        print('create plan success(200)');
+        widget.navigateToPlan2();
         final responseData = jsonDecode(response.body);
         setState(() {
-          //result =
-              //'ID: ${responseData['id']}\nName: ${responseData['name']}\nEmail: ${responseData['email']}';
+          result =
+              'userId: ${responseData['userId']}\nmonthly: ${responseData['monthly']}\nsave: ${responseData['save']}\ncurrentSave: ${responseData['currentSave']}';
         });
       } else {
-        // If the server returns an error response, throw an exception
         throw Exception('Failed to post data');
       }
     } catch (e) {
       setState(() {
         result = 'Error: $e';
       });
-    } 
+    }
   }
 
   @override
@@ -137,12 +149,16 @@ class _Plan1PageState extends State<Plan1Page> {
               padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: Center(
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     int monthly = int.tryParse(monthlyController.text) ?? 0;
                     int saved = int.tryParse(savedController.text) ?? 0;
                     print('Monthly: $monthly');
                     print('Saved: $saved');
-                    _postData();
+                    try {
+                      await _postData();
+                    } catch (e) {
+                      print('Error: $e');
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFF5CCB4),
