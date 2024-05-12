@@ -71,7 +71,7 @@ class _statState extends State<stat> {
                           child: MyBarGraph(financial: financial),
                         ),
                       ),
-                      const SizedBox(height: 75),
+                      const SizedBox(height: 90),
                       StatInfo(
                         Saved: financial[0].toInt(),
                         UsableMoney: financial[1].toInt(),
