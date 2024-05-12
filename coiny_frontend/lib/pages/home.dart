@@ -232,6 +232,7 @@ class CategoriesList extends StatelessWidget {
     }).toList();
 
     return ListView(
+      physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       children: <Widget>[
         Wrap(
