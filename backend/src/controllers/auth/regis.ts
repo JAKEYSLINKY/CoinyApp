@@ -7,6 +7,15 @@ interface regisRequest {
 	username: string;
 	password: string;
 }
+const categoryName = [
+	"Entertain",
+	"Coffee",
+	"Bus",
+	"Food",
+	"Shopping",
+	"Other",
+];
+const iconId = [17, 25, 6, 8, 13, 24];
 const regis = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		//get the data from the request body
@@ -40,11 +49,23 @@ const regis = async (req: Request, res: Response, next: NextFunction) => {
 		const user = await prisma.users.findFirst({
 			where: {
 				username: reqBody.username,
+				password: reqBody.password,
 			},
 		});
-		const secret = process.env.JWT_SECRET;
-		console.log(secret)
-		const token = jwt.sign({ id: user!.userId }, secret!);
+		for (let i = 0; i < categoryName.length; i++) {
+			var categories = await prisma.categories.create({
+				data: {
+					name: categoryName[i],
+					iconId: iconId[i],
+				},
+			});
+			await prisma.userCategories.create({
+				data: {
+					userId: user?.userId as number,
+					categoryId: categories.categoryId,
+				},
+			});
+		}
 		return res.status(200).json({
 			success: true,
 			data: "User created",
