@@ -4,13 +4,23 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  // ignore: prefer_typing_uninitialized_variables
+  final token;
+  const HomePage({@required this.token, Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  late int userId;
+  @override
+  void initState() {
+    super.initState();
+    Map<String, dynamic> token = jsonDecode(widget.token);
+    userId = token['userId'];
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -193,8 +203,9 @@ class Category {
 }
 
 class CategoriesList extends StatefulWidget {
-  CategoriesList({super.key});
-
+  // ignore: prefer_typing_uninitialized_variables
+  final userId;
+  const CategoriesList({this.userId, Key? key}) : super(key: key);
   @override
   State<CategoriesList> createState() => _CategoriesListState();
 }
@@ -240,8 +251,6 @@ class _CategoriesListState extends State<CategoriesList> {
   };
 
   final url = 'http://10.0.2.2:4000/categories/get';
-  int userId = 2;
-
   @override
   void initState() {
     super.initState();
@@ -250,7 +259,7 @@ class _CategoriesListState extends State<CategoriesList> {
 
   Future<void> _getData() async {
     try {
-      final response = await http.get(Uri.parse('$url?userId=$userId'));
+      final response = await http.get(Uri.parse('$url?userId=$widget.userId'));
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonData = jsonDecode(response.body);
         List<Category> fetchedCategories = List<Category>.from(jsonData['data']
