@@ -16,6 +16,7 @@ class _Plan1PageState extends State<Plan1Page> {
   TextEditingController monthlyController = TextEditingController();
   TextEditingController savedController = TextEditingController();
   String result = '';
+  int userId = 2;
 
   @override
   void dispose() {
@@ -36,7 +37,7 @@ class _Plan1PageState extends State<Plan1Page> {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, dynamic>{
-          'userId': 2,
+          'userId': userId,
           'monthly': monthly,
           'save': save,
           'currentSave': currentSave,
