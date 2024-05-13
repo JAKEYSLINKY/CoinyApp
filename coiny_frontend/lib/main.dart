@@ -25,7 +25,7 @@ class _MyAppState extends State<MyApp> {
   final urlget = 'http://10.0.2.2:4000/plans/get';
   int userId = 2;
   late int _selectedPlanPage;
-  bool _loggedIn = false;
+  bool _loggedIn = true;
 
   @override
   void initState() {

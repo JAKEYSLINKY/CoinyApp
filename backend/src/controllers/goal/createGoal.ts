@@ -1,18 +1,21 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
+import verifyToken from "../auth/verifyToken";
 
 const prisma = new PrismaClient();
 interface goalRequest {
-	userId: number;
+	token: string;
 	name: string;
 	goalAmount: number;
 }
 const createGoal = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const reqBody: goalRequest = req.body;
+		const userId = verifyToken(reqBody.token);
+
 		await prisma.goals.create({
 			data: {
-				userId: reqBody.userId,
+				userId: userId,
 				name: reqBody.name,
 				goalAmount: reqBody.goalAmount,
 			},

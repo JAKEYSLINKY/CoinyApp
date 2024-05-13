@@ -1,12 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
-
+import verifyToken from "../auth/verifyToken";
 const prisma = new PrismaClient();
 interface categoryRequest {
-	userId: number;
+	token: string;
 	name: string;
 	iconName: string;
 }
+
 const createCategory = async (
 	req: Request,
 	res: Response,
@@ -14,6 +15,7 @@ const createCategory = async (
 ) => {
 	try {
 		const reqBody: categoryRequest = req.body;
+		const userId = verifyToken(reqBody.token);
 		const categoryName = await prisma.categoriesIcon.findFirst({
 			where: {
 				iconName: reqBody.iconName,
@@ -34,7 +36,7 @@ const createCategory = async (
 		});
 		await prisma.userCategories.create({
 			data: {
-				userId: reqBody.userId,
+				userId: userId,
 				categoryId: create.categoryId,
 			},
 		});
@@ -43,7 +45,6 @@ const createCategory = async (
 			data: "Category created",
 			error: null,
 		});
-
 	} catch (error: any) {
 		console.error("Error:", error);
 		return res.status(500).json({
@@ -51,6 +52,8 @@ const createCategory = async (
 			data: null,
 			error: error.message,
 		});
+	} finally {
+		await prisma.$disconnect();
 	}
 };
 export default createCategory;

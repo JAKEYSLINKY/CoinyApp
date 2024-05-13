@@ -1,9 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
+import verifyToken from "../auth/verifyToken";
 
 const prisma = new PrismaClient();
 interface goalRequest {
-	userId: number;
+	token: string;
 	goalId: number;
 	name: string;
 	goalAmount: number;
@@ -11,10 +12,11 @@ interface goalRequest {
 const editGoal = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const reqBody: goalRequest = req.body;
+		const userId = verifyToken(reqBody.token);
 		await prisma.goals.update({
 			where: {
 				goalId: reqBody.goalId,
-				userId: reqBody.userId,
+				userId: userId,
 			},
 			data: {
 				name: reqBody.name,

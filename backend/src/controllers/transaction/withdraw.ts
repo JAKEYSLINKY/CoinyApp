@@ -1,15 +1,17 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
+import verifyToken from "../auth/verifyToken";
 
 const prisma = new PrismaClient();
 interface withdrawRequest {
-	userId: number;
+	token: string;
 	category: string;
 	amount: number;
 }
 const withdraw = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const reqBody: withdrawRequest = req.body;
+		const userId = verifyToken(reqBody.token);
 		const category = await prisma.categories.findFirst({
 			where: {
 				name: reqBody.category,
@@ -24,7 +26,7 @@ const withdraw = async (req: Request, res: Response, next: NextFunction) => {
 		}
 		await prisma.transactions.create({
 			data: {
-				userId: reqBody.userId,
+				userId: userId,
 				categoryId: category.categoryId,
 				amount: -1 * reqBody.amount,
 			},
@@ -41,6 +43,8 @@ const withdraw = async (req: Request, res: Response, next: NextFunction) => {
 			data: null,
 			error: error.message,
 		});
+	} finally {
+		await prisma.$disconnect();
 	}
 };
 export default withdraw;

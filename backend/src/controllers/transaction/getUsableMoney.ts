@@ -1,9 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
+import verifyToken from "../auth/verifyToken";
 
 const prisma = new PrismaClient();
 interface getUsableMoneyRequest {
-	userId: number;
+	token: string;
 }
 const getUsableMoney = async (
 	req: Request,
@@ -24,11 +25,13 @@ const getUsableMoney = async (
 		);
 		const daysLeft = lastDayOfMonth.getDate() - today.getDate();
 		const reqQuery: getUsableMoneyRequest = {
-			userId: Number(req.query.userId),
+			token: req.query.token! as string,
 		};
+		const userId = verifyToken(reqQuery.token);
+
 		const transactionsMonthly = await prisma.transactions.aggregate({
 			where: {
-				userId: reqQuery.userId,
+				userId: userId,
 				created: {
 					gte: firstDayOfMonth,
 					lte: lastDayOfMonth,
@@ -40,7 +43,7 @@ const getUsableMoney = async (
 		});
 		const transactionsDaily = await prisma.transactions.aggregate({
 			where: {
-				userId: reqQuery.userId,
+				userId: userId,
 				created: today,
 			},
 			_sum: {
@@ -49,7 +52,7 @@ const getUsableMoney = async (
 		});
 		const plan = await prisma.plans.findFirst({
 			where: {
-				userId: reqQuery.userId,
+				userId: userId,
 				created: {
 					gte: firstDayOfMonth,
 					lte: lastDayOfMonth,
@@ -65,7 +68,7 @@ const getUsableMoney = async (
 		}
 		const bonus = await prisma.bonus.aggregate({
 			where: {
-				userId: reqQuery.userId,
+				userId: userId,
 				usage: "use",
 				created: {
 					gte: firstDayOfMonth,
