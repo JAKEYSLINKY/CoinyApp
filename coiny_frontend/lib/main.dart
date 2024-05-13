@@ -1,3 +1,4 @@
+import 'package:coiny_frontend/components/profile.dart';
 import 'package:flutter/material.dart';
 import 'pages/home.dart';
 import 'pages/plan1.dart';
@@ -64,7 +65,7 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  Future<Map<String, dynamic>> _getData() async {
+  Future<Map<String, dynamic>?> _getData() async {
     try {
       final response = await http.get(Uri.parse('$urlget?userId=$userId'));
       if (response.statusCode == 200) {
@@ -110,19 +111,31 @@ class _MyAppState extends State<MyApp> {
         GoalPage(),
       ];
       return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: Scaffold(
+        debugShowCheckedModeBanner: false,
+        home: Builder(
+          builder: (BuildContext context) => Scaffold(
             appBar: AppBar(
               backgroundColor: const Color(0xFFFFE2D2),
               actions: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top: 8, right: 30),
-                  child: ClipOval(
-                    child: Image.asset(
-                      'assets/profile.jpg',
-                      width: 50,
-                      height: 50,
-                      fit: BoxFit.cover,
+                  child: GestureDetector(
+                    onTap: () {
+                      ProfileDialog profileDialog = ProfileDialog();
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return profileDialog;
+                        },
+                      );
+                    },
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/profile.jpg',
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
@@ -157,7 +170,10 @@ class _MyAppState extends State<MyApp> {
                     icon: Icon(Icons.emoji_events), label: 'Goal'),
               ],
             ),
-          ));
+          ),
+        ),
+      );
     }
   }
 }
+

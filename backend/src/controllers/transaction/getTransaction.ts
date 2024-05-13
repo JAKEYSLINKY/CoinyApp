@@ -1,9 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
+import verifyToken from "../auth/verifyToken";
 
 const prisma = new PrismaClient();
 interface transactionRequest {
-	userId: number;
+	token: string;
 }
 const getTransaction = async (
 	req: Request,
@@ -23,11 +24,13 @@ const getTransaction = async (
 			0
 		);
 		const reqQuery: transactionRequest = {
-			userId: Number(req.query.userId),
+			token: req.query.token! as string,
 		};
+		const userId = verifyToken(reqQuery.token);
+
 		const userTransactions = await prisma.transactions.findMany({
 			where: {
-				userId: reqQuery.userId,
+				userId: userId,
 				created: {
 					gte: firstDayOfMonth,
 					lte: lastDayOfMonth,
@@ -44,7 +47,7 @@ const getTransaction = async (
 				error: "This user hasnt made any transactions yet",
 			});
 		}
-		
+
 		return res.status(200).json({
 			success: true,
 			data: userTransactions,

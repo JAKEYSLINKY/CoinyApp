@@ -1,18 +1,21 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
+import verifyToken from "../auth/verifyToken";
 
 const prisma = new PrismaClient();
 interface goalMoneyRequest {
-	userId: number;
+	token: string;
 }
 const getGoal = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const reqQuery: goalMoneyRequest = {
-			userId: Number(req.query.userId),
+			token: req.query.token! as string,
 		};
+		const userId = verifyToken(reqQuery.token);
+
 		const goals = await prisma.goals.findMany({
 			where: {
-				userId: reqQuery.userId,
+				userId: userId,
 			},
 		});
 		if (!goals) {

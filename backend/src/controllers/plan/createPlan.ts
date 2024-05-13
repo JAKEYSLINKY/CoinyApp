@@ -1,10 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
+import verifyToken from "../auth/verifyToken";
 
 const prisma = new PrismaClient();
 //declare the type of data that will be received in body
 interface planningRequest {
-	userId: number;
+	token: string;
 	monthly: number;
 	save: number;
 }
@@ -12,6 +13,7 @@ const createPlan = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		//get the data from the request body
 		const reqBody: planningRequest = req.body;
+		const userId = verifyToken(reqBody.token);
 		//check if he save more than monthly
 		if (reqBody.save > reqBody.monthly) {
 			return res.status(400).json({
@@ -23,7 +25,7 @@ const createPlan = async (req: Request, res: Response, next: NextFunction) => {
 		//create new row in plans table
 		await prisma.plans.create({
 			data: {
-				userId: reqBody.userId,
+				userId: userId,
 				monthly: reqBody.monthly,
 				save: reqBody.save,
 				currentSave: reqBody.save,

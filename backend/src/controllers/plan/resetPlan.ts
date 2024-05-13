@@ -1,15 +1,17 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
+import verifyToken from "../auth/verifyToken";
 
 const prisma = new PrismaClient();
 interface planRequest {
-	userId: number;
+	token: string;
 }
 const resetPlan = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const reqQuery: planRequest = {
-			userId: Number(req.query.userId),
+			token: req.query.token! as string,
 		};
+		const userId = verifyToken(reqQuery.token);
 		const today = new Date();
 		const firstDayOfMonth = new Date(
 			today.getFullYear(),
@@ -23,7 +25,7 @@ const resetPlan = async (req: Request, res: Response, next: NextFunction) => {
 		);
 		const plan = await prisma.plans.findFirst({
 			where: {
-				userId: reqQuery.userId,
+				userId: userId,
 				created: {
 					gte: firstDayOfMonth,
 					lte: lastDayOfMonth,
@@ -54,6 +56,8 @@ const resetPlan = async (req: Request, res: Response, next: NextFunction) => {
 			data: null,
 			error: error.message,
 		});
+	}finally {
+		await prisma.$disconnect();
 	}
 };
 export default resetPlan;

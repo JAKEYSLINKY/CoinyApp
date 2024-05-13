@@ -1,24 +1,19 @@
 import { PrismaClient } from "@prisma/client";
 // import exp from 'constants';
 import { NextFunction, Request, Response } from "express";
+import verifyToken from "../auth/verifyToken";
 
 const prisma = new PrismaClient();
 interface planRequest {
-	userId: number;
-}
-interface userPlan {
-	planId: number;
-	userId: number;
-	monthly: number;
-	save: number;
-	currentSave: number;
+	token: string;
 }
 
 const getPlan = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const reqQuery: planRequest = {
-			userId: Number(req.query.userId),
+			token: req.query.token! as string,
 		};
+		const userId = verifyToken(reqQuery.token);
 		const today = new Date();
 		const firstDayOfMonth = new Date(
 			today.getFullYear(),
@@ -32,7 +27,7 @@ const getPlan = async (req: Request, res: Response, next: NextFunction) => {
 		);
 		const plan = await prisma.plans.findFirst({
 			where: {
-				userId: reqQuery.userId,
+				userId: Number(userId),
 				created: {
 					gte: firstDayOfMonth,
 					lte: lastDayOfMonth,
@@ -46,37 +41,9 @@ const getPlan = async (req: Request, res: Response, next: NextFunction) => {
 				error: "No Plan on this month yet",
 			});
 		}
-		const bonus = await prisma.bonus.aggregate({
-			where: {
-				userId: reqQuery.userId,
-				usage: "save",
-				created: {
-					gte: firstDayOfMonth,
-					lte: lastDayOfMonth,
-				},
-			},
-			_sum: {
-				amount: true,
-			},
-		});
-		const userPlan: userPlan = {
-			planId: plan.planId,
-			userId: plan.userId,
-			monthly: plan.monthly,
-			save: plan.save,
-			currentSave: plan.save + bonus._sum.amount!,
-		};
-		await prisma.plans.update({
-			where: {
-				planId: plan.planId,
-			},
-			data: {
-				currentSave: plan.save + bonus._sum.amount!,
-			},
-		});
 		return res.status(200).json({
 			success: true,
-			data: userPlan,
+			data: plan,
 			error: null,
 		});
 	} catch (error: any) {

@@ -1,24 +1,26 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
+import verifyToken from "../auth/verifyToken";
 
 const prisma = new PrismaClient();
 interface categoryRequest {
-	userId: number;
+	token: string;
 	categoryId: number;
 	iconName: string;
 	categoryName: string;
 }
 const editCategory = async (
 	req: Request,
-	res: Response,	
+	res: Response,
 	next: NextFunction
 ) => {
-	const reqBody: categoryRequest = req.body;
 	try {
+		const reqBody: categoryRequest = req.body;
+		const userId = verifyToken(reqBody.token);
 		const category = await prisma.userCategories.findFirst({
 			where: {
 				categoryId: reqBody.categoryId,
-				userId: reqBody.userId,
+				userId: userId,
 			},
 		});
 		if (!category) {
