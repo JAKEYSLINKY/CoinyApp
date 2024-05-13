@@ -1,9 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
+import verifyToken from "../auth/verifyToken";
 
 const prisma = new PrismaClient();
 interface goalMoneyRequest {
-	userId: number;
+	token: string;
 	goalId: number;
 	amount: number;
 }
@@ -14,6 +15,8 @@ const addGoalMoney = async (
 ) => {
 	try {
 		const reqBody: goalMoneyRequest = req.body;
+		const userId = verifyToken(reqBody.token);
+
 		const today = new Date();
 		const firstDayOfMonth = new Date(
 			today.getFullYear(),
@@ -27,7 +30,7 @@ const addGoalMoney = async (
 		);
 		const plan = await prisma.plans.findFirst({
 			where: {
-				userId: reqBody.userId,
+				userId: userId,
 				created: {
 					gte: firstDayOfMonth,
 					lte: lastDayOfMonth,
@@ -37,7 +40,7 @@ const addGoalMoney = async (
 		const goal = await prisma.goals.findFirst({
 			where: {
 				goalId: reqBody.goalId,
-				userId: reqBody.userId,
+				userId: userId,
 			},
 		});
 		if (!goal || !plan) {
@@ -64,7 +67,7 @@ const addGoalMoney = async (
 			await prisma.goals.update({
 				where: {
 					goalId: reqBody.goalId,
-					userId: reqBody.userId,
+					userId: userId,
 				},
 				data: {
 					currentAmount: currentAmount,
@@ -76,7 +79,7 @@ const addGoalMoney = async (
 		await prisma.goals.update({
 			where: {
 				goalId: goal.goalId,
-				userId: reqBody.userId,
+				userId: userId,
 			},
 			data: {
 				currentAmount: currentAmount,
@@ -85,7 +88,7 @@ const addGoalMoney = async (
 		await prisma.plans.update({
 			where: {
 				planId: plan.planId,
-				userId: reqBody.userId,
+				userId: userId,
 			},
 			data: {
 				currentSave: plan.currentSave - reqBody.amount,

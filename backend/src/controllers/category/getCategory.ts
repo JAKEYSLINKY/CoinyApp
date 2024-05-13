@@ -1,17 +1,21 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
+import verifyToken from "../auth/verifyToken";
 
 const prisma = new PrismaClient();
 interface categoryRequest {
-	userId: number;
+	token: string;
 }
+
 const getCategory = async (req: Request, res: Response, next: NextFunction) => {
-	const reqQuery: categoryRequest = { userId: Number(req.query.userId) };
+	const reqQuery: categoryRequest = { token: req.query.token! as string };
+	const userId = verifyToken(reqQuery.token);
+
 	try {
 		const category =
 			await prisma.$queryRaw`SELECT categoriesIcon.iconName,categories.name 
             FROM categoriesIcon,categories,userCategories
-            WHERE userCategories.userId = ${reqQuery.userId} 
+            WHERE userCategories.userId = ${userId} 
             AND categories.categoryId = userCategories.categoryId 
             AND categories.iconId = categoriesIcon.iconId;`;
 		if (!category) {

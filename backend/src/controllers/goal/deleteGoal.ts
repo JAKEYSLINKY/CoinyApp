@@ -1,17 +1,19 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
+import verifyToken from "../auth/verifyToken";
 
 const prisma = new PrismaClient();
 interface goalRequest {
-	userId: number;
+	token: string;
 	goalId: number;
 }
 const deleteGoal = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const reqQuery: goalRequest = {
-			userId: Number(req.query.userId),
+			token: req.query.token! as string,
 			goalId: Number(req.query.goalId),
 		};
+		const userId = verifyToken(reqQuery.token);
 		const today = new Date();
 		const firstDayOfMonth = new Date(
 			today.getFullYear(),
@@ -25,7 +27,7 @@ const deleteGoal = async (req: Request, res: Response, next: NextFunction) => {
 		);
 		const plan = await prisma.plans.findFirst({
 			where: {
-				userId: reqQuery.userId,
+				userId: userId,
 				created: {
 					gte: firstDayOfMonth,
 					lte: lastDayOfMonth,
@@ -34,7 +36,7 @@ const deleteGoal = async (req: Request, res: Response, next: NextFunction) => {
 		});
 		const goal = await prisma.goals.findFirst({
 			where: {
-				userId: reqQuery.userId,
+				userId: userId,
 				goalId: reqQuery.goalId,
 			},
 		});
@@ -48,7 +50,7 @@ const deleteGoal = async (req: Request, res: Response, next: NextFunction) => {
 		await prisma.plans.update({
 			where: {
 				planId: plan.planId,
-				userId: reqQuery.userId,
+				userId: userId,
 			},
 			data: {
 				currentSave: plan.currentSave + goal.currentAmount,
@@ -57,7 +59,7 @@ const deleteGoal = async (req: Request, res: Response, next: NextFunction) => {
 		await prisma.goals.delete({
 			where: {
 				goalId: reqQuery.goalId,
-				userId: reqQuery.userId,
+				userId: userId,
 			},
 		});
 		return res.status(200).json({
