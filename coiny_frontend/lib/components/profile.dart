@@ -83,7 +83,11 @@ class ProfileDialog extends StatelessWidget {
                       ),
                       contentPadding:
                           EdgeInsets.symmetric(vertical: 0, horizontal: 12),
-                      suffixIcon: Icon(Icons.edit, color: Color(0xFFEDB59E)),
+                      suffixIcon: SizedBox(
+                        width: 10, // Specify the width of the icon
+                        height: 10, // Specify the height of the icon
+                        child: Icon(Icons.edit, color: Color(0xFFEDB59E)),
+                      ),
                     ),
                   ),
                   SizedBox(height: 15),
