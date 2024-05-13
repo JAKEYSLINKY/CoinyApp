@@ -23,7 +23,7 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, dynamic>{
-          'userId': 1,
+          'userId': 2,
           'name': _nameController.text,
           'iconName': _selectedIconName,
         }),
