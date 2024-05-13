@@ -1,17 +1,19 @@
 import { PrismaClient } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
+import verifyToken from "../auth/verifyToken";
 
 const prisma = new PrismaClient();
 interface userRequest {
-	userId: number;
+	token: string;
 	image: string;
 }
 const editPic = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const reqBody: userRequest = req.body;
+		const userId = verifyToken(reqBody.token);
 		await prisma.users.update({
 			where: {
-				userId: reqBody.userId,
+				userId: userId,
 			},
 			data: {
 				image: reqBody.image,
