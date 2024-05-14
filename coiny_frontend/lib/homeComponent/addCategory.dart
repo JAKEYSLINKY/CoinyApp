@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../components/addCategory.dart';
+import '../components/addDialogCategory.dart';
 
 class addCategory extends StatelessWidget {
   final token;
-  const addCategory({super.key, required this.token});
+  const addCategory({super.key, required this.token, required this.reloadData});
+  final Function reloadData;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -16,6 +17,7 @@ class addCategory extends StatelessWidget {
               context: context,
               builder: (BuildContext context) => AddCategoryDialog(
                     token: token,
+                    reloadData: reloadData,
                   ));
         },
         style: ElevatedButton.styleFrom(

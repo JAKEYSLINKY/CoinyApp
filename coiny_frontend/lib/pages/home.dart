@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../components/addCategory.dart';
+//import '../components/addCategory.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../homeComponent/mascot.dart';
@@ -29,12 +29,6 @@ class _HomePageState extends State<HomePage> {
 
   final urlgetcategory = 'http://10.0.2.2:4000/categories/get';
   final List<Category> categories = [
-    Category('entertain', 'Entertain'),
-    Category('coffee', 'Coffee'),
-    Category('bus', 'Bus'),
-    Category('restaurant', 'food'),
-    Category('cart', 'Shopping'),
-    Category('other', 'Other'),
     // Add more categories with their associated icon names as needed
   ];
 
@@ -48,11 +42,13 @@ class _HomePageState extends State<HomePage> {
             .map((category) =>
                 Category(category['iconName'], category['name'])));
         setState(() {
+          categories.clear();
           categories.addAll(fetchedCategories);
-          print('Updated categories: $categories');
+          print('Updated categories: $jsonData');
         });
       } else {
-        throw Exception('Failed to fetch data: ${response.statusCode}');
+        throw Exception(
+            'Failed to fetch category data: ${response.statusCode}');
       }
     } catch (e) {
       print('$e');
@@ -76,7 +72,7 @@ class _HomePageState extends State<HomePage> {
         });
         print('Received data: $jsonData');
       } else {
-        throw Exception('Failed to fetch data: ${response.statusCode}');
+        throw Exception('Failed to fetch money data: ${response.statusCode}');
       }
     } catch (e) {
       print('$e');
@@ -100,7 +96,7 @@ class _HomePageState extends State<HomePage> {
 
         print('Received transaction data: $jsonData');
       } else {
-        throw Exception('Failed to fetch data: ${response.statusCode}');
+        throw Exception('Failed to fetch history data: ${response.statusCode}');
       }
     } catch (e) {
       print('$e');
@@ -113,7 +109,7 @@ class _HomePageState extends State<HomePage> {
   // }
   void reloadData() {
     _getMoneyData();
-    //_getCategoryData();
+    _getCategoryData();
     _getHistoryData();
   }
 
@@ -139,9 +135,7 @@ class _HomePageState extends State<HomePage> {
                       token: widget.token,
                       categories: categories,
                       reloadData: reloadData),
-                  addCategory(
-                    token: widget.token,
-                  ),
+                  addCategory(token: widget.token, reloadData: reloadData),
                   history(transactionData: _transactionData),
                 ],
               ),
