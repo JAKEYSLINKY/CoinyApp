@@ -3,7 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class AddCategoryDialog extends StatefulWidget {
-  AddCategoryDialog({Key? key}) : super(key: key);
+  AddCategoryDialog({Key? key, required this.token}) : super(key: key);
+  final token;
 
   @override
   _AddCategoryDialogState createState() => _AddCategoryDialogState();
@@ -23,7 +24,7 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, dynamic>{
-          'userId': 2,
+          'token': widget.token,
           'name': _nameController.text,
           'iconName': _selectedIconName,
         }),

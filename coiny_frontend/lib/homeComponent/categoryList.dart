@@ -16,9 +16,13 @@ class Category {
 
 class categoriesList extends StatefulWidget {
   categoriesList(
-      {super.key, required this.categories, required this.reloadData});
+      {super.key,
+      required this.categories,
+      required this.reloadData,
+      required this.token});
   final List<Category> categories;
   final Function reloadData;
+  final token;
   @override
   State<categoriesList> createState() => _CategoriesListState();
 }
@@ -36,7 +40,7 @@ class _CategoriesListState extends State<categoriesList> {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, dynamic>{
-          'userId': 2,
+          'token': widget.token,
           'category': categoryName,
           'amount': _amountController.text,
         }),
@@ -162,10 +166,10 @@ class _CategoriesListState extends State<categoriesList> {
         },
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.zero,
+          backgroundColor: const Color(0xFFF98A4C),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
-          primary: const Color(0xFFF98A4C),
         ),
         child: SizedBox(
           width: 100,

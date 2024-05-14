@@ -4,7 +4,8 @@ import 'dart:convert';
 import '../components/addCategory.dart';
 
 class addCategory extends StatelessWidget {
-  const addCategory({super.key});
+  final token;
+  const addCategory({super.key, required this.token});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -13,7 +14,9 @@ class addCategory extends StatelessWidget {
         onPressed: () {
           showDialog<String>(
               context: context,
-              builder: (BuildContext context) => AddCategoryDialog());
+              builder: (BuildContext context) => AddCategoryDialog(
+                    token: token,
+                  ));
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Color(0xFFEDB59E),

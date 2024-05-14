@@ -3,7 +3,9 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 class addGoalPopUp extends StatefulWidget {
-  const addGoalPopUp({super.key, required this.reloadGoals});
+  const addGoalPopUp(
+      {super.key, required this.reloadGoals, required this.token});
+  final token;
   final Function reloadGoals;
   @override
   State<addGoalPopUp> createState() => _addGoalPopUpstate();
@@ -21,7 +23,7 @@ class _addGoalPopUpstate extends State<addGoalPopUp> {
         final response = await http.post(Uri.parse(apiURL),
             headers: <String, String>{'Content-Type': 'application/json'},
             body: jsonEncode(<String, dynamic>{
-              "userId": 1,
+              "token": widget.token,
               "name": goalNameController.text,
               "goalAmount": int.parse(goalAmountController.text),
             }));
