@@ -177,7 +177,11 @@ List<double> parseMoney(String responseBody) {
       print('currentSave: $currentSave' +
           ' UsableMoney: $UsableMoney' +
           ' Used: $Used');
-      return [currentSave.toDouble(), UsableMoney.toDouble(), Used.toDouble()];
+      return [
+        currentSave.toDouble(),
+        UsableMoney.toDouble(),
+        (Used.toDouble() * (-1.00))
+      ];
     }
     return [];
   } catch (e) {

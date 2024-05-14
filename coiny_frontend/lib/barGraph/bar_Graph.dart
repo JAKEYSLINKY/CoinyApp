@@ -47,7 +47,9 @@ class MyBarGraph extends StatelessWidget {
           .map((data) => BarChartGroupData(x: data.x, barRods: [
                 BarChartRodData(
                     toY: data.y / 1.2,
-                    color: const Color(0xFFF5CCB4),
+                    color: (data == MyBarData.barData.last)
+                        ? Colors.red[300]
+                        : const Color(0xFFF5CCB4),
                     width: 69,
                     borderRadius: data.y >= 0
                         ? const BorderRadius.only(
