@@ -11,16 +11,38 @@ class history extends StatefulWidget {
 }
 
 class _HistoryState extends State<history> {
+  String _previousDate = '';
 
   @override
   Widget build(BuildContext context) {
+    if (widget.transactionData.isEmpty) {
+      return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              margin: const EdgeInsets.only(bottom: 10.0),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    "History",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                  Icon(Icons.history),
+                ],
+              ),
+            ),
+            const Text('No transaction history')
+          ]);
+    }
+
+    _previousDate = ''; // Reset _previousDate when rebuilding
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        // Your profile content here
         Container(
-          margin: const EdgeInsets.only(
-              bottom: 10.0), // Add margin only at the bottom
+          margin: const EdgeInsets.only(bottom: 10.0),
           child: const Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -39,26 +61,35 @@ class _HistoryState extends State<history> {
             borderRadius: BorderRadius.circular(10),
           ),
           child: Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               children: widget.transactionData.map((transaction) {
-                String date = transaction['created'];
+                String dateString = transaction['created'];
+                String formattedDate = _formatDate(dateString);
                 String categoryName = transaction['categories']['name'];
                 int amount = transaction['amount'];
 
+                bool showDate = formattedDate != _previousDate;
+                _previousDate = formattedDate; // Update the previous date
+
                 return Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [Text(date, style: TextStyle(fontSize: 10))],
-                    ),
+                    if (showDate)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(formattedDate,
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold))
+                        ],
+                      ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           categoryName,
                           style: TextStyle(
-                            fontSize: 16,
+                            fontSize: 14,
                           ),
                         ),
                         Text("$amount B")
@@ -72,5 +103,53 @@ class _HistoryState extends State<history> {
         ),
       ],
     );
+  }
+
+  String _formatDate(String dateString) {
+    List<String> dateParts = dateString.split('T')[0].split('-');
+    String day = dateParts[2];
+    String month;
+    switch (dateParts[1]) {
+      case '01':
+        month = 'Jan';
+        break;
+      case '02':
+        month = 'Feb';
+        break;
+      case '03':
+        month = 'Mar';
+        break;
+      case '04':
+        month = 'Apr';
+        break;
+      case '05':
+        month = 'May';
+        break;
+      case '06':
+        month = 'Jun';
+        break;
+      case '07':
+        month = 'Jul';
+        break;
+      case '08':
+        month = 'Aug';
+        break;
+      case '09':
+        month = 'Sep';
+        break;
+      case '10':
+        month = 'Oct';
+        break;
+      case '11':
+        month = 'Nov';
+        break;
+      case '12':
+        month = 'Dec';
+        break;
+      default:
+        month = '';
+    }
+    String year = dateParts[0];
+    return '$day $month $year';
   }
 }

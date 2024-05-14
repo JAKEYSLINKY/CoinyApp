@@ -113,24 +113,24 @@ class ProfileDialog extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: 5),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF95491E),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                        ),
-                        onPressed: () {
-                          onSave();
-                          Navigator.of(context).pop();
-                        },
-                        child: Text(
-                          'Save',
-                          style: TextStyle(
-                            color: const Color(0xFFF5CCB4),
-                          ),
-                        ),
-                      ),
+                      // ElevatedButton(
+                      //   style: ElevatedButton.styleFrom(
+                      //     backgroundColor: Color(0xFF95491E),
+                      //     shape: RoundedRectangleBorder(
+                      //       borderRadius: BorderRadius.circular(15),
+                      //     ),
+                      //   ),
+                      //   onPressed: () {
+                      //     onSave();
+                      //     Navigator.of(context).pop();
+                      //   },
+                      //   child: Text(
+                      //     'Save',
+                      //     style: TextStyle(
+                      //       color: const Color(0xFFF5CCB4),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                   SizedBox(height: 15),
