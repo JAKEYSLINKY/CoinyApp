@@ -7,7 +7,7 @@ class NumberInputDialog extends StatefulWidget {
   final int saved;
   final String name;
   final int goalId;
-  final int userId;
+  final token;
   final Function reloadGoals;
   // final Function updateSavedAmount;
   NumberInputDialog({
@@ -17,7 +17,7 @@ class NumberInputDialog extends StatefulWidget {
     required this.name,
     required this.goalId,
     required this.reloadGoals,
-    required this.userId,
+    required this.token,
     // required this.updateSavedAmount
   });
   @override
@@ -40,7 +40,7 @@ class _NumberInputDialogState extends State<NumberInputDialog> {
         final response = await http.patch(Uri.parse(apiURL),
             headers: <String, String>{'Content-Type': 'application/json'},
             body: jsonEncode(<String, dynamic>{
-              "userId": widget.userId,
+              "token": widget.token,
               "goalId": widget.goalId,
               "amount": int.parse(_controller.text),
             }));
@@ -74,7 +74,7 @@ class _NumberInputDialogState extends State<NumberInputDialog> {
                     context: context,
                     builder: (BuildContext context) {
                       return AnotherPopup(
-                        userId: widget.userId,
+                        token: widget.token,
                         goalId: widget.goalId,
                         name: widget.name,
                         reloadGoals: widget.reloadGoals,
@@ -172,7 +172,7 @@ class _NumberInputDialogState extends State<NumberInputDialog> {
 }
 
 class AnotherPopup extends StatefulWidget {
-  final int userId;
+  final String token;
   final int goalId;
   final String name;
   final int goal;
@@ -180,7 +180,7 @@ class AnotherPopup extends StatefulWidget {
 
   const AnotherPopup(
       {super.key,
-      required this.userId,
+      required this.token,
       required this.goalId,
       required this.reloadGoals,
       required this.name,
@@ -217,7 +217,7 @@ class _AnotherPopupState extends State<AnotherPopup> {
         final response = await http.patch(Uri.parse(apiURL),
             headers: <String, String>{'Content-Type': 'application/json'},
             body: jsonEncode(<String, dynamic>{
-              "userId": widget.userId,
+              "token": widget.token,
               "goalId": widget.goalId,
               "name": _controller1.text,
               "goalAmount": int.parse(_controller2.text),
@@ -239,7 +239,7 @@ class _AnotherPopupState extends State<AnotherPopup> {
   void deleteGoal() async {
     try {
       final apiURL =
-          'http://10.0.2.2:4000/goals/delete?userId=${widget.userId}&goalId=${widget.goalId}';
+          'http://10.0.2.2:4000/goals/delete?token=${widget.token}&goalId=${widget.goalId}';
       final response = await http.delete(
         Uri.parse(apiURL),
         headers: <String, String>{'Content-Type': 'application/json'},

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class mascot extends StatelessWidget {
@@ -21,34 +22,36 @@ class mascot extends StatelessWidget {
         Expanded(
           child: Stack(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 13.0),
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  height: 74,
-                  width: 225,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: const Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Howdy, I am Coiny. And I will help you manage your money!',
-                          style: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.bold),
-                        ),
-                      ],
+              SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 13.0),
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    height: 74,
+                    width: 225,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Howdy, I am Coiny. And I will help you manage your money!',
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
               // Positioned carrot image at bottom right
               const Positioned(
-                bottom: -14.0, // Adjust position as needed
-                right: -14.0, // Adjust position as needed
+                bottom: -8.0, // Adjust position as needed
+                right: 0, // Adjust position as needed
                 child: Image(
                   image: AssetImage('assets/carrot.png'),
                   height: 60,

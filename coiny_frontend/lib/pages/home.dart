@@ -17,16 +17,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late int userId;
-  @override
   @override
   void initState() {
     super.initState();
     _getCategoryData();
     _getMoneyData();
     _getHistoryData();
-    Map<String, dynamic> token = jsonDecode(widget.token);
-    userId = token['userId'];
+    // Map<String, dynamic> token = jsonDecode(widget.token);
+    // userId = token['userId'];
   }
 
   final urlgetcategory = 'http://10.0.2.2:4000/categories/get';
@@ -43,7 +41,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _getCategoryData() async {
     try {
       final response =
-          await http.get(Uri.parse('$urlgetcategory?userId=$userId'));
+          await http.get(Uri.parse('$urlgetcategory?token=${widget.token}'));
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonData = jsonDecode(response.body);
         List<Category> fetchedCategories = List<Category>.from(jsonData['data']
@@ -68,7 +66,8 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _getMoneyData() async {
     try {
-      final response = await http.get(Uri.parse('$urlgetmoney?userId=$userId'));
+      final response =
+          await http.get(Uri.parse('$urlgetmoney?token=${widget.token}'));
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonData = jsonDecode(response.body);
         setState(() {
@@ -91,7 +90,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _getHistoryData() async {
     try {
       final response =
-          await http.get(Uri.parse('$urlgethistory?userId=$userId'));
+          await http.get(Uri.parse('$urlgethistory?token=${widget.token}'));
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonData = jsonDecode(response.body);
         List<dynamic> transactions = jsonData['data'];
@@ -137,8 +136,12 @@ class _HomePageState extends State<HomePage> {
                   showMoney(
                       usableMoney: usableMoney, dailyExpense: dailyExpense),
                   categoriesList(
-                      categories: categories, reloadData: reloadData),
-                  addCategory(),
+                      token: widget.token,
+                      categories: categories,
+                      reloadData: reloadData),
+                  addCategory(
+                    token: widget.token,
+                  ),
                   history(transactionData: _transactionData),
                 ],
               ),

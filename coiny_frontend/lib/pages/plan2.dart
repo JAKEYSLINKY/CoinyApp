@@ -5,9 +5,10 @@ import 'dart:convert';
 
 class Plan2Page extends StatefulWidget {
   final Function navigateToPlan1;
+  final token;
 
-  const Plan2Page(this.navigateToPlan1, {Key? key}) : super(key: key);
-
+  const Plan2Page(this.navigateToPlan1, this.token, {Key? key})
+      : super(key: key);
   @override
   State<Plan2Page> createState() => _Plan2PageState();
 }
@@ -15,13 +16,13 @@ class Plan2Page extends StatefulWidget {
 class _Plan2PageState extends State<Plan2Page> {
   final urlget = 'http://10.0.2.2:4000/plans/get';
   final urlreset = 'http://10.0.2.2:4000/plans/reset';
-  int userId = 2;
   double monthly = 0;
   double save = 0;
 
   Future<Map<String, dynamic>> _getData() async {
     try {
-      final response = await http.get(Uri.parse('$urlget?userId=$userId'));
+      final response =
+          await http.get(Uri.parse('$urlget?token=${widget.token}'));
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonData = jsonDecode(response.body);
         print('Received data: $jsonData');
@@ -36,7 +37,8 @@ class _Plan2PageState extends State<Plan2Page> {
 
   Future<void> _resetData() async {
     try {
-      final response = await http.delete(Uri.parse('$urlreset?userId=$userId'));
+      final response =
+          await http.delete(Uri.parse('$urlreset?token=${widget.token}'));
       if (response.statusCode == 200) {
         print('Reset successful');
         widget.navigateToPlan1();
@@ -158,7 +160,9 @@ class _Plan2PageState extends State<Plan2Page> {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return addMoney(); // Show AnotherPopup when NumberInputButton is clicked
+                                  return addMoney(
+                                      token: widget
+                                          .token); // Show AnotherPopup when NumberInputButton is clicked
                                 },
                               );
                             },

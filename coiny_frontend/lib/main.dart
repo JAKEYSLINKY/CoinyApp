@@ -1,5 +1,6 @@
 import 'package:coiny_frontend/components/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'pages/home.dart';
 import 'pages/plan1.dart';
 import 'pages/plan2.dart';
@@ -11,11 +12,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+      const MaterialApp(debugShowCheckedModeBanner: false, home: LoginPage()));
 }
 
+// ignore: must_be_immutable
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  var token;
+  MyApp({Key? key, required this.token}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -23,16 +27,25 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final urlget = 'http://10.0.2.2:4000/plans/get';
-  int userId = 2;
   late int _selectedPlanPage;
-  bool _loggedIn = true;
-
+  bool _loggedIn = false; // Remove 'late' keyword
+  String token = '';
+  late bool noplan;
   @override
   void initState() {
     super.initState();
     _selectedPlanPage = 1; // Assuming Plan1Page is the default page
-    _checkDataAndNavigate();
-    _checkLoginStatus();
+    _initializeDataAndLogin();
+    token = widget.token;
+  }
+
+  Future<void> _initializeDataAndLogin() async {
+    try {
+      await _checkDataAndNavigate();
+      await _checkLoginStatus();
+    } catch (e) {
+      print('Error initializing data: $e');
+    }
   }
 
   Future<void> _checkLoginStatus() async {
@@ -55,6 +68,7 @@ class _MyAppState extends State<MyApp> {
         // No data available, navigate to Plan1Page
         setState(() {
           _selectedPlanPage = 1;
+          noplan = true;
         });
       }
     } catch (e) {
@@ -67,12 +81,14 @@ class _MyAppState extends State<MyApp> {
 
   Future<Map<String, dynamic>?> _getData() async {
     try {
-      final response = await http.get(Uri.parse('$urlget?userId=$userId'));
+      final response =
+          await http.get(Uri.parse('$urlget?token=${widget.token}'));
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonData = jsonDecode(response.body);
         print('Received data: $jsonData');
         return jsonData;
       } else {
+        print(widget.token);
         throw Exception('Failed to fetch data: ${response.statusCode}');
       }
     } catch (e) {
@@ -80,7 +96,8 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  int _selectedPage = 3;
+  int _selectedPage = 0;
+
   void navigateToPlan2() {
     setState(() {
       _selectedPlanPage = 2;
@@ -102,13 +119,19 @@ class _MyAppState extends State<MyApp> {
       );
     } else {
       final _pageOptions = [
-        const HomePage(),
-        const stat(),
+        HomePage(
+          token: widget.token,
+        ),
+        stat(
+          token: widget.token,
+        ),
         if (_selectedPlanPage == 2)
-          Plan2Page(navigateToPlan1)
+          Plan2Page(navigateToPlan1, widget.token)
         else
-          Plan1Page(navigateToPlan2),
-        GoalPage(),
+          Plan1Page(navigateToPlan2, widget.token),
+        GoalPage(
+          token: widget.token,
+        ),
       ];
       return MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -121,7 +144,15 @@ class _MyAppState extends State<MyApp> {
                   padding: const EdgeInsets.only(top: 8, right: 30),
                   child: GestureDetector(
                     onTap: () {
-                      ProfileDialog profileDialog = ProfileDialog();
+                      ProfileDialog profileDialog = ProfileDialog(
+                        token: widget.token,
+                        onTokenChanged: (String newToken) {
+                          setState(() {
+                            widget.token = newToken;
+                            _loggedIn = false;
+                          });
+                        },
+                      );
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -176,4 +207,3 @@ class _MyAppState extends State<MyApp> {
     }
   }
 }
-

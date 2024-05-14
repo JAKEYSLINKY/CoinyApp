@@ -3,9 +3,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class addMoney extends StatefulWidget {
-  // final Function(int) onSave;
+  final token;
 
-  addMoney({super.key});
+  addMoney({super.key, required this.token});
 
   @override
   _NumberInputDialogState createState() => _NumberInputDialogState();
@@ -33,7 +33,7 @@ class _NumberInputDialogState extends State<addMoney> {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, dynamic>{
-          'userId': 2,
+          'token': widget.token,
           'amount': amount,
           'usage': usage,
           'source': "null",
@@ -173,51 +173,5 @@ class _NumberInputDialogState extends State<addMoney> {
   void dispose() {
     _controller.dispose();
     super.dispose();
-  }
-}
-
-class NumberInputButton extends StatelessWidget {
-  final Function(int) onSave;
-
-  NumberInputButton({required this.onSave});
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return addMoney();
-          },
-        );
-      },
-      child: Text('Add Money'),
-    );
-  }
-}
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Goal'),
-        ),
-        body: Center(
-          child: NumberInputButton(
-            onSave: (int number) {
-              print('Number saved: $number');
-              // Do something with the saved number
-            },
-          ),
-        ),
-      ),
-    );
   }
 }

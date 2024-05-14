@@ -16,7 +16,7 @@ class MyBarGraph extends StatelessWidget {
     );
     MyBarData.initializeBarData();
     return BarChart(BarChartData(
-      maxY: financial[0] + financial[1] - financial[2],
+      maxY: (financial[0] + financial[1]) / 1.2,
       minY: 0,
       gridData: const FlGridData(show: false),
       borderData: FlBorderData(

@@ -4,8 +4,10 @@ import 'dart:convert';
 
 class Plan1Page extends StatefulWidget {
   final Function navigateToPlan2;
+  final token;
 
-  const Plan1Page(this.navigateToPlan2, {Key? key}) : super(key: key);
+  const Plan1Page(this.navigateToPlan2, this.token, {Key? key})
+      : super(key: key);
 
   @override
   _Plan1PageState createState() => _Plan1PageState();
@@ -37,7 +39,7 @@ class _Plan1PageState extends State<Plan1Page> {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, dynamic>{
-          'userId': userId,
+          'token': widget.token,
           'monthly': monthly,
           'save': save,
           'currentSave': currentSave,
