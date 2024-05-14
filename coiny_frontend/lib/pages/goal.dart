@@ -52,7 +52,7 @@ class _GoalPageState extends State<GoalPage> {
         print('getGoal');
         setState(() {
           goals = parseGoals(response.body);
-          isLoading = false; // Implement parseGoals method
+          isLoading = false;
         });
         print('goals: $goals');
       } else {
@@ -79,7 +79,7 @@ class _GoalPageState extends State<GoalPage> {
         print('getSave');
         setState(() {
           saved = parseSaved(response.body);
-          isLoading = false; // Implement parseGoals method
+          isLoading = false;
         });
         print('saved: $saved');
       } else {
@@ -183,7 +183,6 @@ class _GoalPageState extends State<GoalPage> {
                                   getGoal();
                                   getSave();
                                 },
-                                // updateSavedAmount: updateSavedAmount,
                               ),
                             );
                           },
@@ -226,7 +225,6 @@ class _AddNewGoalState extends State<AddNewGoal> {
               return addGoalPopUp(
                   token: widget.token,
                   reloadGoals: () {
-                    // Call the reload callback after creating a new goal
                     widget.reloadCallback();
                   });
             },
@@ -256,7 +254,6 @@ class goalTem extends StatelessWidget {
     required this.goalId,
     required this.token,
     required this.reloadCallback,
-    // required this.updateSavedAmount,
   });
   String name;
   int goal;
@@ -265,7 +262,6 @@ class goalTem extends StatelessWidget {
   int goalId;
   String token;
   final Function() reloadCallback;
-  // final Function(int) updateSavedAmount;
 
   @override
   Widget build(BuildContext context) {
@@ -281,8 +277,7 @@ class goalTem extends StatelessWidget {
               name: name,
               token: token,
               reloadGoals: reloadCallback,
-              // updateSavedAmount: updateSavedAmount,
-            ); // Show AnotherPopup when NumberInputButton is clicked
+            );
           },
         );
       },
@@ -363,26 +358,19 @@ class goalTem extends StatelessWidget {
 
 List<Mygoal> parseGoals(String responseBody) {
   try {
-    // Parse the JSON string into a Map<String, dynamic> using jsonDecode
     Map<String, dynamic> jsonResponse = jsonDecode(responseBody);
 
-    // Extract the 'data' field from the JSON response
     List<dynamic> jsonData = jsonResponse['data'];
 
-    // Create an empty list to store the parsed goals
     List<Mygoal> parsedGoals = [];
 
-    // Iterate over each item in the JSON data
     for (var item in jsonData) {
-      // Check if the item is a Map<String, dynamic>
       if (item is Map<String, dynamic>) {
-        // Extract individual fields from the map
         String name = item['name'];
         int goal = item['goalAmount'];
         int currentAmount = item['currentAmount'];
         int goalId = item['goalId'];
 
-        // Create a new Mygoal object from the extracted data
         Mygoal goalObject = Mygoal(
           name: name ?? '',
           goal: goal ?? 0,
@@ -390,17 +378,14 @@ List<Mygoal> parseGoals(String responseBody) {
           goalId: goalId ?? 0,
         );
 
-        // Add the created Mygoal object to the parsedGoals list
         parsedGoals.add(goalObject);
       }
     }
 
-    // Return the list of parsed goals
     return parsedGoals;
   } catch (e) {
-    // Handle JSON parsing errors
     print('Error parsing JSON: $e');
-    return []; // Return an empty list in case of errors
+    return [];
   }
 }
 
