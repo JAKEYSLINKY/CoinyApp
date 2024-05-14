@@ -1,36 +1,34 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('My App'),
-        ),
-        body: Builder(
-          builder: (BuildContext context) {
-            return Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return ProfileDialog();
-                    },
-                  );
-                },
-                child: Text('Show Dialog'),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class ProfileDialog extends StatelessWidget {
+  ProfileDialog({Key? key, required this.token, required this.onTokenChanged})
+      : super(key: key);
+  var token;
+  final Function(String) onTokenChanged;
+  TextEditingController _controller = TextEditingController();
+
+  void onSave() async {
+    try {
+      final apiURL = 'http://10.0.2.2:4000/users/edit/name';
+      final response = await http.patch(
+        Uri.parse(apiURL),
+        headers: <String, String>{'Content-Type': 'application/json'},
+        body: jsonEncode(<String, dynamic>{
+          "token": token,
+          "name": _controller.text,
+        }),
+      );
+      if (response.statusCode == 200) {
+        print('Name updated');
+      }
+    } catch (e) {
+      print('ERROR: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -70,7 +68,8 @@ class ProfileDialog extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   TextField(
-                    keyboardType: TextInputType.number,
+                    controller: _controller,
+                    keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                       labelText: 'Ex. coiny',
                       labelStyle: TextStyle(color: Color(0xFFEDB59E)),
@@ -102,7 +101,9 @@ class ProfileDialog extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-                          // Add your save logic here
+                          token = '';
+                          onTokenChanged(token);
+                          Navigator.of(context).pop();
                         },
                         child: Text(
                           'Logout',
@@ -120,7 +121,8 @@ class ProfileDialog extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-                          // Add your save logic here
+                          onSave();
+                          Navigator.of(context).pop();
                         },
                         child: Text(
                           'Save',
@@ -140,8 +142,4 @@ class ProfileDialog extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(MyApp());
 }

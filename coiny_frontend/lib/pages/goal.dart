@@ -4,6 +4,7 @@ import 'package:coiny_frontend/components/addGoal.dart';
 import 'package:coiny_frontend/components/goalEditon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class Mygoal {
   final String name;
@@ -18,7 +19,8 @@ class Mygoal {
 }
 
 class GoalPage extends StatefulWidget {
-  GoalPage({Key? key}) : super(key: key);
+  final token;
+  GoalPage({Key? key, required this.token}) : super(key: key);
 
   @override
   _GoalPageState createState() => _GoalPageState();
@@ -26,7 +28,6 @@ class GoalPage extends StatefulWidget {
 
 class _GoalPageState extends State<GoalPage> {
   int saved = 0;
-  final int userId = 1;
   List<Mygoal> goals = [];
   bool isLoading = true;
 
@@ -35,6 +36,9 @@ class _GoalPageState extends State<GoalPage> {
     super.initState();
     getGoal();
     getSave();
+    // Map<String, dynamic> jwtDecodeToken = JwtDecoder.decode(widget.token);
+    // userId = jwtDecodeToken['userId'];
+    // print('User ID: $userId');
   }
 
   // void updateSavedAmount(int newAmount) {
@@ -45,7 +49,7 @@ class _GoalPageState extends State<GoalPage> {
 
   void getGoal() async {
     try {
-      final apiURL = 'http://10.0.2.2:4000/goals/get?userId=$userId';
+      final apiURL = 'http://10.0.2.2:4000/goals/get?token=${widget.token}';
       final response = await http.get(
         Uri.parse(apiURL),
         headers: <String, String>{'Content-Type': 'application/json'},
@@ -64,7 +68,7 @@ class _GoalPageState extends State<GoalPage> {
 
   void getSave() async {
     try {
-      final apiURL = 'http://10.0.2.2:4000/plans/get?userId=$userId';
+      final apiURL = 'http://10.0.2.2:4000/plans/get?token=${widget.token}';
       final response = await http.get(
         Uri.parse(apiURL),
         headers: <String, String>{'Content-Type': 'application/json'},
@@ -150,7 +154,7 @@ class _GoalPageState extends State<GoalPage> {
                                 currentAmount: goals[index].currentAmount,
                                 saved: saved,
                                 goalId: goals[index].goalId,
-                                userId: userId,
+                                token: widget.token,
                                 reloadCallback: () {
                                   getGoal();
                                   getSave();
@@ -163,7 +167,10 @@ class _GoalPageState extends State<GoalPage> {
                       ),
                     ),
                     Center(
-                      child: AddNewGoal(reloadCallback: getGoal),
+                      child: AddNewGoal(
+                        reloadCallback: getGoal,
+                        token: widget.token,
+                      ),
                     ),
                   ],
                 ),
@@ -175,7 +182,10 @@ class _GoalPageState extends State<GoalPage> {
 
 class AddNewGoal extends StatefulWidget {
   final Function() reloadCallback;
-  const AddNewGoal({Key? key, required this.reloadCallback}) : super(key: key);
+  final token;
+  const AddNewGoal(
+      {Key? key, required this.reloadCallback, required this.token})
+      : super(key: key);
 
   @override
   State<AddNewGoal> createState() => _AddNewGoalState();
@@ -189,10 +199,12 @@ class _AddNewGoalState extends State<AddNewGoal> {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return addGoalPopUp(reloadGoals: () {
-                // Call the reload callback after creating a new goal
-                widget.reloadCallback();
-              });
+              return addGoalPopUp(
+                  token: widget.token,
+                  reloadGoals: () {
+                    // Call the reload callback after creating a new goal
+                    widget.reloadCallback();
+                  });
             },
           );
         },
@@ -218,7 +230,7 @@ class goalTem extends StatelessWidget {
     required this.currentAmount,
     required this.saved,
     required this.goalId,
-    required this.userId,
+    required this.token,
     required this.reloadCallback,
     // required this.updateSavedAmount,
   });
@@ -227,7 +239,7 @@ class goalTem extends StatelessWidget {
   int currentAmount;
   int saved;
   int goalId;
-  int userId;
+  String token;
   final Function() reloadCallback;
   // final Function(int) updateSavedAmount;
 
@@ -243,7 +255,7 @@ class goalTem extends StatelessWidget {
               saved: saved,
               goalId: goalId,
               name: name,
-              userId: userId,
+              token: token,
               reloadGoals: reloadCallback,
               // updateSavedAmount: updateSavedAmount,
             ); // Show AnotherPopup when NumberInputButton is clicked

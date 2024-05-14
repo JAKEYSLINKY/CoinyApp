@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class stat extends StatefulWidget {
-  const stat({super.key});
+  final token;
+  const stat({super.key, required this.token});
 
   @override
   State<stat> createState() => _statState();
@@ -23,7 +24,7 @@ class _statState extends State<stat> {
 
   void getSave() async {
     try {
-      final apiURL = 'http://10.0.2.2:4000/plans/get?userId=$userId';
+      final apiURL = 'http://10.0.2.2:4000/users/stat?token=${widget.token}';
       final response = await http.get(
         Uri.parse(apiURL),
         headers: <String, String>{'Content-Type': 'application/json'},
@@ -171,10 +172,8 @@ List<double> parseMoney(String responseBody) {
     if (jsonResponse.containsKey('data')) {
       Map<String, dynamic> data = jsonResponse['data'];
       int currentSave = data['currentSave'] ?? 0;
-      int monthly = data['monthly'] ?? 0;
-      int save = data['save'] ?? 0;
-      int UsableMoney = currentSave - save;
-      int Used = -(monthly - currentSave);
+      int UsableMoney = data['usableMoney'] ?? 0;
+      int Used = data['used'] ?? 0;
       print('currentSave: $currentSave' +
           ' UsableMoney: $UsableMoney' +
           ' Used: $Used');
