@@ -41,10 +41,17 @@ const getUsableMoney = async (
 				amount: true,
 			},
 		});
+		const startOfDay = new Date();
+		startOfDay.setHours(0, 0, 0, 0); 
+		const endOfDay = new Date();
+		endOfDay.setHours(23, 59, 59, 999);
 		const transactionsDaily = await prisma.transactions.aggregate({
 			where: {
 				userId: userId,
-				created: today,
+				created: {
+					gte: startOfDay,
+					lte: endOfDay,
+				},
 			},
 			_sum: {
 				amount: true,
@@ -80,9 +87,9 @@ const getUsableMoney = async (
 			},
 		});
 		const dailyExpense =
-			(plan.monthly - plan.save + bonus._sum.amount!) / daysLeft;
+			(plan.monthly - plan.save + bonus._sum.amount!) / daysLeft;;
 		const currentDailyExpense =
-			dailyExpense + transactionsDaily._sum.amount!;
+			(dailyExpense + transactionsDaily._sum.amount!)
 		const usableMoney =
 			plan.monthly -
 			plan.save +
