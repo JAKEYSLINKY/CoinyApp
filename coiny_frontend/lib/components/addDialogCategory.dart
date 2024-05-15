@@ -3,7 +3,12 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class AddCategoryDialog extends StatefulWidget {
-  AddCategoryDialog({Key? key, required this.token}) : super(key: key);
+  AddCategoryDialog({
+    Key? key,
+    required this.token,
+    required this.reloadData,
+  }) : super(key: key);
+  final Function reloadData;
   final token;
 
   @override
@@ -14,7 +19,13 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
   final TextEditingController _nameController = TextEditingController();
   String _selectedIconName = '';
 
-  void _postCategory() async {
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _postCategory() async {
     try {
       final apiUrl = 'http://10.0.2.2:4000/categories/create';
       final response = await http
@@ -140,10 +151,10 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
                   backgroundColor:
                       MaterialStateProperty.all<Color>(Color(0xFF95491E)),
                 ),
-                onPressed: () {
-                  _postCategory();
-
-                  Navigator.pop(context, 'OK');
+                onPressed: () async {
+                  await _postCategory();
+                  await widget.reloadData();
+                  //Navigator.pop(context, 'OK');
                   print('Category Name: ${_nameController.text}');
                   print('Selected Icon Name: $_selectedIconName');
                 },

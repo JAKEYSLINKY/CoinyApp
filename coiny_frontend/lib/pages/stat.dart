@@ -13,13 +13,15 @@ class stat extends StatefulWidget {
 }
 
 class _statState extends State<stat> {
-  final int userId = 1;
-  List<double> financial = [0, 0, 0];
+  late List<double> financial = [0, 0, 0];
   bool isLoading = true;
+
   @override
   void initState() {
     super.initState();
     getSave();
+    isLoading;
+    financial;
   }
 
   void getSave() async {
@@ -36,6 +38,18 @@ class _statState extends State<stat> {
           financial = parseMoney(response.body);
           isLoading = false; // Implement parseGoals method
         });
+        print(financial);
+      } else {
+        setState(() {
+          financial = [];
+          isLoading = true;
+        });
+        print('Failed to load financial data');
+        if (financial.isEmpty) {
+          print('No financial data found');
+        } else {
+          print('Financial data found');
+        }
       }
     } catch (e) {
       print('ERROR: $e');
@@ -51,7 +65,19 @@ class _statState extends State<stat> {
         body: SingleChildScrollView(
           child: Center(
             child: isLoading
-                ? CircularProgressIndicator() // Show loading indicator while data is being fetched
+                ? financial.isEmpty
+                    ? const Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Text(
+                          "There is no stat data without a plan, please fill the plan form first!",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                          ),
+                        ),
+                      )
+                    : CircularProgressIndicator()
                 : Column(
                     children: [
                       const Padding(
@@ -72,7 +98,7 @@ class _statState extends State<stat> {
                           child: MyBarGraph(financial: financial),
                         ),
                       ),
-                      const SizedBox(height: 90),
+                      const SizedBox(height: 40),
                       StatInfo(
                         Saved: financial[0].toInt(),
                         UsableMoney: financial[1].toInt(),
@@ -177,7 +203,11 @@ List<double> parseMoney(String responseBody) {
       print('currentSave: $currentSave' +
           ' UsableMoney: $UsableMoney' +
           ' Used: $Used');
-      return [currentSave.toDouble(), UsableMoney.toDouble(), Used.toDouble()];
+      return [
+        currentSave.toDouble(),
+        UsableMoney.toDouble(),
+        (Used.toDouble() * (-1.00))
+      ];
     }
     return [];
   } catch (e) {
