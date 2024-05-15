@@ -14,16 +14,16 @@ class _mascotState extends State<mascot> {
   late int randomNumber = random.nextInt(10);
 
   final List<String> messages = [
-    'Howdy, I am Coiny. And I will help you manage your money!',
-    'Hello! Coiny here, let\'s get your finances in order!',
-    'Greetings from Coiny! Ready to save some money?',
-    'Hi there! I\'m Coiny, your financial assistant.',
-    'Hey! Coiny at your service for all money matters.',
-    'Welcome! Coiny is here to help you budget wisely.',
-    'Good day! Coiny will assist you in tracking expenses.',
-    'Hi! Coiny reporting for duty to manage your funds.',
-    'Salutations! Coiny will help you keep your money in check.',
-    'Hello! Coiny is ready to support your financial goals.'
+    'Howdy, I am Coiny. And I will help you manage your money! Howdy, I am Coiny. And I will help you manage your money!',
+    'Hello! Coiny here, let\'s get your finances in order! Howdy, I am Coiny. And I will help you manage your money!',
+    'Greetings from Coiny! Ready to save some money? Howdy, I am Coiny. And I will help you manage your money!',
+    'Hi there! I\'m Coiny, your financial assistant. Howdy, I am Coiny. And I will help you manage your money!',
+    'Hey! Coiny at your service for all money matters. Howdy, I am Coiny. And I will help you manage your money!',
+    'Welcome! Coiny is here to help you budget wisely.Howdy, I am Coiny. And I will help you manage your money!',
+    'Good day! Coiny will assist you in tracking expenses. Howdy, I am Coiny. And I will help you manage your money!',
+    'Hi! Coiny reporting for duty to manage your funds. Howdy, I am Coiny. And I will help you manage your money!',
+    'Salutations! Coiny will help you keep your money in check. Howdy, I am Coiny. And I will help you manage your money!',
+    'Hello! Coiny is ready to support your financial goals. Howdy, I am Coiny. And I will help you manage your money!'
   ];
 
   @override
