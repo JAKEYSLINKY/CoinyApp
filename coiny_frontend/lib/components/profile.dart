@@ -24,16 +24,21 @@ class _ProfileDialogState extends State<ProfileDialog> {
 
   void getUser() async {
     try {
-      final apiURL = 'http://10.0.2.2:4000/users/get?token?=${widget.token}';
+      final apiURL = 'http://10.0.2.2:4000/users/get?token=${widget.token}';
       var res = await http.get(
         Uri.parse(apiURL),
         headers: <String, String>{'Content-Type': 'application/json'},
       );
-      if (res.statusCode == 200) {
-        Map<String, dynamic> resbody = jsonDecode(res.body);
-        final data = resbody['data'];
-        _controller.text = data['name'];
+      Map<String, dynamic> jsonResponse = jsonDecode(res.body);
+      if (jsonResponse.containsKey('data')) {
+        Map<String, dynamic> data = jsonResponse['data'];
+        String name = data['name'];
+        print('name: $name');
+        setState(() {
+          _controller.text = name;
+        });
       } else {
+        print('User data loaded');
         print('Failed to load user data');
       }
     } catch (e) {
