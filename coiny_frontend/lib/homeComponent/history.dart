@@ -16,24 +16,28 @@ class _HistoryState extends State<history> {
   @override
   Widget build(BuildContext context) {
     if (widget.transactionData.isEmpty) {
-      return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              margin: const EdgeInsets.only(bottom: 10.0),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    "History",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  ),
-                  Icon(Icons.history),
-                ],
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 150.0),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                margin: const EdgeInsets.only(bottom: 10.0),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      "History",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                    Icon(Icons.history),
+                  ],
+                ),
               ),
-            ),
-            const Text('No transaction history')
-          ]);
+              const Text('No transaction history')
+            ]),
+      );
     }
 
     _previousDate = ''; // Reset _previousDate when rebuilding
