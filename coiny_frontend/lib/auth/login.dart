@@ -79,8 +79,6 @@ class _LoginPageState extends State<LoginPage> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 50.0),
           child: Column(
-            // mainAxisAlignment: MainAxisAlignment.start,
-            // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 100, bottom: 40),
@@ -135,6 +133,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               TextFormField(
                 controller: passwordController,
+                obscureText: true,
                 decoration: const InputDecoration(
                   filled: true,
                   fillColor: Color(0xFFFFF3EC),
