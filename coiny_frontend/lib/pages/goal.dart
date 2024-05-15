@@ -27,7 +27,7 @@ class GoalPage extends StatefulWidget {
 }
 
 class _GoalPageState extends State<GoalPage> {
-  int saved = -2;
+  int? saved = 0;
   List<Mygoal> goals = [];
   bool isLoading = true;
 
@@ -52,14 +52,9 @@ class _GoalPageState extends State<GoalPage> {
         print('getGoal');
         setState(() {
           goals = parseGoals(response.body);
-          isLoading = false;
         });
         print('goals: $goals');
       } else {
-        setState(() {
-          goals = [];
-          isLoading = false;
-        });
         print('Failed to load goal data');
       }
     } catch (e) {
@@ -84,18 +79,21 @@ class _GoalPageState extends State<GoalPage> {
         print('saved: $saved');
       } else {
         setState(() {
-          saved = -1;
+          saved = null;
           isLoading = true;
         });
         print('Failed to load saved data');
-        if (saved == -1) {
+        if (saved == null) {
           print('No saved data found');
         } else {
-          print('Saved data found');
+          print('saved data found');
         }
       }
     } catch (e) {
       print('ERROR: $e');
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -105,11 +103,11 @@ class _GoalPageState extends State<GoalPage> {
       backgroundColor: const Color(0xFFFFE2D2),
       body: SingleChildScrollView(
         child: isLoading
-            ? saved == -1
+            ? saved == null
                 ? const Padding(
                     padding: EdgeInsets.all(20),
                     child: Text(
-                      "There is no goal data without a plan, please fill the plan form first!",
+                      "There is no saved data without a plan, please fill the plan form first!",
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -176,7 +174,7 @@ class _GoalPageState extends State<GoalPage> {
                                 name: goals[index].name,
                                 goal: goals[index].goal,
                                 currentAmount: goals[index].currentAmount,
-                                saved: saved,
+                                saved: saved!,
                                 goalId: goals[index].goalId,
                                 token: widget.token,
                                 reloadCallback: () {
