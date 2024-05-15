@@ -133,6 +133,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               TextFormField(
                 controller: passwordController,
+                obscureText: true,
                 decoration: const InputDecoration(
                   filled: true,
                   fillColor: Color(0xFFFFF3EC),
