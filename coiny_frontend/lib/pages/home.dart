@@ -57,8 +57,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   final urlgetmoney = 'http://10.0.2.2:4000/transactions/balance';
-  int usableMoney = 0;
-  double dailyExpense = 0.0;
+  double usableMoney = 0;
+  double dailyExpense = 0;
 
   Future<void> _getMoneyData() async {
     try {
@@ -67,15 +67,18 @@ class _HomePageState extends State<HomePage> {
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonData = jsonDecode(response.body);
         setState(() {
-          usableMoney = jsonData['data']['usableMoney'];
-          dailyExpense = jsonData['data']['currentDailyExpense'];
+          usableMoney =
+              double.parse(jsonData['data']['usableMoney'].toString());
+          dailyExpense =
+              double.parse(jsonData['data']['currentDailyExpense'].toString());
         });
-        print('Received data: $jsonData');
+        print(
+            'Received money data: usableMoney: $usableMoney, dailyExpense: $dailyExpense');
       } else {
         throw Exception('Failed to fetch money data: ${response.statusCode}');
       }
     } catch (e) {
-      print('$e');
+      print('money error $e');
       throw Exception('Error occurred during HTTP request: $e');
     }
   }

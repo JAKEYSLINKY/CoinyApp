@@ -62,69 +62,54 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
     return AlertDialog(
       backgroundColor: Color(0xFFEDB59E),
       title: Text('New Category'),
-      content: SingleChildScrollView(
-        child: Column(
-          children: [
-            GridView.count(
-              crossAxisCount: 5,
-              shrinkWrap: true,
-              childAspectRatio: 1.0,
-              children: iconDataMap.entries.map((entry) {
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _selectedIconName = entry.key;
-                    });
-                  },
-                  child: Column(
-                    children: [
-                      Icon(
-                        entry.value,
-                        color: _selectedIconName == entry.key
-                            ? Colors.blue // Change the color when selected
-                            : Colors.white,
-                      ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Name',
-                    style: TextStyle(fontSize: 20.0),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 12.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Color(0xFFFFF3EC),
-                        ),
-                        child: TextFormField(
-                          controller: _nameController,
-                          decoration: InputDecoration(
-                            hintText: 'Ex. Movies',
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(
-                              vertical: 12.0,
-                              horizontal: 15.0,
-                            ),
-                          ),
-                        ),
-                      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Wrap(
+            spacing: 12.0, // Space between the icons
+            runSpacing: 12.0, // Space between rows
+            children: iconDataMap.entries.map((entry) {
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _selectedIconName = entry.key;
+                  });
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      entry.value,
+                      color: _selectedIconName == entry.key
+                          ? Colors.blue // Change the color when selected
+                          : Colors.white,
                     ),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 0.0, top: 8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                color: Color(0xFFFFF3EC),
+              ),
+              child: TextFormField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  hintText: 'Ex. Movies',
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 12.0,
+                    horizontal: 15.0,
                   ),
-                ],
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       actions: <Widget>[
         Row(
