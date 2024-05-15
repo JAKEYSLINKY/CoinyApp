@@ -1,4 +1,3 @@
-// ignore_for_file: non_constant_identifier_names, prefer_interpolation_to_compose_strings, camel_case_types
 import 'dart:convert';
 import 'package:coiny_frontend/barGraph/bar_Graph.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +35,7 @@ class _statState extends State<stat> {
         print('getSave and currentSave');
         setState(() {
           financial = parseMoney(response.body);
-          isLoading = false; // Implement parseGoals method
+          isLoading = false;
         });
         print(financial);
       } else {
@@ -54,7 +53,7 @@ class _statState extends State<stat> {
     } catch (e) {
       print('ERROR: $e');
       setState(() {
-        isLoading = false; // Set isLoading to false in case of error
+        isLoading = false;
       });
     }
   }
@@ -111,7 +110,6 @@ class _statState extends State<stat> {
   }
 }
 
-// ignore: must_be_immutable
 class StatInfo extends StatelessWidget {
   int Saved;
   int UsableMoney;
@@ -157,7 +155,7 @@ class StatInfo extends StatelessWidget {
                 const Text("Total",
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                Text((Saved + UsableMoney).toString() + "฿",
+                Text("${Saved + UsableMoney}฿",
                     style: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 20)),
               ],
@@ -183,7 +181,7 @@ class statdata extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(name, style: const TextStyle(fontSize: 20)),
-          Text(value.toString() + "฿",
+          Text("$value฿",
               style:
                   const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
         ],
@@ -200,9 +198,7 @@ List<double> parseMoney(String responseBody) {
       int currentSave = data['currentSave'] ?? 0;
       int UsableMoney = data['usableMoney'] ?? 0;
       int Used = data['used'] ?? 0;
-      print('currentSave: $currentSave' +
-          ' UsableMoney: $UsableMoney' +
-          ' Used: $Used');
+      print('currentSave: $currentSave UsableMoney: $UsableMoney Used: $Used');
       return [
         currentSave.toDouble(),
         UsableMoney.toDouble(),
