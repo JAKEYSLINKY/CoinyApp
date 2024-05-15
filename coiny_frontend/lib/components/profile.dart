@@ -3,12 +3,43 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class ProfileDialog extends StatelessWidget {
+class ProfileDialog extends StatefulWidget {
   ProfileDialog({Key? key, required this.token, required this.onTokenChanged})
       : super(key: key);
   var token;
   final Function(String) onTokenChanged;
+
+  @override
+  State<ProfileDialog> createState() => _ProfileDialogState();
+}
+
+class _ProfileDialogState extends State<ProfileDialog> {
   TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
+  void getUser() async {
+    try {
+      final apiURL = 'http://10.0.2.2:4000/users/get?token?=${widget.token}';
+      var res = await http.get(
+        Uri.parse(apiURL),
+        headers: <String, String>{'Content-Type': 'application/json'},
+      );
+      if (res.statusCode == 200) {
+        Map<String, dynamic> resbody = jsonDecode(res.body);
+        final data = resbody['data'];
+        _controller.text = data['name'];
+      } else {
+        print('Failed to load user data');
+      }
+    } catch (e) {
+      print('ERROR: $e');
+    }
+  }
 
   void onSave() async {
     try {
@@ -17,7 +48,7 @@ class ProfileDialog extends StatelessWidget {
         Uri.parse(apiURL),
         headers: <String, String>{'Content-Type': 'application/json'},
         body: jsonEncode(<String, dynamic>{
-          "token": token,
+          "token": widget.token,
           "name": _controller.text,
         }),
       );
@@ -101,8 +132,10 @@ class ProfileDialog extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-                          token = '';
-                          onTokenChanged(token);
+                          setState(() {
+                            widget.token = '';
+                          });
+                          widget.onTokenChanged(widget.token);
                           Navigator.of(context).pop();
                         },
                         child: Text(
@@ -113,24 +146,24 @@ class ProfileDialog extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: 5),
-                      // ElevatedButton(
-                      //   style: ElevatedButton.styleFrom(
-                      //     backgroundColor: Color(0xFF95491E),
-                      //     shape: RoundedRectangleBorder(
-                      //       borderRadius: BorderRadius.circular(15),
-                      //     ),
-                      //   ),
-                      //   onPressed: () {
-                      //     onSave();
-                      //     Navigator.of(context).pop();
-                      //   },
-                      //   child: Text(
-                      //     'Save',
-                      //     style: TextStyle(
-                      //       color: const Color(0xFFF5CCB4),
-                      //     ),
-                      //   ),
-                      // ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF95491E),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                        onPressed: () {
+                          onSave();
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          'Save',
+                          style: TextStyle(
+                            color: const Color(0xFFF5CCB4),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                   SizedBox(height: 15),
