@@ -8,8 +8,11 @@ interface userRequest {
 }
 const getUser = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const reqBody: userRequest = req.body;
-		const userId = verifyToken(reqBody.token);
+		const reqQuery: userRequest = {
+			token: req.query.token! as string,
+		};
+		const userId = verifyToken(reqQuery.token);
+
 		const user = await prisma.users.findFirst({
             where: {
                 userId: userId,
