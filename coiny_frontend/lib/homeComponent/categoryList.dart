@@ -203,7 +203,7 @@ class _CategoriesListState extends State<categoriesList> {
         Wrap(
           spacing: 10, //horizontal space
           runSpacing: 10, //vertical space
-          alignment: WrapAlignment.start,
+          alignment: WrapAlignment.center,
           direction: Axis.horizontal,
           children: categoryWidgets,
         ),

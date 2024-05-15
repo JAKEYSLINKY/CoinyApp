@@ -5,7 +5,7 @@ import 'dart:convert';
 class showMoney extends StatefulWidget {
   const showMoney(
       {super.key, required this.usableMoney, required this.dailyExpense});
-  final int usableMoney;
+  final double usableMoney;
   final double dailyExpense;
 
   @override
@@ -40,7 +40,7 @@ class _showMoneyState extends State<showMoney> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               Text(
-                " ${widget.dailyExpense.toInt()} ฿",
+                " ${widget.dailyExpense} ฿",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
             ],
