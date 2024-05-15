@@ -44,6 +44,24 @@ const resetPlan = async (req: Request, res: Response, next: NextFunction) => {
 				planId: plan.planId,
 			},
 		});
+		await prisma.transactions.deleteMany({
+			where: {
+				userId: userId,
+				created: {
+					gte: firstDayOfMonth,
+					lte: lastDayOfMonth,
+				},
+			},
+		});
+		await prisma.bonus.deleteMany({
+			where: {
+				userId: userId,
+				created: {
+					gte: firstDayOfMonth,
+					lte: lastDayOfMonth,
+				},
+			},
+		});
 		return res.status(200).json({
 			success: true,
 			data: "Plan Delete Success",
@@ -56,7 +74,7 @@ const resetPlan = async (req: Request, res: Response, next: NextFunction) => {
 			data: null,
 			error: error.message,
 		});
-	}finally {
+	} finally {
 		await prisma.$disconnect();
 	}
 };
