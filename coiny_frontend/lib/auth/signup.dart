@@ -94,6 +94,7 @@ class SignUpPage extends StatelessWidget {
               ),
               TextFormField(
                 controller: passwordController,
+                obscureText: true,
                 decoration: const InputDecoration(
                   filled: true,
                   fillColor: Color(0xFFFFF3EC),
