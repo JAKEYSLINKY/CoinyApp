@@ -6,8 +6,8 @@ import 'dart:math';
 import 'package:http/http.dart' as http;
 
 class mascot extends StatefulWidget {
-  final token;
-  const mascot({super.key, required this.token});
+  final name;
+  const mascot({super.key, required this.name});
 
   @override
   State<mascot> createState() => _mascotState();
@@ -16,12 +16,10 @@ class mascot extends StatefulWidget {
 class _mascotState extends State<mascot> {
   var random = Random();
   late int randomNumber = random.nextInt(10);
-  late String name = '';
 
   @override
   void initState() {
     super.initState();
-    getUser();
   }
 
   final List<String> messages = [
@@ -46,30 +44,6 @@ class _mascotState extends State<mascot> {
     // 'Salutations! Coiny will help you keep your money in check. ',
     // 'Hello! Coiny is ready to support your financial goals. Howdy, '
   ];
-
-  void getUser() async {
-    try {
-      final apiURL = 'http://10.0.2.2:4000/users/get?token=${widget.token}';
-      var res = await http.get(
-        Uri.parse(apiURL),
-        headers: <String, String>{'Content-Type': 'application/json'},
-      );
-      Map<String, dynamic> jsonResponse = jsonDecode(res.body);
-      if (jsonResponse.containsKey('data')) {
-        Map<String, dynamic> data = jsonResponse['data'];
-        String namedata = data['name'];
-        setState(() {
-          name = namedata;
-          randomNumber = random.nextInt(messages.length);
-        });
-        print('name: $name');
-      } else {
-        print('Failed to load user data');
-      }
-    } catch (e) {
-      print('ERROR: $e');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +76,8 @@ class _mascotState extends State<mascot> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            messages[randomNumber].replaceAll('{name}', name),
+                            messages[randomNumber]
+                                .replaceAll('{name}', widget.name),
                             style: TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.bold),
                           ),
