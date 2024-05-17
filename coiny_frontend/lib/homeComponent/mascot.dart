@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:http/http.dart' as http;
 
 class mascot extends StatefulWidget {
-  const mascot({super.key});
+  final token;
+  const mascot({super.key, required this.token});
 
   @override
   State<mascot> createState() => _mascotState();
@@ -12,18 +16,25 @@ class mascot extends StatefulWidget {
 class _mascotState extends State<mascot> {
   var random = Random();
   late int randomNumber = random.nextInt(10);
+  late String name = '';
+
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
 
   final List<String> messages = [
-    'Howdy, I am Coiny. And I will help you manage your money!',
-    'Hello! Coiny here, let\'s get your finances in order!',
-    'Greetings from Coiny! Ready to save some money?',
+    'Howdy {name}, I am Coiny. And I will help you manage your money!',
+    'Hello {name}! Coiny here, let\'s get your finances in order!',
+    'Greetings from Coiny! Ready to save some money {name}?',
     'Hi there! I\'m Coiny, your financial assistant.',
-    'Hey! Coiny at your service for all money matters.',
-    'Welcome! Coiny is here to help you budget wisely.',
-    'Good day! Coiny will assist you in tracking expenses.',
-    'Hi! Coiny reporting for duty to manage your funds.',
+    'Hey {name}! Coiny at your service for all money matters.',
+    'Welcome {name}! Coiny is here to help you budget wisely.',
+    'Good day {name}! Coiny will assist you in tracking expenses.',
+    'Hi {name}! Coiny reporting for duty to manage your funds.',
     'Salutations! Coiny will help you keep your money in check.',
-    'Hello! Coiny is ready to support your financial goals.'
+    'Hello {name}! Coiny is ready to support your financial goals.'
     // 'Howdy, I am Coiny. And I will help you manage your money! ',
     // 'Hello! Coiny here, let\'s get your finances in order! ',
     // 'Greetings from Coiny! Ready to save some money? Howdy, ',
@@ -35,6 +46,30 @@ class _mascotState extends State<mascot> {
     // 'Salutations! Coiny will help you keep your money in check. ',
     // 'Hello! Coiny is ready to support your financial goals. Howdy, '
   ];
+
+  void getUser() async {
+    try {
+      final apiURL = 'http://10.0.2.2:4000/users/get?token=${widget.token}';
+      var res = await http.get(
+        Uri.parse(apiURL),
+        headers: <String, String>{'Content-Type': 'application/json'},
+      );
+      Map<String, dynamic> jsonResponse = jsonDecode(res.body);
+      if (jsonResponse.containsKey('data')) {
+        Map<String, dynamic> data = jsonResponse['data'];
+        String namedata = data['name'];
+        setState(() {
+          name = namedata;
+          randomNumber = random.nextInt(messages.length);
+        });
+        print('name: $name');
+      } else {
+        print('Failed to load user data');
+      }
+    } catch (e) {
+      print('ERROR: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +102,7 @@ class _mascotState extends State<mascot> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            messages[randomNumber],
+                            messages[randomNumber].replaceAll('{name}', name),
                             style: TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.bold),
                           ),

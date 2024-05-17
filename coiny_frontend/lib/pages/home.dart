@@ -131,7 +131,9 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  mascot(),
+                  mascot(
+                    token: widget.token,
+                  ),
                   showMoney(
                       usableMoney: usableMoney, dailyExpense: dailyExpense),
                   categoriesList(
