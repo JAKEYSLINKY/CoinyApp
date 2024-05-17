@@ -28,7 +28,7 @@ class _showMoneyState extends State<showMoney> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               Text(
-                " ${widget.usableMoney} ฿",
+                " ${widget.usableMoney.toStringAsFixed(2)} ฿",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
             ],
@@ -40,7 +40,7 @@ class _showMoneyState extends State<showMoney> {
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               Text(
-                " ${widget.dailyExpense} ฿",
+                " ${widget.dailyExpense.toStringAsFixed(2)} ฿",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
             ],

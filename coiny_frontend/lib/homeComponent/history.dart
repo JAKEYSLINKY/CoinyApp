@@ -71,7 +71,9 @@ class _HistoryState extends State<history> {
                 String dateString = transaction['created'];
                 String formattedDate = _formatDate(dateString);
                 String categoryName = transaction['categories']['name'];
-                int amount = transaction['amount'];
+                double amount = transaction['amount'] is int
+                    ? (transaction['amount'] as int).toDouble()
+                    : transaction['amount'];
 
                 bool showDate = formattedDate != _previousDate;
                 _previousDate = formattedDate; // Update the previous date
@@ -96,7 +98,7 @@ class _HistoryState extends State<history> {
                             fontSize: 14,
                           ),
                         ),
-                        Text("$amount B")
+                        Text("${amount.toStringAsFixed(2)} B")
                       ],
                     ),
                   ],

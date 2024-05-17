@@ -137,7 +137,8 @@ class _HomePageState extends State<HomePage> {
                   categoriesList(
                       token: widget.token,
                       categories: categories,
-                      reloadData: reloadData),
+                      reloadData: reloadData,
+                      usableMoney: usableMoney),
                   addCategory(token: widget.token, reloadData: reloadData),
                   history(transactionData: _transactionData),
                 ],
