@@ -1,4 +1,5 @@
 import 'package:coiny_frontend/components/profile.dart';
+import 'package:coiny_frontend/pages/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'pages/home.dart';
@@ -144,21 +145,25 @@ class _MyAppState extends State<MyApp> {
                   padding: const EdgeInsets.only(top: 8, right: 30),
                   child: GestureDetector(
                     onTap: () {
-                      ProfileDialog profileDialog = ProfileDialog(
-                        token: widget.token,
-                        onTokenChanged: (String newToken) {
-                          setState(() {
-                            widget.token = newToken;
-                            _loggedIn = false;
-                          });
-                        },
-                      );
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return profileDialog;
-                        },
-                      );
+                      // ProfileDialog profileDialog = ProfileDialog(
+                      //   token: widget.token,
+                      //   onTokenChanged: (String newToken) {
+                      //     setState(() {
+                      //       widget.token = newToken;
+                      //       _loggedIn = false;
+                      //     });
+                      //   },
+                      // );
+                      // showDialog(
+                      //   context: context,
+                      //   builder: (BuildContext context) {
+                      //     return profileDialog;
+                      //   },
+                      // );
+                      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ProfilePage()),
+      );
                     },
                     child: ClipOval(
                       child: Image.asset(
