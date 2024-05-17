@@ -10,7 +10,9 @@ import '../homeComponent/history.dart';
 
 class HomePage extends StatefulWidget {
   final token;
-  const HomePage({@required this.token, Key? key}) : super(key: key);
+  final name;
+  const HomePage({@required this.token, required this.name, Key? key})
+      : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -132,7 +134,7 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   mascot(
-                    token: widget.token,
+                    name: widget.name,
                   ),
                   showMoney(
                       usableMoney: usableMoney, dailyExpense: dailyExpense),

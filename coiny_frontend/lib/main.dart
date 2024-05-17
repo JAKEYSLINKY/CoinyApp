@@ -39,6 +39,7 @@ class _MyAppState extends State<MyApp> {
     _selectedPlanPage = 1; // Assuming Plan1Page is the default page
     _initializeDataAndLogin();
     token = widget.token;
+    name;
   }
 
   Future<void> _initializeDataAndLogin() async {
@@ -99,6 +100,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   String profile = '';
+  String name = '';
   void getUser() async {
     try {
       final apiURL = 'http://10.0.2.2:4000/users/get?token=${widget.token}';
@@ -109,17 +111,27 @@ class _MyAppState extends State<MyApp> {
       Map<String, dynamic> jsonResponse = jsonDecode(res.body);
       if (jsonResponse.containsKey('data')) {
         Map<String, dynamic> data = jsonResponse['data'];
-        String image = data['image'];
+        String namedata = data['name'];
+        String profileData = data['image'];
         setState(() {
-          profile = image;
+          name = namedata;
+          profile = profileData;
         });
-        print(profile);
+        print('name: $name');
+        print('profile: $profileData');
       } else {
         print('Failed to load user data');
       }
     } catch (e) {
       print('ERROR: $e');
     }
+  }
+
+  void updateName(String newName) {
+    setState(() {
+      name = newName;
+      print('name: $name');
+    });
   }
 
   int _selectedPage = 0;
@@ -147,6 +159,7 @@ class _MyAppState extends State<MyApp> {
       final _pageOptions = [
         HomePage(
           token: widget.token,
+          name: name,
         ),
         stat(
           token: widget.token,
@@ -176,6 +189,9 @@ class _MyAppState extends State<MyApp> {
                             builder: (context) => ProfilePage(
                                   token: widget.token,
                                   onCallback: getUser,
+                                  onUpdateName: (String newName) {
+                                    updateName(newName);
+                                  },
                                 )),
                       );
                     },
