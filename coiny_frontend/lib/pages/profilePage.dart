@@ -7,13 +7,11 @@ import 'package:http/http.dart' as http;
 class ProfilePage extends StatefulWidget {
   final String token;
   final Function() onCallback;
-  final Function(String) onUpdateName;
-  ProfilePage(
-      {Key? key,
-      required this.token,
-      required this.onCallback,
-      required this.onUpdateName})
-      : super(key: key);
+  ProfilePage({
+    Key? key,
+    required this.token,
+    required this.onCallback,
+  }) : super(key: key);
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -25,20 +23,18 @@ class _ProfilePageState extends State<ProfilePage> {
     return ProfileScreen(
       onCallback: widget.onCallback,
       token: widget.token,
-      onUpdateName: widget.onUpdateName,
     );
   }
 }
 
 class ProfileScreen extends StatefulWidget {
   final Function() onCallback;
-  final Function(String) onUpdateName;
   var token;
 
-  ProfileScreen(
-      {required this.token,
-      required this.onCallback,
-      required this.onUpdateName});
+  ProfileScreen({
+    required this.token,
+    required this.onCallback,
+  });
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -104,7 +100,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         if (response.statusCode == 200) {
           print('Name updated');
           widget.onCallback();
-          widget.onUpdateName(nameController.text);
           Navigator.pop(context); // Close the dialog
         }
       } catch (e) {
