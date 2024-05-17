@@ -21,7 +21,7 @@ class _AddGoalPopUpState extends State<addGoalPopUp> {
     if (value == null || value.isEmpty) {
       return 'Please enter your goal name';
     } else if (value.length > 40) {
-      return 'Please enter a valid goal name';
+      return 'Your name is too long';
     } else {
       return null;
     }

@@ -1,5 +1,5 @@
 import 'package:coiny_frontend/components/profile.dart';
-import 'package:coiny_frontend/pages/profile.dart';
+import 'package:coiny_frontend/pages/profilePage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'pages/home.dart';
@@ -35,6 +35,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    getUser();
     _selectedPlanPage = 1; // Assuming Plan1Page is the default page
     _initializeDataAndLogin();
     token = widget.token;
@@ -97,6 +98,30 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  String profile = '';
+  void getUser() async {
+    try {
+      final apiURL = 'http://10.0.2.2:4000/users/get?token=${widget.token}';
+      var res = await http.get(
+        Uri.parse(apiURL),
+        headers: <String, String>{'Content-Type': 'application/json'},
+      );
+      Map<String, dynamic> jsonResponse = jsonDecode(res.body);
+      if (jsonResponse.containsKey('data')) {
+        Map<String, dynamic> data = jsonResponse['data'];
+        String image = data['image'];
+        setState(() {
+          profile = image;
+        });
+        print(profile);
+      } else {
+        print('Failed to load user data');
+      }
+    } catch (e) {
+      print('ERROR: $e');
+    }
+  }
+
   int _selectedPage = 0;
 
   void navigateToPlan2() {
@@ -145,29 +170,20 @@ class _MyAppState extends State<MyApp> {
                   padding: const EdgeInsets.only(top: 8, right: 30),
                   child: GestureDetector(
                     onTap: () {
-                      // ProfileDialog profileDialog = ProfileDialog(
-                      //   token: widget.token,
-                      //   onTokenChanged: (String newToken) {
-                      //     setState(() {
-                      //       widget.token = newToken;
-                      //       _loggedIn = false;
-                      //     });
-                      //   },
-                      // );
-                      // showDialog(
-                      //   context: context,
-                      //   builder: (BuildContext context) {
-                      //     return profileDialog;
-                      //   },
-                      // );
                       Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => ProfilePage()),
-      );
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ProfilePage(
+                                  token: widget.token,
+                                  onCallback: getUser,
+                                )),
+                      );
                     },
                     child: ClipOval(
                       child: Image.asset(
-                        'assets/profile.jpg',
+                        (profile == '')
+                            ? 'assets/non-profile.jpg'
+                            : 'assets/$profile',
                         width: 50,
                         height: 50,
                         fit: BoxFit.cover,
