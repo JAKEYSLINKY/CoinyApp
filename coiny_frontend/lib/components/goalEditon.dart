@@ -7,9 +7,9 @@ class NumberInputDialog extends StatefulWidget {
   final int saved;
   final String name;
   final int goalId;
-  final token;
+  final String token;
   final Function reloadGoals;
-  // final Function updateSavedAmount;
+
   NumberInputDialog({
     super.key,
     required this.goal,
@@ -18,42 +18,51 @@ class NumberInputDialog extends StatefulWidget {
     required this.goalId,
     required this.reloadGoals,
     required this.token,
-    // required this.updateSavedAmount
   });
+
   @override
   _NumberInputDialogState createState() => _NumberInputDialogState();
 }
 
 class _NumberInputDialogState extends State<NumberInputDialog> {
-  late TextEditingController _controller;
-  late int tempSave;
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController();
+  TextEditingController _controller = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  String? validateAmount(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter an amount';
+    } else if (int.tryParse(value) == null) {
+      return 'Please enter a valid number';
+    } else if (int.parse(value) > widget.saved) {
+      return 'You cannot add more than you have';
+    } else if (int.parse(value) <= 0) {
+      return 'Please enter a positive number';
+    }
+    return null;
   }
 
   void addMoney() async {
-    try {
-      final apiURL = 'http://10.0.2.2:4000/goals/add';
-      if (_controller.text.isNotEmpty) {
-        final response = await http.patch(Uri.parse(apiURL),
-            headers: <String, String>{'Content-Type': 'application/json'},
-            body: jsonEncode(<String, dynamic>{
-              "token": widget.token,
-              "goalId": widget.goalId,
-              "amount": int.parse(_controller.text),
-            }));
-        if (response.statusCode == 200) {
-          print('Added money to goal');
-          // widget.updateSavedAmount(tempSave);
-          widget.reloadGoals();
-          Navigator.pop(context);
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        final apiURL = 'http://10.0.2.2:4000/goals/add';
+        if (_controller.text.isNotEmpty) {
+          final response = await http.patch(Uri.parse(apiURL),
+              headers: <String, String>{'Content-Type': 'application/json'},
+              body: jsonEncode(<String, dynamic>{
+                "token": widget.token,
+                "goalId": widget.goalId,
+                "amount": int.parse(_controller.text),
+              }));
+          if (response.statusCode == 200) {
+            print('Added money to goal');
+            widget.reloadGoals();
+            Navigator.pop(context);
+          }
         }
+      } catch (e) {
+        print('ERROR: $e');
+        print(_controller.text);
       }
-    } catch (e) {
-      print('ERROR: $e');
-      print(_controller.text);
     }
   }
 
@@ -79,7 +88,7 @@ class _NumberInputDialogState extends State<NumberInputDialog> {
                         name: widget.name,
                         reloadGoals: widget.reloadGoals,
                         goal: widget.goal,
-                      ); // Replace AnotherPopup with the popup you want to show
+                      );
                     },
                   );
                 },
@@ -94,68 +103,58 @@ class _NumberInputDialogState extends State<NumberInputDialog> {
           ),
         ],
       ),
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            'Your saved : ${widget.saved}',
-            style: TextStyle(fontSize: 16),
-          ),
-          Text(
-            'How much money do you want to put in goal?',
-            style: TextStyle(fontSize: 16),
-          ),
-          SizedBox(
-              height: 16), // Add some space between the texts and the TextField
-          Container(
-            height: 37, // Set the height of the input box
-            child: TextField(
-              controller: _controller,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Ex. 200',
-                labelStyle: TextStyle(color: Color(0xFFEDB59E)),
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                filled: true,
-                fillColor: Color(0xFFFFF3EC), // Set the background color
-                border: OutlineInputBorder(
-                  borderRadius:
-                      BorderRadius.circular(20), // Set the border radius
-                  borderSide: BorderSide.none, // Remove the border
+      content: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Your saved : ${widget.saved}',
+              style: TextStyle(fontSize: 16),
+            ),
+            Text(
+              'How much money do you want to put in goal?',
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 16),
+            Container(
+              height: 65,
+              child: TextFormField(
+                controller: _controller,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Ex. 200',
+                  labelStyle: TextStyle(color: Color(0xFFEDB59E)),
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  filled: true,
+                  fillColor: Color(0xFFFFF3EC),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 0, horizontal: 12),
                 ),
-                contentPadding: EdgeInsets.symmetric(
-                    vertical: 0, horizontal: 12), // Set the padding
+                validator: validateAmount,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       actions: <Widget>[
         Center(
           child: Container(
-// Set the height of the button
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    Color(0xFFF5CCB4), // Set the button's background color
+                backgroundColor: Color(0xFFF5CCB4),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                        20)), // Set the button's border radius
+                    borderRadius: BorderRadius.circular(20)),
               ),
-              onPressed: () {
-                int number = int.tryParse(_controller.text) ?? 0;
-                if (number > widget.saved) {
-                  print('You can not add more than you have');
-                } else if (number > 0 && number <= widget.saved) {
-                  addMoney();
-                  tempSave = widget.saved - number;
-                }
-              },
+              onPressed: addMoney,
               child: Text(
                 'Save',
-                style: TextStyle(
-                    color: const Color(0xFF95491E)), // Set the text color
+                style: TextStyle(color: const Color(0xFF95491E)),
               ),
             ),
           ),
@@ -178,30 +177,23 @@ class AnotherPopup extends StatefulWidget {
   final int goal;
   final Function reloadGoals;
 
-  const AnotherPopup(
-      {super.key,
-      required this.token,
-      required this.goalId,
-      required this.reloadGoals,
-      required this.name,
-      required this.goal});
+  const AnotherPopup({
+    super.key,
+    required this.token,
+    required this.goalId,
+    required this.reloadGoals,
+    required this.name,
+    required this.goal,
+  });
+
   @override
-  // ignore: library_private_types_in_public_api, no_logic_in_create_state
-  _AnotherPopupState createState() => _AnotherPopupState(
-        controller1: TextEditingController(),
-        controller2: TextEditingController(),
-      );
+  _AnotherPopupState createState() => _AnotherPopupState();
 }
 
 class _AnotherPopupState extends State<AnotherPopup> {
-  TextEditingController _controller1;
-  TextEditingController _controller2;
-
-  _AnotherPopupState({
-    required TextEditingController controller1,
-    required TextEditingController controller2,
-  })  : _controller1 = controller1,
-        _controller2 = controller2;
+  TextEditingController _controller1 = TextEditingController();
+  TextEditingController _controller2 = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -210,29 +202,51 @@ class _AnotherPopupState extends State<AnotherPopup> {
     _controller2 = TextEditingController(text: widget.goal.toString());
   }
 
+  String? validateName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a name';
+    }
+    return null;
+  }
+
+  String? validateGoalAmount(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a goal amount';
+    } else if (int.tryParse(value) == null) {
+      return 'Please enter a valid number';
+    } else if (int.parse(value) <= 0) {
+      return 'Please enter a positive number';
+    } else if (int.parse(value) > 1000000000) {
+      return 'Please enter a number less than 1,000,000,000';
+    }
+    return null;
+  }
+
   void editGoal() async {
-    try {
-      final apiURL = 'http://10.0.2.2:4000/goals/edit';
-      if (_controller1.text.isNotEmpty && _controller2.text.isNotEmpty) {
-        final response = await http.patch(Uri.parse(apiURL),
-            headers: <String, String>{'Content-Type': 'application/json'},
-            body: jsonEncode(<String, dynamic>{
-              "token": widget.token,
-              "goalId": widget.goalId,
-              "name": _controller1.text,
-              "goalAmount": int.parse(_controller2.text),
-            }));
-        if (response.statusCode == 200) {
-          print('Edit goal');
-          widget.reloadGoals();
-          Navigator.pop(context);
-          Navigator.pop(context);
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        final apiURL = 'http://10.0.2.2:4000/goals/edit';
+        if (_controller1.text.isNotEmpty && _controller2.text.isNotEmpty) {
+          final response = await http.patch(Uri.parse(apiURL),
+              headers: <String, String>{'Content-Type': 'application/json'},
+              body: jsonEncode(<String, dynamic>{
+                "token": widget.token,
+                "goalId": widget.goalId,
+                "name": _controller1.text,
+                "goalAmount": int.parse(_controller2.text),
+              }));
+          if (response.statusCode == 200) {
+            print('Edit goal');
+            widget.reloadGoals();
+            Navigator.pop(context);
+            Navigator.pop(context);
+          }
         }
+      } catch (e) {
+        print('ERROR: $e');
+        print(_controller1.text);
+        print(_controller2.text);
       }
-    } catch (e) {
-      print('ERROR: $e');
-      print(_controller1.text);
-      print(_controller2.text);
     }
   }
 
@@ -256,13 +270,6 @@ class _AnotherPopupState extends State<AnotherPopup> {
       print(_controller1.text);
       print(_controller2.text);
     }
-  }
-
-  @override
-  void dispose() {
-    _controller1.dispose();
-    _controller2.dispose();
-    super.dispose();
   }
 
   void _showConfirmationDialog() {
@@ -297,9 +304,7 @@ class _AnotherPopupState extends State<AnotherPopup> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
                   ),
-                  onPressed: () {
-                    deleteGoal();
-                  },
+                  onPressed: deleteGoal,
                   child: Text(
                     'Yes',
                     style: TextStyle(color: const Color(0xFFF5CCB4)),
@@ -316,71 +321,73 @@ class _AnotherPopupState extends State<AnotherPopup> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Color(0xFFEDB59E), // Set the background color
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment:
-            CrossAxisAlignment.start, // Align children to the start (left)
-        children: [
-          Padding(
-            padding:
-                EdgeInsets.only(bottom: 8), // Add margin below "Edit your goal"
-            child: Text(
-              'Edit your goal',
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.left, // Align text to the left
-            ),
-          ),
-          Container(
-            height: 37,
-            child: TextField(
-              controller: _controller1,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Ex. Dream house',
-                labelStyle: TextStyle(color: Color(0xFFEDB59E)),
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                filled: true,
-                fillColor: Color(0xFFFFF3EC), // Set the background color
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+      backgroundColor: Color(0xFFEDB59E),
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(bottom: 8, top: 8),
+              child: Text(
+                'Edit your goal',
+                style: TextStyle(fontSize: 16),
+                textAlign: TextAlign.left,
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(
-                vertical: 8), // Add margin above and below "Set goal"
-            child: Text(
-              'Set goal',
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.left, // Align text to the left
-            ),
-          ),
-          Container(
-            height: 37,
-            child: TextField(
-              controller: _controller2,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Ex. 1200000',
-                labelStyle: TextStyle(color: Color(0xFFEDB59E)),
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                filled: true,
-                fillColor: Color(0xFFFFF3EC), // Set the background color
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide.none,
+            Container(
+              height: 65,
+              child: TextFormField(
+                controller: _controller1,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  labelText: 'Ex. Dream house',
+                  labelStyle: TextStyle(color: Color(0xFFEDB59E)),
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  filled: true,
+                  fillColor: Color(0xFFFFF3EC),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 0, horizontal: 12),
                 ),
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                validator: validateName,
               ),
             ),
-          ),
-        ],
+            Padding(
+              padding: EdgeInsets.only(bottom: 8),
+              child: Text(
+                'Set goal',
+                style: TextStyle(fontSize: 16),
+                textAlign: TextAlign.left,
+              ),
+            ),
+            Container(
+              height: 65,
+              child: TextFormField(
+                controller: _controller2,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Ex. 1200000',
+                  labelStyle: TextStyle(color: Color(0xFFEDB59E)),
+                  floatingLabelBehavior: FloatingLabelBehavior.never,
+                  filled: true,
+                  fillColor: Color(0xFFFFF3EC),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                ),
+                validator: validateGoalAmount,
+              ),
+            ),
+          ],
+        ),
       ),
       actions: <Widget>[
         Row(
@@ -388,42 +395,39 @@ class _AnotherPopupState extends State<AnotherPopup> {
           children: [
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(
-                    0xFFF5CCB4), // Set the button's background color to red for delete
+                backgroundColor: Color(0xFFF5CCB4),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                        20)), // Set the button's border radius
+                    borderRadius: BorderRadius.circular(20)),
               ),
-              onPressed:
-                  _showConfirmationDialog, // Call the confirmation dialog function
+              onPressed: _showConfirmationDialog,
               child: Text(
                 'Delete',
-                style: TextStyle(
-                    color: const Color(0xFF95491E)), // Set the text color
+                style: TextStyle(color: const Color(0xFF95491E)),
               ),
             ),
-            SizedBox(width: 10), // Add some space between buttons
+            SizedBox(width: 10),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(
-                    0xFF95491E), // Set the button's background color to blue for save
+                backgroundColor: Color(0xFF95491E),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                        20)), // Set the button's border radius
+                    borderRadius: BorderRadius.circular(20)),
               ),
-              onPressed: () {
-                // Add your save logic here
-                editGoal();
-              },
+              onPressed: editGoal,
               child: Text(
                 'Save',
-                style: TextStyle(
-                    color: const Color(0xFFF5CCB4)), // Set the text color
+                style: TextStyle(color: const Color(0xFFF5CCB4)),
               ),
             ),
           ],
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _controller1.dispose();
+    _controller2.dispose();
+    super.dispose();
   }
 }
