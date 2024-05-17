@@ -127,13 +127,6 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void updateName(String newName) {
-    setState(() {
-      name = newName;
-      print('name: $name');
-    });
-  }
-
   int _selectedPage = 0;
 
   void navigateToPlan2() {
@@ -189,9 +182,6 @@ class _MyAppState extends State<MyApp> {
                             builder: (context) => ProfilePage(
                                   token: widget.token,
                                   onCallback: getUser,
-                                  onUpdateName: (String newName) {
-                                    updateName(newName);
-                                  },
                                 )),
                       );
                     },
