@@ -19,15 +19,19 @@ class categoriesList extends StatefulWidget {
       {super.key,
       required this.categories,
       required this.reloadData,
-      required this.token});
+      required this.token,
+      required this.usableMoney});
+
   final List<Category> categories;
   final Function reloadData;
   final token;
+  final double usableMoney;
   @override
   State<categoriesList> createState() => _CategoriesListState();
 }
 
 class _CategoriesListState extends State<categoriesList> {
+  final _formKey = GlobalKey<FormState>();
   final urlpostwithdraw = 'http://10.0.2.2:4000/transactions/withdraw';
 
   final TextEditingController _amountController = TextEditingController();
@@ -85,6 +89,19 @@ class _CategoriesListState extends State<categoriesList> {
     // Add more mappings as needed
   };
 
+  String? validateAmount(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter an amount';
+    } else if (double.tryParse(value) == null) {
+      return 'Please enter a valid number';
+    } else if (double.parse(value) > widget.usableMoney) {
+      return 'You cannot add more than you have';
+    } else if (double.parse(value) <= 0) {
+      return 'Please enter a positive number';
+    }
+    return null;
+  }
+
   void _showCategoryDialog(
       BuildContext context, IconData iconData, String categoryName) {
     showDialog(
@@ -108,45 +125,51 @@ class _CategoriesListState extends State<categoriesList> {
               ),
             ],
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 0.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10.0),
-                          color: Color(0xFFFFF3EC),
-                        ),
+          content: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 0.0),
                         child: TextFormField(
                           controller: _amountController,
                           decoration: InputDecoration(
                             hintText: 'Ex. 100 ฿',
-                            border: InputBorder.none,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: BorderSide.none,
+                            ),
+                            filled: true,
+                            fillColor: Color(0xFFFFF3EC),
                             contentPadding: EdgeInsets.symmetric(
                               vertical: 12.0,
                               horizontal: 15.0,
                             ),
                           ),
+                          validator: validateAmount,
+                          keyboardType: TextInputType.number,
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  await _postData(categoryName);
-                  await widget.reloadData();
-                  Navigator.pop(context);
-                },
-                child: Text('Save'),
-              ),
-            ],
+                  ],
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      await _postData(categoryName);
+                      await widget.reloadData();
+                      Navigator.pop(context);
+                    }
+                  },
+                  child: Text('Save'),
+                ),
+              ],
+            ),
           ),
         );
       },

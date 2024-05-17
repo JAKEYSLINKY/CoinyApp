@@ -9,7 +9,7 @@ class AddCategoryDialog extends StatefulWidget {
     required this.reloadData,
   }) : super(key: key);
   final Function reloadData;
-  final token;
+  final String token;
 
   @override
   _AddCategoryDialogState createState() => _AddCategoryDialogState();
@@ -17,6 +17,7 @@ class AddCategoryDialog extends StatefulWidget {
 
 class _AddCategoryDialogState extends State<AddCategoryDialog> {
   final TextEditingController _nameController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   String _selectedIconName = '';
 
   @override
@@ -28,8 +29,7 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
   Future<void> _postCategory() async {
     try {
       final apiUrl = 'http://10.0.2.2:4000/categories/create';
-      final response = await http
-          .post(
+      final response = await http.post(
         Uri.parse(apiUrl),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -39,12 +39,7 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
           'name': _nameController.text,
           'iconName': _selectedIconName,
         }),
-      )
-          .catchError((e) {
-        // Handle error here
-        print('Error occurred during HTTP POST request: $e');
-        throw Exception('Failed to post data: $e');
-      });
+      );
 
       if (response.statusCode == 200) {
         print('Category created successfully(200)');
@@ -57,59 +52,84 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
     }
   }
 
+  String? _validateCategoryName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a category name';
+    }
+    return null;
+  }
+
+  String? _validateIconSelection() {
+    if (_selectedIconName.isEmpty) {
+      return 'Please select an icon';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Color(0xFFEDB59E),
       title: Text('New Category'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Wrap(
-            spacing: 12.0, // Space between the icons
-            runSpacing: 12.0, // Space between rows
-            children: iconDataMap.entries.map((entry) {
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _selectedIconName = entry.key;
-                  });
-                },
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      entry.value,
-                      color: _selectedIconName == entry.key
-                          ? Colors.blue // Change the color when selected
-                          : Colors.white,
-                    ),
-                  ],
+      content: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Wrap(
+              spacing: 12.0, // Space between the icons
+              runSpacing: 12.0, // Space between rows
+              children: iconDataMap.entries.map((entry) {
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedIconName = entry.key;
+                    });
+                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        entry.value,
+                        color: _selectedIconName == entry.key
+                            ? Colors.blue // Change the color when selected
+                            : Colors.white,
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+            if (_validateIconSelection() != null) // Show icon validation error
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(
+                  _validateIconSelection()!,
+                  style: TextStyle(color: Colors.red),
                 ),
-              );
-            }).toList(),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 0.0, top: 8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-                color: Color(0xFFFFF3EC),
               ),
+            Padding(
+              padding: const EdgeInsets.only(left: 0.0, top: 8.0),
               child: TextFormField(
                 controller: _nameController,
                 decoration: InputDecoration(
                   hintText: 'Ex. Movies',
-                  border: InputBorder.none,
+                  filled: true,
+                  fillColor: Color(0xFFFFF3EC),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide.none,
+                  ),
                   contentPadding: EdgeInsets.symmetric(
                     vertical: 12.0,
                     horizontal: 15.0,
                   ),
                 ),
+                validator: _validateCategoryName,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       actions: <Widget>[
         Row(
@@ -137,11 +157,14 @@ class _AddCategoryDialogState extends State<AddCategoryDialog> {
                       MaterialStateProperty.all<Color>(Color(0xFF95491E)),
                 ),
                 onPressed: () async {
-                  await _postCategory();
-                  await widget.reloadData();
-                  //Navigator.pop(context, 'OK');
-                  print('Category Name: ${_nameController.text}');
-                  print('Selected Icon Name: $_selectedIconName');
+                  if (_formKey.currentState!.validate() &&
+                      _validateIconSelection() == null) {
+                    await _postCategory();
+                    await widget.reloadData();
+                  } else {
+                    setState(
+                        () {}); // Trigger re-build to show validation errors
+                  }
                 },
                 child: const Text(
                   'OK',
