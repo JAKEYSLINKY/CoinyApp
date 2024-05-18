@@ -113,7 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: Color(0xFFFFE2D2),
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60.0),
+        preferredSize: Size.fromHeight(50.0),
         child: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Color(0xFFE2D2),
@@ -148,127 +148,132 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       ),
-      body: Center(
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(height: 40),
-            Stack(
-              children: [
-                CircleAvatar(
-                  radius: 90,
-                  // You can replace the AssetImage with your profile image
-                  backgroundImage: AssetImage((profile == '')
-                      ? 'assets/non-profile.jpg'
-                      : 'assets/$profile'),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color:
-                          Colors.white, // Background color of the pencil icon
-                    ),
-                    padding:
-                        EdgeInsets.all(5), // Padding around the pencil icon
-                    child: IconButton(
-                      icon: Icon(Icons.edit, color: Color(0xFF95491E)),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return ProfilePictureDialog(
-                                token: widget.token, onCallback: getUser);
-                          },
-                        );
-                      },
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(height: 40),
+              Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 90,
+                    // You can replace the AssetImage with your profile image
+                    backgroundImage: AssetImage((profile == '')
+                        ? 'assets/non-profile.jpg'
+                        : 'assets/$profile'),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color:
+                            Colors.white, // Background color of the pencil icon
+                      ),
+                      padding:
+                          EdgeInsets.all(5), // Padding around the pencil icon
+                      child: IconButton(
+                        icon: Icon(Icons.edit, color: Color(0xFF95491E)),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return ProfilePictureDialog(
+                                  token: widget.token, onCallback: getUser);
+                            },
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 40),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              child: Form(
-                key: _formKey,
-                child: TextFormField(
-                  controller: nameController,
-                  style:
-                      TextStyle(color: Colors.black), // Set text color to black
-                  decoration: InputDecoration(
-                    labelText: 'Name',
-                    filled:
-                        true, // Set to true to fill the background with white
-                    fillColor: Color(0xFFFFF3EC), // Set the fill color to white
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                      borderSide: BorderSide.none, // Remove the border
-                    ),
-                  ),
-                  validator: validateName,
-                ),
+                ],
               ),
-            ),
-            SizedBox(height: 20),
-            SizedBox(
-              width: 150, // Adjust width as needed
-              height: 35,
-              child: ElevatedButton(
-                onPressed: onSave,
-                child: Text('Save'),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      Color(0xFFF5CCB4)), // Change background color
-                  foregroundColor: MaterialStateProperty.all<Color>(
-                      Color(0xFF95491E)), // Change text color
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
+              SizedBox(height: 40),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Form(
+                  key: _formKey,
+                  child: TextFormField(
+                    controller: nameController,
+                    style: TextStyle(
+                        color: Colors.black), // Set text color to black
+                    decoration: InputDecoration(
+                      labelText: 'Name',
+                      filled:
+                          true, // Set to true to fill the background with white
+                      fillColor:
+                          Color(0xFFFFF3EC), // Set the fill color to white
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                        borderSide: BorderSide.none, // Remove the border
+                      ),
                     ),
+                    validator: validateName,
                   ),
                 ),
               ),
-            ),
-            SizedBox(height: 50),
-            SizedBox(
-              width: 150,
-              height: 35,
-              child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    widget.token = '';
-                  });
-                  print('Logged out');
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return LoginPage();
-                  }));
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.logout, color: Colors.white), // Icon
-                    SizedBox(width: 5), // Add some space between icon and text
-                    Text(
-                      'Logout',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ],
-                ),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      Color(0xFFEB6363)), // Background color
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
+              SizedBox(height: 20),
+              SizedBox(
+                width: 150, // Adjust width as needed
+                height: 35,
+                child: ElevatedButton(
+                  onPressed: onSave,
+                  child: Text('Save'),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Color(0xFFF5CCB4)), // Change background color
+                    foregroundColor: MaterialStateProperty.all<Color>(
+                        Color(0xFF95491E)), // Change text color
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+              SizedBox(height: 50),
+              SizedBox(
+                width: 150,
+                height: 35,
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      widget.token = '';
+                    });
+                    print('Logged out');
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return LoginPage();
+                    }));
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.logout, color: Colors.white), // Icon
+                      SizedBox(
+                          width: 5), // Add some space between icon and text
+                      Text(
+                        'Logout',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Color(0xFFEB6363)), // Background color
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
