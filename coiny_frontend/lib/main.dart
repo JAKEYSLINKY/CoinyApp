@@ -32,14 +32,16 @@ class _MyAppState extends State<MyApp> {
   bool _loggedIn = false; // Remove 'late' keyword
   String token = '';
   late bool noplan;
+  String? username = '';
+  String? profile = '';
   @override
   void initState() {
     super.initState();
     getUser();
+    getImage();
     _selectedPlanPage = 1; // Assuming Plan1Page is the default page
     _initializeDataAndLogin();
     token = widget.token;
-    name;
   }
 
   Future<void> _initializeDataAndLogin() async {
@@ -99,8 +101,6 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  String profile = '';
-  String name = '';
   void getUser() async {
     try {
       final apiURL = 'http://10.0.2.2:4000/users/get?token=${widget.token}';
@@ -111,13 +111,33 @@ class _MyAppState extends State<MyApp> {
       Map<String, dynamic> jsonResponse = jsonDecode(res.body);
       if (jsonResponse.containsKey('data')) {
         Map<String, dynamic> data = jsonResponse['data'];
-        String namedata = data['name'];
-        String profileData = data['image'];
+        String name = data['name'];
         setState(() {
-          name = namedata;
-          profile = profileData;
+          username = name;
         });
         print('name: $name');
+      } else {
+        print('Failed to load user data');
+      }
+    } catch (e) {
+      print('ERROR: $e');
+    }
+  }
+
+  void getImage() async {
+    try {
+      final apiURL = 'http://10.0.2.2:4000/users/get?token=${widget.token}';
+      var res = await http.get(
+        Uri.parse(apiURL),
+        headers: <String, String>{'Content-Type': 'application/json'},
+      );
+      Map<String, dynamic> jsonResponse = jsonDecode(res.body);
+      if (jsonResponse.containsKey('data')) {
+        Map<String, dynamic> data = jsonResponse['data'];
+        String profileData = data['image'];
+        setState(() {
+          profile = profileData;
+        });
         print('profile: $profileData');
       } else {
         print('Failed to load user data');
@@ -152,7 +172,7 @@ class _MyAppState extends State<MyApp> {
       final _pageOptions = [
         HomePage(
           token: widget.token,
-          name: name,
+          name: username,
         ),
         stat(
           token: widget.token,
@@ -181,7 +201,7 @@ class _MyAppState extends State<MyApp> {
                         MaterialPageRoute(
                             builder: (context) => ProfilePage(
                                   token: widget.token,
-                                  onCallback: getUser,
+                                  onCallback: () => {getImage(), getUser()},
                                 )),
                       );
                     },
