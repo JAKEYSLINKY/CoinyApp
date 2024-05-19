@@ -90,14 +90,14 @@ class _statState extends State<stat> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 30),
+                        padding: const EdgeInsets.only(bottom: 30, top: 30),
                         child: SizedBox(
                           height: 240,
                           width: 280,
                           child: MyBarGraph(financial: financial),
                         ),
                       ),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 20),
                       StatInfo(
                         Saved: financial[0].toInt(),
                         UsableMoney: financial[1].toInt(),
