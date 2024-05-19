@@ -16,6 +16,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController passwordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+  String? errorMessage;
 
   void signUp() async {
     if (_formKey.currentState!.validate()) {
@@ -32,6 +33,11 @@ class _SignUpPageState extends State<SignUpPage> {
           if (response.statusCode == 200) {
             print('user created');
             Navigator.pop(context);
+          } else {
+            setState(() {
+              errorMessage =
+                  'This username is already taken. Please try again.';
+            });
           }
         }
       } catch (e) {
@@ -140,7 +146,16 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 30.0, bottom: 0.0),
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: errorMessage != null
+                      ? Text(
+                          errorMessage!,
+                          style: TextStyle(color: Colors.red),
+                        )
+                      : SizedBox.shrink(),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 0.0),
                   child: Center(
                     child: ElevatedButton(
                         onPressed: () {

@@ -49,6 +49,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     getUser();
+    getImage();
   }
 
   String? validateName(String? value) {
@@ -70,12 +71,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (jsonResponse.containsKey('data')) {
         Map<String, dynamic> data = jsonResponse['data'];
         String name = data['name'];
-        String profileData = data['image'];
         setState(() {
           nameController.text = name;
-          profile = profileData;
         });
         print('name: $name');
+      } else {
+        print('Failed to load user data');
+      }
+    } catch (e) {
+      print('ERROR: $e');
+    }
+  }
+
+  void getImage() async {
+    try {
+      final apiURL = 'http://10.0.2.2:4000/users/get?token=${widget.token}';
+      var res = await http.get(
+        Uri.parse(apiURL),
+        headers: <String, String>{'Content-Type': 'application/json'},
+      );
+      Map<String, dynamic> jsonResponse = jsonDecode(res.body);
+      if (jsonResponse.containsKey('data')) {
+        Map<String, dynamic> data = jsonResponse['data'];
+        String profileData = data['image'];
+        setState(() {
+          profile = profileData;
+        });
         print('profile: $profileData');
       } else {
         print('Failed to load user data');
@@ -181,7 +202,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             context: context,
                             builder: (BuildContext context) {
                               return ProfilePictureDialog(
-                                  token: widget.token, onCallback: getUser);
+                                  token: widget.token, onCallback: getImage);
                             },
                           );
                         },
