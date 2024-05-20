@@ -27,6 +27,7 @@ class NumberInputDialog extends StatefulWidget {
 class _NumberInputDialogState extends State<NumberInputDialog> {
   TextEditingController _controller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  String? errorMessage;
 
   String? validateAmount(String? value) {
     if (value == null || value.isEmpty) {
@@ -57,6 +58,10 @@ class _NumberInputDialogState extends State<NumberInputDialog> {
             print('Added money to goal');
             widget.reloadGoals();
             Navigator.pop(context);
+          } else {
+            setState(() {
+              errorMessage = 'You cannot add more than your goal amount';
+            });
           }
         }
       } catch (e) {
@@ -138,6 +143,15 @@ class _NumberInputDialogState extends State<NumberInputDialog> {
                 ),
                 validator: validateAmount,
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: errorMessage != null
+                  ? Text(
+                      errorMessage!,
+                      style: TextStyle(color: Colors.red[900]),
+                    )
+                  : SizedBox.shrink(),
             ),
           ],
         ),
